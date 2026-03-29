@@ -8,5 +8,8 @@ namespace PT_Readify
 {
     internal class globais
     {
+        static public string profileEmail = "";
+        static public bool iisAdmin = false;
+        static public int id_utilizador = 0;
     }
 }

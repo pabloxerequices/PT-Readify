@@ -12,7 +12,38 @@ namespace BusinessLogicLayer
 {
     public class BLL
     {
-        
+
+        //--------------------------UTILIZADOR-------------------------
+        public class utilizador
+        {
+            //load utilizador
+            static public DataTable Load()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader("select * from utilizador", null);
+            }
+
+
+            //login utilizador
+            static public DataTable QueryutilizadorByemail(string Email)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@Email", Email)
+                };
+                return dal.executarReader("select * from utilizador where Email=@Email", sqlParams);
+            }
+        }
+
+
+
+
+
+
+
+
+        //---------------------------------------------------------------
+
         public class Clientes
         {
 

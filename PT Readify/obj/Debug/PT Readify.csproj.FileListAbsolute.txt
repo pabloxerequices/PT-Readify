@@ -9,3 +9,14 @@ C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\bin\Debug\PT 
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.exe
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.pdb
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.exe.config
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\bin\Debug\PT Readify.exe.config
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\bin\Debug\PT Readify.exe
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\bin\Debug\PT Readify.pdb
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.csproj.AssemblyReference.cache
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.exe.config
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Form1.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Properties.Resources.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.csproj.GenerateResource.cache
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.csproj.CoreCompileInputs.cache
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.exe
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.pdb
