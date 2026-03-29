@@ -91,6 +91,12 @@ namespace PT_Readify
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            registar_ultilizador registar_Ultilizador = new registar_ultilizador();
+            registar_Ultilizador.Show();
+        }
     }
     
 }
