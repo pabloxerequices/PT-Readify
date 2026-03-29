@@ -33,6 +33,22 @@ namespace BusinessLogicLayer
                 };
                 return dal.executarReader("select * from utilizador where Email=@Email", sqlParams);
             }
+            //registar utilizador
+            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                    new SqlParameter("@Estado_Conta", Estado_Conta),
+                new SqlParameter("@Tipo_Utilizador", Tipo_Utilizador),
+                new SqlParameter("@Email", Email),
+                new SqlParameter("@Nome", Nome),
+                new SqlParameter("@Palavra_Passe", Palavra_Passe)
+                };
+                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador,Estado_Conta,Email,Nome,Palavra_Passe) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe)", sqlParams);
+            }
+
+
+
         }
 
 
