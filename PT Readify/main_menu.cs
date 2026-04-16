@@ -16,5 +16,10 @@ namespace PT_Readify
         {
             InitializeComponent();
         }
+
+        private void pesquisarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
