@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adicionar_Livros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Adicionar_Livros.Designer.cs">
+      <DependentUpon>Adicionar_Livros.cs</DependentUpon>
+    </Compile>
     <Compile Include="BLL.cs" />
     <Compile Include="DAL.cs" />
     <Compile Include="Form1.cs">
@@ -75,6 +81,9 @@
     <Compile Include="registar_ultilizador.Designer.cs">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Adicionar_Livros.resx">
+      <DependentUpon>Adicionar_Livros.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
