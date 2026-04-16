@@ -90,8 +90,13 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< adicionar-livros
     <EmbeddedResource Include="Inserir_Livros.resx">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="main_menu.resx">
+      <DependentUpon>main_menu.cs</DependentUpon>
+>>>>>>> master
     </EmbeddedResource>
     <EmbeddedResource Include="Pesquisar_Livros.resx">
       <DependentUpon>Pesquisar_Livros.cs</DependentUpon>
