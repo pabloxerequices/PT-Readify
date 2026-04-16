@@ -48,15 +48,7 @@ namespace BusinessLogicLayer
             }
 
 
-
         }
-
-
-
-
-
-
-
 
         //---------------------------------------------------------------
 
@@ -153,6 +145,68 @@ namespace BusinessLogicLayer
            };
 
                 return dal.executarNonQuery("INSERT into Imagem (Img) VALUES(@img)", sqlParams);
+            }
+        }
+
+
+
+        // Nova classe para pesquisa de livros 
+        public class Livros
+        {
+            static public List<string> ObterGeneros()
+            {
+                DAL dal = new DAL();
+                DataTable dt = dal.executarReader("SELECT Nome FROM Genero", null);
+                return dt.AsEnumerable().Select(r => r["Nome"].ToString()).ToList();
+            }
+
+            static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
+            {
+                DAL dal = new DAL();
+
+                string sql = "SELECT DISTINCT L.* FROM Livros L " +
+                             "LEFT JOIN LivroGenero LG ON L.ID = LG.LivroID " +
+                             "LEFT JOIN Genero G ON LG.GeneroID = G.ID";
+
+                var whereClauses = new List<string>();
+                var parameters = new List<SqlParameter>();
+
+                if (!string.IsNullOrWhiteSpace(titulo))
+                {
+                    whereClauses.Add("L.Titulo LIKE @titulo");
+                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(autor))
+                {
+                    whereClauses.Add("L.Autor LIKE @autor");
+                    parameters.Add(new SqlParameter("@autor", "%" + autor + "%"));
+                }
+
+                if (categorias != null && categorias.Count > 0)
+                {
+                    var inParams = new List<string>();
+                    for (int i = 0; i < categorias.Count; i++)
+                    {
+                        string pname = "@cat" + i;
+                        inParams.Add(pname);
+                        parameters.Add(new SqlParameter(pname, categorias[i]));
+                    }
+
+                    if (inParams.Count > 0)
+                        whereClauses.Add("G.Nome IN (" + string.Join(", ", inParams) + ")");
+                }
+
+                if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
+                {
+                    whereClauses.Add("L.Estado = @estado");
+                    parameters.Add(new SqlParameter("@estado", estado));
+                }
+
+                if (whereClauses.Count > 0)
+                    sql += " WHERE " + string.Join(" AND ", whereClauses);
+
+                return dal.executarReader(sql, parameters.Count > 0 ? parameters.ToArray() : null);
             }
         }
     }
