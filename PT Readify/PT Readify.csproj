@@ -55,6 +55,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="globais.cs" />
+    <Compile Include="Inserir_Livros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Inserir_Livros.Designer.cs">
+      <DependentUpon>Inserir_Livros.cs</DependentUpon>
+    </Compile>
     <Compile Include="main_menu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,9 @@
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inserir_Livros.resx">
+      <DependentUpon>Inserir_Livros.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pesquisar_Livros.resx">
       <DependentUpon>Pesquisar_Livros.cs</DependentUpon>
