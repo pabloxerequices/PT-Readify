@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace BusinessLogicLayer
 {
@@ -153,6 +154,54 @@ namespace BusinessLogicLayer
         // Nova classe para pesquisa de livros 
         public class Livros
         {
+
+            static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
+            {                 DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                    new SqlParameter("@titulo", titulo),
+                    new SqlParameter("@autor", autor),
+                    new SqlParameter("@estado", estado),
+                    new SqlParameter("@biografia", biografia),
+                    new SqlParameter("@editora", editora),
+                    new SqlParameter("@preço", preço),
+                    new SqlParameter("@ano", ano),
+                    new SqlParameter("@capa", capa != null ? (object)capa : DBNull.Value)
+                };
+                // Inserir o livro e obter o ID gerado
+                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livros (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
+                // Inserir os gêneros associados
+                if (generos != null)
+                {
+                    foreach (var genero in generos)
+                    {
+                        var generoId = Convert.ToInt32(dal.executarScalar(
+                            "SELECT ID FROM Genero WHERE Nome = @nome",
+                            new SqlParameter[] { new SqlParameter("@nome", genero) })); // Corrigido aqui
+                        dal.executarNonQuery(
+                            "INSERT INTO LivroGenero (LivroID, GeneroID) VALUES (@livroId, @generoId)",
+                            new SqlParameter[] {
+                                new SqlParameter("@livroId", livroId),
+                                new SqlParameter("@generoId", generoId)
+                            });
+                    }
+                }
+                // Inserir os tipos associados
+                if (tipos != null)
+                {
+                    foreach (var tipo in tipos)
+                    {
+                        var tipoId = Convert.ToInt32(dal.executarScalar(
+                            "SELECT ID FROM Tipo WHERE Nome = @nome",
+                            new SqlParameter[] { new SqlParameter("@nome", tipo) })); // Corrigido aqui
+                        dal.executarNonQuery(
+                            "INSERT INTO LivroTipo (LivroID, TipoID) VALUES (@livroId, @tipoId)",
+                            new SqlParameter[] {
+                                new SqlParameter("@livroId", livroId),
+                                new SqlParameter("@tipoId", tipoId)
+                            });
+                    }
+                }
+            }
             static public List<string> ObterGeneros()
             {
                 DAL dal = new DAL();
