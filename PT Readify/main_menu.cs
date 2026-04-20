@@ -27,5 +27,12 @@ namespace PT_Readify
             new livros().Show();
             Close();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            new Form1().Show();
+            this.Close();
+
+        }
     }
 }
