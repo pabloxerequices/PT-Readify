@@ -49,3 +49,8 @@ C:\Users\126285\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT 
 C:\Users\126285\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.csproj.CoreCompileInputs.cache
 C:\Users\126285\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.exe
 C:\Users\126285\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT Readify.pdb
+C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Inserir_Livros.resources
+C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.livros.resources
+C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.main_menu.resources
+C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Pesquisar_Livros.resources
+C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.registar_ultilizador.resources

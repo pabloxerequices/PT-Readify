@@ -61,6 +61,12 @@
     <Compile Include="Inserir_Livros.Designer.cs">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
     </Compile>
+    <Compile Include="livros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="livros.Designer.cs">
+      <DependentUpon>livros.cs</DependentUpon>
+    </Compile>
     <Compile Include="main_menu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +98,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inserir_Livros.resx">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="livros.resx">
+      <DependentUpon>livros.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="main_menu.resx">
       <DependentUpon>main_menu.cs</DependentUpon>
