@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main_menu));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -65,6 +65,26 @@
             this.panel1.Size = new System.Drawing.Size(275, 518);
             this.panel1.TabIndex = 15;
             // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(46, 363);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(176, 54);
+            this.button5.TabIndex = 20;
+            this.button5.Text = "Reservas";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(46, 303);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(176, 54);
+            this.button4.TabIndex = 19;
+            this.button4.Text = "Requisições/Empréstimos";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
@@ -74,6 +94,17 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(46, 243);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(176, 54);
+            this.button3.TabIndex = 18;
+            this.button3.Text = "Livros";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button2
             // 
@@ -86,36 +117,6 @@
             this.button2.TabIndex = 17;
             this.button2.Text = "Perfil";
             this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(46, 243);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(176, 54);
-            this.button3.TabIndex = 18;
-            this.button3.Text = "Livros";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(46, 303);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(176, 54);
-            this.button4.TabIndex = 19;
-            this.button4.Text = "Requisições/Empréstimos";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(46, 363);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(176, 54);
-            this.button5.TabIndex = 20;
-            this.button5.Text = "Reservas";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // main_menu
             // 

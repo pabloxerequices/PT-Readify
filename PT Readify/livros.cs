@@ -10,21 +10,16 @@ using System.Windows.Forms;
 
 namespace PT_Readify
 {
-    public partial class main_menu : Form
+    public partial class livros : Form
     {
-        public main_menu()
+        public livros()
         {
             InitializeComponent();
         }
 
-        private void pesquisarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            new livros().Show();
+            new Pesquisar_Livros().Show();
             Close();
         }
     }
