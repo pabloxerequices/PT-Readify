@@ -64,16 +64,16 @@ namespace PT_Readify
             // labelCategoria
             // 
             this.labelCategoria.AutoSize = true;
-            this.labelCategoria.Location = new System.Drawing.Point(320, 15);
+            this.labelCategoria.Location = new System.Drawing.Point(509, 10);
             this.labelCategoria.Name = "labelCategoria";
-            this.labelCategoria.Size = new System.Drawing.Size(58, 13);
+            this.labelCategoria.Size = new System.Drawing.Size(55, 13);
             this.labelCategoria.TabIndex = 2;
             this.labelCategoria.Text = "Categoria:";
             // 
             // labelEstado
             // 
             this.labelEstado.AutoSize = true;
-            this.labelEstado.Location = new System.Drawing.Point(320, 45);
+            this.labelEstado.Location = new System.Drawing.Point(314, 40);
             this.labelEstado.Name = "labelEstado";
             this.labelEstado.Size = new System.Drawing.Size(43, 13);
             this.labelEstado.TabIndex = 3;
@@ -99,17 +99,17 @@ namespace PT_Readify
             // 
             this.clbCategoria.CheckOnClick = true;
             this.clbCategoria.FormattingEnabled = true;
-            this.clbCategoria.Location = new System.Drawing.Point(384, 12);
+            this.clbCategoria.Location = new System.Drawing.Point(570, 10);
             this.clbCategoria.Name = "clbCategoria";
             this.clbCategoria.Size = new System.Drawing.Size(180, 64);
             this.clbCategoria.TabIndex = 6;
-            this.clbCategoria.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbCategoria_ItemCheck);
+            this.clbCategoria.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ClbCategoria_ItemCheck);
             // 
             // comboEstado
             // 
             this.comboEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboEstado.FormattingEnabled = true;
-            this.comboEstado.Location = new System.Drawing.Point(384, 42);
+            this.comboEstado.Location = new System.Drawing.Point(363, 37);
             this.comboEstado.Name = "comboEstado";
             this.comboEstado.Size = new System.Drawing.Size(180, 21);
             this.comboEstado.TabIndex = 7;
@@ -117,7 +117,7 @@ namespace PT_Readify
             // 
             // btnPesquisar
             // 
-            this.btnPesquisar.Location = new System.Drawing.Point(590, 10);
+            this.btnPesquisar.Location = new System.Drawing.Point(755, 12);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(120, 23);
             this.btnPesquisar.TabIndex = 8;
@@ -127,7 +127,7 @@ namespace PT_Readify
             // 
             // btnLimpar
             // 
-            this.btnLimpar.Location = new System.Drawing.Point(590, 39);
+            this.btnLimpar.Location = new System.Drawing.Point(755, 45);
             this.btnLimpar.Name = "btnLimpar";
             this.btnLimpar.Size = new System.Drawing.Size(120, 23);
             this.btnLimpar.TabIndex = 9;
@@ -140,8 +140,8 @@ namespace PT_Readify
             this.dataGridViewLivros.AllowUserToAddRows = false;
             this.dataGridViewLivros.AllowUserToDeleteRows = false;
             this.dataGridViewLivros.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                                                                     | System.Windows.Forms.AnchorStyles.Left) 
-                                                                                    | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLivros.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewLivros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLivros.Location = new System.Drawing.Point(15, 80);

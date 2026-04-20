@@ -24,28 +24,59 @@ namespace PT_Readify
 
         private void InicializarControles()
         {
-            // Preencher estados (igual ao anterior)
-            comboEstado.Items.Clear();
-            comboEstado.Items.Add("Todos");
-            comboEstado.Items.Add("Disponível");
-            comboEstado.Items.Add("Emprestado");
-            comboEstado.Items.Add("Reservado");
-            comboEstado.SelectedIndex = 0;
-
-            // Preencher categorias a partir do BLL -> Genero
-            clbCategoria.Items.Clear();
-            clbCategoria.Items.Add("Todas"); // opção para tratar como sem filtro
+            // Categorias (CheckedListBox)
+            clbCategoria.BeginUpdate();
             try
             {
-                var generos = BusinessLogicLayer.BLL.Livros.ObterGeneros();
-                foreach (var g in generos)
-                    clbCategoria.Items.Add(g);
+                clbCategoria.Items.Clear();
+                // Adiciona opção "Todas" e evita duplicados
+                clbCategoria.Items.Add("Todas");
+
+                DataTable dtCats = BusinessLogicLayer.BLL.Livro.ObterCategorias();
+                foreach (DataRow r in dtCats.Rows)
+                {
+                    var val = r.Table.Columns.Contains("Nome") ? r["Nome"].ToString() : r[0].ToString();
+                    if (!string.IsNullOrWhiteSpace(val) && !clbCategoria.Items.Contains(val))
+                        clbCategoria.Items.Add(val);
+                }
+
+                // Ajustes visuais para evitar sobreposição
+                clbCategoria.CheckOnClick = true;
+                clbCategoria.IntegralHeight = true;
+                clbCategoria.MultiColumn = false;
+
+                // Marca "Todas" por defeito se não houver nenhuma específica marcada
+                if (clbCategoria.Items.Count > 0)
+                    clbCategoria.SetItemChecked(0, true);
             }
-            catch
+            finally
             {
-                // fallback: se ocorrer erro, pode adicionar itens fixos
+                clbCategoria.EndUpdate();
             }
-            clbCategoria.SetItemChecked(0, true); // "Todas" por defeito
+
+            // Estados (ComboBox) — removido "Todos" conforme solicitado
+            comboEstado.BeginUpdate();
+            try
+            {
+                comboEstado.Items.Clear();
+                DataTable dtEstados = BusinessLogicLayer.BLL.Livro.ObterEstados();
+                foreach (DataRow r in dtEstados.Rows)
+                {
+                    var val = r.Table.Columns.Contains("Nome") ? r["Nome"].ToString() : r[0].ToString();
+                    if (!string.IsNullOrWhiteSpace(val) && !comboEstado.Items.Contains(val))
+                        comboEstado.Items.Add(val);
+                }
+
+                comboEstado.SelectedIndex = -1; // nenhum selecionado por defeito
+            }
+            finally
+            {
+                comboEstado.EndUpdate();
+            }
+
+            // Liga handler para comportamento especial da opção "Todas"
+            clbCategoria.ItemCheck -= ClbCategoria_ItemCheck;
+            clbCategoria.ItemCheck += ClbCategoria_ItemCheck;
         }
 
         private void AplicarFiltro()
@@ -63,7 +94,7 @@ namespace PT_Readify
 
             // Chama BLL que faz JOIN e IN com parâmetros
             var estado = comboEstado.SelectedItem as string;
-            DataTable resultado = BusinessLogicLayer.BLL.Livros.Pesquisar(
+            DataTable resultado = BusinessLogicLayer.BLL.Livro.Pesquisar(
                 txtTitulo.Text.Trim(),
                 txtAutor.Text.Trim(),
                 categoriasParaFiltro,
@@ -79,9 +110,34 @@ namespace PT_Readify
         }
 
         // ItemCheck acontece antes do estado ser atualizado, por isso usamos BeginInvoke
-        private void clbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void ClbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            this.BeginInvoke((MethodInvoker)(() => AplicarFiltro()));
+            // Se está a marcar "Todas" => desmarca todos os outros
+            if (clbCategoria.Items[e.Index].ToString() == "Todas" && e.NewValue == CheckState.Checked)
+            {
+                for (int i = 1; i < clbCategoria.Items.Count; i++)
+                    clbCategoria.SetItemChecked(i, false);
+                return;
+            }
+
+            // Se está a marcar uma categoria específica => desmarca "Todas"
+            if (clbCategoria.Items[e.Index].ToString() != "Todas" && e.NewValue == CheckState.Checked)
+            {
+                if (clbCategoria.Items.Contains("Todas"))
+                    clbCategoria.SetItemChecked(0, false);
+            }
+
+            // Se, depois da alteração, não houver nenhuma específica marcada => marca "Todas"
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                bool anyChecked = false;
+                for (int i = 1; i < clbCategoria.Items.Count; i++)
+                {
+                    if (clbCategoria.GetItemChecked(i)) { anyChecked = true; break; }
+                }
+                if (!anyChecked && clbCategoria.Items.Count > 0)
+                    clbCategoria.SetItemChecked(0, true);
+            });
         }
 
         private void btnLimpar_Click(object sender, EventArgs e)

@@ -152,10 +152,23 @@ namespace BusinessLogicLayer
 
 
         // Nova classe para pesquisa de livros 
-        public class Livros
+        public class Livro
         {
+                public static DataTable ObterCategorias()
+                {
+                    DAL dal = new DAL();
+                    string sql = "SELECT Categoria FROM Genero ORDER BY Categoria";
+                    return dal.executarReader(sql, null);
+                }
 
-            static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
+                public static DataTable ObterEstados()
+                {
+                DAL dal = new DAL();
+                // Se a sua tabela Estado_Livro usar outro nome de coluna, altere "Nome" para o nome correto
+                string sql = "SELECT estado FROM Estado_Livro ORDER BY estado";
+                return dal.executarReader(sql, null);
+                }
+                    static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
             {                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
                     new SqlParameter("@titulo", titulo),
@@ -168,7 +181,7 @@ namespace BusinessLogicLayer
                     new SqlParameter("@capa", capa != null ? (object)capa : DBNull.Value)
                 };
                 // Inserir o livro e obter o ID gerado
-                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livros (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
+                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livro (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
                 // Inserir os gêneros associados
                 if (generos != null)
                 {
@@ -191,8 +204,8 @@ namespace BusinessLogicLayer
                     foreach (var tipo in tipos)
                     {
                         var tipoId = Convert.ToInt32(dal.executarScalar(
-                            "SELECT ID FROM Tipo WHERE Nome = @nome",
-                            new SqlParameter[] { new SqlParameter("@nome", tipo) })); // Corrigido aqui
+                            "SELECT ID FROM Genero WHERE Categoria = @Categoria",
+                            new SqlParameter[] { new SqlParameter("@Categoria", tipo) })); // Corrigido aqui
                         dal.executarNonQuery(
                             "INSERT INTO LivroTipo (LivroID, TipoID) VALUES (@livroId, @tipoId)",
                             new SqlParameter[] {
@@ -209,21 +222,27 @@ namespace BusinessLogicLayer
                 return dt.AsEnumerable().Select(r => r["Nome"].ToString()).ToList();
             }
 
-            static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
+            static public DataTable Pesquisar(string Nome, string autor, List<string> categorias, string estado)
             {
                 DAL dal = new DAL();
-
-                string sql = "SELECT DISTINCT L.* FROM Livros L " +
-                             "LEFT JOIN LivroGenero LG ON L.ID = LG.LivroID " +
-                             "LEFT JOIN Genero G ON LG.GeneroID = G.ID";
-
                 var whereClauses = new List<string>();
                 var parameters = new List<SqlParameter>();
+                string where = whereClauses.Count > 0 ? " WHERE " + string.Join(" AND ", whereClauses) : "";
 
-                if (!string.IsNullOrWhiteSpace(titulo))
+                string joinClause = "FROM Livro L " +
+                                    "LEFT JOIN Livro_Genero LG ON L.Id_Livro = LG.Id_Livro " +
+                                    "LEFT JOIN Genero G ON LG.Id_Genero = G.Id_Genero " +
+                                    "LEFT JOIN Estado_Livro E ON L.Id_Estado_Livro = E.Id_Estado_Livro ";
+
+                string sql = "WITH DistinctIds AS (" +
+                             "SELECT DISTINCT L.Id_Livro " + joinClause + where +
+                             ") " +
+                             "SELECT L.* FROM Livro L JOIN DistinctIds d ON L.Id_Livro = d.Id_Livro;";
+
+                if (!string.IsNullOrWhiteSpace(Nome))
                 {
-                    whereClauses.Add("L.Titulo LIKE @titulo");
-                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
+                    whereClauses.Add("L.Nome LIKE @Nome");
+                    parameters.Add(new SqlParameter("@Nome", "%" + Nome + "%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(autor))
@@ -251,9 +270,6 @@ namespace BusinessLogicLayer
                     whereClauses.Add("L.Estado = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
-
-                if (whereClauses.Count > 0)
-                    sql += " WHERE " + string.Join(" AND ", whereClauses);
 
                 return dal.executarReader(sql, parameters.Count > 0 ? parameters.ToArray() : null);
             }
