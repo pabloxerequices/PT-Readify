@@ -185,7 +185,7 @@ namespace BusinessLogicLayer
                             });
                     }
                 }
-                // Inserir os tipos associados
+                // Inserir os tipos associadoss
                 if (tipos != null)
                 {
                     foreach (var tipo in tipos)
