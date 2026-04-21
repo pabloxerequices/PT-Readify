@@ -46,7 +46,7 @@ namespace PT_Readify
             // labelTitulo
             // 
             this.labelTitulo.AutoSize = true;
-            this.labelTitulo.Location = new System.Drawing.Point(15, 23);
+            this.labelTitulo.Location = new System.Drawing.Point(9, 14);
             this.labelTitulo.Name = "labelTitulo";
             this.labelTitulo.Size = new System.Drawing.Size(38, 13);
             this.labelTitulo.TabIndex = 0;
@@ -55,7 +55,7 @@ namespace PT_Readify
             // labelAutor
             // 
             this.labelAutor.AutoSize = true;
-            this.labelAutor.Location = new System.Drawing.Point(15, 53);
+            this.labelAutor.Location = new System.Drawing.Point(9, 44);
             this.labelAutor.Name = "labelAutor";
             this.labelAutor.Size = new System.Drawing.Size(35, 13);
             this.labelAutor.TabIndex = 1;
@@ -64,7 +64,7 @@ namespace PT_Readify
             // labelCategoria
             // 
             this.labelCategoria.AutoSize = true;
-            this.labelCategoria.Location = new System.Drawing.Point(323, 23);
+            this.labelCategoria.Location = new System.Drawing.Point(317, 14);
             this.labelCategoria.Name = "labelCategoria";
             this.labelCategoria.Size = new System.Drawing.Size(55, 13);
             this.labelCategoria.TabIndex = 2;
@@ -73,7 +73,7 @@ namespace PT_Readify
             // labelEstado
             // 
             this.labelEstado.AutoSize = true;
-            this.labelEstado.Location = new System.Drawing.Point(323, 53);
+            this.labelEstado.Location = new System.Drawing.Point(317, 44);
             this.labelEstado.Name = "labelEstado";
             this.labelEstado.Size = new System.Drawing.Size(43, 13);
             this.labelEstado.TabIndex = 3;
@@ -81,7 +81,7 @@ namespace PT_Readify
             // 
             // txtTitulo
             // 
-            this.txtTitulo.Location = new System.Drawing.Point(73, 20);
+            this.txtTitulo.Location = new System.Drawing.Point(67, 11);
             this.txtTitulo.Name = "txtTitulo";
             this.txtTitulo.Size = new System.Drawing.Size(220, 20);
             this.txtTitulo.TabIndex = 4;
@@ -89,7 +89,7 @@ namespace PT_Readify
             // 
             // txtAutor
             // 
-            this.txtAutor.Location = new System.Drawing.Point(73, 50);
+            this.txtAutor.Location = new System.Drawing.Point(67, 41);
             this.txtAutor.Name = "txtAutor";
             this.txtAutor.Size = new System.Drawing.Size(220, 20);
             this.txtAutor.TabIndex = 5;
@@ -99,7 +99,7 @@ namespace PT_Readify
             // 
             this.clbCategoria.CheckOnClick = true;
             this.clbCategoria.FormattingEnabled = true;
-            this.clbCategoria.Location = new System.Drawing.Point(387, 20);
+            this.clbCategoria.Location = new System.Drawing.Point(381, 11);
             this.clbCategoria.Name = "clbCategoria";
             this.clbCategoria.Size = new System.Drawing.Size(180, 64);
             this.clbCategoria.TabIndex = 6;
@@ -109,7 +109,7 @@ namespace PT_Readify
             // 
             this.comboEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboEstado.FormattingEnabled = true;
-            this.comboEstado.Location = new System.Drawing.Point(387, 50);
+            this.comboEstado.Location = new System.Drawing.Point(381, 41);
             this.comboEstado.Name = "comboEstado";
             this.comboEstado.Size = new System.Drawing.Size(180, 21);
             this.comboEstado.TabIndex = 7;
@@ -117,7 +117,7 @@ namespace PT_Readify
             // 
             // btnPesquisar
             // 
-            this.btnPesquisar.Location = new System.Drawing.Point(593, 18);
+            this.btnPesquisar.Location = new System.Drawing.Point(587, 9);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(120, 23);
             this.btnPesquisar.TabIndex = 8;
@@ -127,7 +127,7 @@ namespace PT_Readify
             // 
             // btnLimpar
             // 
-            this.btnLimpar.Location = new System.Drawing.Point(593, 47);
+            this.btnLimpar.Location = new System.Drawing.Point(587, 38);
             this.btnLimpar.Name = "btnLimpar";
             this.btnLimpar.Size = new System.Drawing.Size(120, 23);
             this.btnLimpar.TabIndex = 9;
@@ -144,7 +144,7 @@ namespace PT_Readify
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLivros.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewLivros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLivros.Location = new System.Drawing.Point(18, 88);
+            this.dataGridViewLivros.Location = new System.Drawing.Point(12, 79);
             this.dataGridViewLivros.MultiSelect = false;
             this.dataGridViewLivros.Name = "dataGridViewLivros";
             this.dataGridViewLivros.ReadOnly = true;
