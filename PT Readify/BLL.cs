@@ -151,24 +151,31 @@ namespace BusinessLogicLayer
 
 
 
-        // Nova classe para pesquisa de livros 
+        //----------------------LIVROS---------------------------- 
         public class Livros
         {
+            //listar livros
+            static public DataTable Load()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader("select * from Livro", null);
+            }
+            // Método para inserir um novo livro com gêneros e tipos associados
 
-            static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
+                static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
             {                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                    new SqlParameter("@titulo", titulo),
+                    new SqlParameter("@nome", titulo),
                     new SqlParameter("@autor", autor),
                     new SqlParameter("@estado", estado),
-                    new SqlParameter("@biografia", biografia),
+                    new SqlParameter("@bio", biografia),
                     new SqlParameter("@editora", editora),
                     new SqlParameter("@preço", preço),
                     new SqlParameter("@ano", ano),
                     new SqlParameter("@capa", capa != null ? (object)capa : DBNull.Value)
                 };
                 // Inserir o livro e obter o ID gerado
-                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livros (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
+                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livro (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
                 // Inserir os gêneros associados
                 if (generos != null)
                 {
