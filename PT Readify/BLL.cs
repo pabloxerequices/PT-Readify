@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO.Pipes;
 
 namespace BusinessLogicLayer
 {
@@ -162,20 +163,22 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-                static public void InserirLivro(string titulo,string autor , string estado, List<string>generos, List<string> tipos,string biografia,string editora,int preço,DateTime ano,Image capa)
+                static public void InserirLivro( int paginas,string nome, string bio,int preço,DateTime ano,string autor,string estado_livro,string editora, string idioma,Image capa, List<string> generos, List<string> tipos)
             {                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                    new SqlParameter("@nome", titulo),
-                    new SqlParameter("@autor", autor),
-                    new SqlParameter("@estado", estado),
-                    new SqlParameter("@bio", biografia),
-                    new SqlParameter("@editora", editora),
-                    new SqlParameter("@preço", preço),
-                    new SqlParameter("@ano", ano),
-                    new SqlParameter("@capa", capa != null ? (object)capa : DBNull.Value)
+                    new SqlParameter("@Quantas_Paginas", paginas),
+                    new SqlParameter("@Nome", nome),
+                    new SqlParameter("@Bio", bio),
+                    new SqlParameter("Preço", preço),
+                    new SqlParameter("@Ano", ano),
+                    new SqlParameter("@Autor", autor),
+                    new SqlParameter("@Id_Estado_Livro", estado_livro),
+                    new SqlParameter("@Editora", editora),
+                    new SqlParameter("@Idioma", idioma),
+                    new SqlParameter("@Capa", capa != null ? (object)capa : DBNull.Value)
                 };
                 // Inserir o livro e obter o ID gerado
-                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livro (Titulo, Autor, Estado, Biografia, Editora, Preço, Ano, Capa) OUTPUT INSERTED.ID VALUES (@titulo, @autor, @estado, @biografia, @editora, @preço, @ano, @capa)", sqlParams));
+                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livro (Quantas_Paginas, Nome, Bio, Preço, Ano, Autor, Id_Estado_Livro, Editora , Idioma, Capa) OUTPUT INSERTED.ID VALUES (@quantas_Paginas,@nome,@bio,@preço,@ano,@autor,@estado_livro,@editora,@idioma,@capa)", sqlParams));
                 // Inserir os gêneros associados
                 if (generos != null)
                 {

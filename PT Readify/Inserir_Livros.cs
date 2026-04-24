@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogicLayer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,15 +45,30 @@ namespace PT_Readify
                 string biografia = textBox2.Text;
                 string autor = textBox3.Text;
                 string editora = textBox4.Text;
-                string preco = textBox5.Text;
-                string genero = textBox6.Text;
+                int preco = int.Parse(textBox5.Text);
+                List<string> generos = new List<string> { textBox6.Text };
                 string idioma = textBox7.Text;
                 int paginas = int.Parse(textBox8.Text);
                 DateTime dataPublicacao = dateTimePicker1.Value;
-                DateTime dataDescricao = dateTimePicker1.Value;
+                string estadoLivro = comboBox1.Text; // Exemplo, ajuste conforme necessário
+                Image capa = null; // Ajuste se houver seleção de imagem
+                List<string> tipos = new List<string>(); // Ajuste conforme necessário
 
-
-                // Aqui você pode adicionar o código para salvar os dados do livro em um banco de dados ou arquivo
+                 // Ordem e tipos corrigidos conforme assinatura do método
+                BLL.Livros.InserirLivro(
+                    paginas,          // int
+                    titulo,           // string
+                    biografia,        // string
+                    preco,            // int
+                    dataPublicacao,   // DateTime
+                    autor,            // string
+                    estadoLivro,      // string
+                    editora,          // string
+                    idioma,           // string
+                    capa,             // Image
+                    generos,          // List<string>
+                    tipos             // List<string>
+                );
                 MessageBox.Show("Livro inserido com sucesso!");
             }
         }
