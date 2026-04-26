@@ -54,3 +54,8 @@ C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.main_menu.resources
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Pesquisar_Livros.resources
 C:\Users\125758\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.registar_ultilizador.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Inserir_Livros.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.livros.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.main_menu.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.main_menu__admin_.resources
+C:\Users\digod\source\repos\pabloxerequices\PT-Readify\PT Readify\obj\Debug\PT_Readify.Pesquisar_Livros.resources

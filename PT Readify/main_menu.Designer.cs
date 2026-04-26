@@ -37,11 +37,11 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button6 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -138,13 +138,6 @@
             this.pictureBox2.TabIndex = 21;
             this.pictureBox2.TabStop = false;
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(206, 344);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(862, 465);
-            this.flowLayoutPanel1.TabIndex = 23;
-            // 
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(824, 38);
@@ -167,6 +160,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1794, 1376);
             this.panel2.TabIndex = 24;
+            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(1561, 32);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(50, 47);
+            this.button7.TabIndex = 24;
+            this.button7.Text = "X";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label1
             // 
@@ -179,16 +184,12 @@
             this.label1.Text = "Livros";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // button7
+            // flowLayoutPanel1
             // 
-            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(1561, 32);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(50, 47);
-            this.button7.TabIndex = 24;
-            this.button7.Text = "X";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(206, 344);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(862, 465);
+            this.flowLayoutPanel1.TabIndex = 23;
             // 
             // main_menu
             // 
@@ -222,10 +223,10 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
