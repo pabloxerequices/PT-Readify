@@ -52,7 +52,7 @@ namespace PT_Readify
 
         private void button6_Click(object sender, EventArgs e)
         {
-
+            new Pesquisar_Livros().Show();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -79,6 +79,11 @@ namespace PT_Readify
             flowLayoutPanel1.Hide();
             panel2.Hide();
             label1.Hide();
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

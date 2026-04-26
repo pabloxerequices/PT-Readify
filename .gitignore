@@ -3,6 +3,14 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignorar bases de dados SQL Server
+*.mdf
+*.ldf
+
+# Ignorar pastas de compilação (bin e obj)
+[Bb]in/
+[Oo]bj/
+
 # User-specific files
 *.rsuser
 *.suo
