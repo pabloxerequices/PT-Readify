@@ -16,6 +16,16 @@ namespace PT_Readify
         {
             InitializeComponent();
         }
+        private void abrirforminpanel(Form form)
+        {
+            panel2.Controls.Clear();
+            form.TopLevel = false;
+            form.FormBorderStyle = FormBorderStyle.None;
+            form.Dock = DockStyle.Fill;
+
+            panel2.Controls.Add(form);
+            form.Show();
+        }
 
         private void pesquisarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -24,12 +34,7 @@ namespace PT_Readify
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //-----aba-livros-----
-            button6.Show();
-            flowLayoutPanel1.Show();
-            panel2.Show();
-            label1.Show();
-            button7.Show();
+            abrirforminpanel(new Pesquisar_Livros());
 
         }
 
@@ -42,12 +47,7 @@ namespace PT_Readify
 
         private void main_menu_Load(object sender, EventArgs e)
         {
-            //-----aba-livros-----
-            button6.Hide();
-            flowLayoutPanel1.Hide();
-            panel2.Hide();
-            label1.Hide();
-            button7.Hide();
+            
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -57,12 +57,7 @@ namespace PT_Readify
 
         private void button4_Click(object sender, EventArgs e)
         {
-            //-----aba-livros-----
-            button6.Hide();
-            flowLayoutPanel1.Hide();
-            panel2.Hide();
-            label1.Hide();
-            button7.Hide();
+            
 
         }
 
@@ -73,12 +68,12 @@ namespace PT_Readify
 
         private void button7_Click(object sender, EventArgs e)
         {
-            //-----aba-livros-----
-            button7.Hide();
-            button6.Hide();
-            flowLayoutPanel1.Hide();
-            panel2.Hide();
-            label1.Hide();
+            
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
