@@ -218,14 +218,25 @@ namespace BusinessLogicLayer
                 DataTable dt = dal.executarReader("SELECT Nome FROM Genero", null);
                 return dt.AsEnumerable().Select(r => r["Nome"].ToString()).ToList();
             }
+            static public List<string> ObterEstados()
+            {
+                DAL dal = new DAL();
+                DataTable dt = dal.executarReader("SELECT estado FROM Estado_Livro", null);
+                // Garante que não haja nulls e mantém a ordem tal como na tabela
+                return dt.AsEnumerable()
+                         .Where(r => r["estado"] != DBNull.Value)
+                         .Select(r => r["estado"].ToString())
+                         .ToList();
+            }
 
             static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
             {
                 DAL dal = new DAL();
 
-                string sql = "SELECT DISTINCT L.* FROM Livros L " +
-                             "LEFT JOIN LivroGenero LG ON L.ID = LG.LivroID " +
-                             "LEFT JOIN Genero G ON LG.GeneroID = G.ID";
+                string sql = "SELECT L.* FROM Livro L " +
+                             "LEFT JOIN Livro_Genero LG ON L.Id_Livro = LG.Id_Livro " +
+                             "LEFT JOIN Genero G ON LG.Id_Genero = G.Id_Genero " +
+                             "LEFT JOIN Estado_Livro EL ON L.Id_Estado_Livro = EL.Id_Estado_Livro ";
 
                 var whereClauses = new List<string>();
                 var parameters = new List<SqlParameter>();

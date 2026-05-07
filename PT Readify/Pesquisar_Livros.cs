@@ -24,28 +24,41 @@ namespace PT_Readify
 
         private void InicializarControles()
         {
-            // Preencher estados (igual ao anterior)
-            comboEstado.Items.Clear();
-            comboEstado.Items.Add("Todos");
-            comboEstado.Items.Add("Disponível");
-            comboEstado.Items.Add("Emprestado");
-            comboEstado.Items.Add("Reservado");
-            comboEstado.SelectedIndex = 0;
-
-            // Preencher categorias a partir do BLL -> Genero
-            clbCategoria.Items.Clear();
-            clbCategoria.Items.Add("Todas"); // opção para tratar como sem filtro
+            // Popular categorias a partir da tabela Genero
             try
             {
+                clbCategoria.Items.Clear();
+                clbCategoria.Items.Add("Todas"); // opção para não filtrar
                 var generos = BusinessLogicLayer.BLL.Livros.ObterGeneros();
                 foreach (var g in generos)
+                {
                     clbCategoria.Items.Add(g);
+                }
+                // Por defeito selecionar "Todas"
+                if (clbCategoria.Items.Count > 0)
+                    clbCategoria.SetItemChecked(0, true);
             }
-            catch
+            catch (Exception ex)
             {
-                // fallback: se ocorrer erro, pode adicionar itens fixos
+                MessageBox.Show("Erro ao carregar categorias: " + ex.Message);
             }
-            clbCategoria.SetItemChecked(0, true); // "Todas" por defeito
+
+            // Popular estados a partir da tabela Estado_Livro
+            try
+            {
+                comboEstado.Items.Clear();
+                comboEstado.Items.Add("Todos"); // opção para não filtrar
+                var estados = BusinessLogicLayer.BLL.Livros.ObterEstados();
+                foreach (var e in estados)
+                {
+                    comboEstado.Items.Add(e);
+                }
+                comboEstado.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar estados: " + ex.Message);
+            }
         }
 
         private void AplicarFiltro()
