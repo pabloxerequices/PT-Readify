@@ -117,7 +117,7 @@ namespace BusinessLogicLayer
 
             };
                 return dal.executarNonQuery("Delete From Clientes WHERE[id]=@id", sqlParams);
-            }		
+            }		 
 
         }
 		
@@ -215,8 +215,8 @@ namespace BusinessLogicLayer
             static public List<string> ObterGeneros()
             {
                 DAL dal = new DAL();
-                DataTable dt = dal.executarReader("SELECT Nome FROM Genero", null);
-                return dt.AsEnumerable().Select(r => r["Nome"].ToString()).ToList();
+                DataTable dt = dal.executarReader("SELECT Categoria FROM Genero", null);
+                return dt.AsEnumerable().Select(r => r["Categoria"].ToString()).ToList();
             }
             static public List<string> ObterEstados()
             {
@@ -227,6 +227,15 @@ namespace BusinessLogicLayer
                          .Where(r => r["estado"] != DBNull.Value)
                          .Select(r => r["estado"].ToString())
                          .ToList();
+            }
+
+            static public DataTable ObterEstadosTabela()
+            {
+                DAL dal = new DAL();
+                // Garantir valores únicos, sem espaços e ordenados
+                return dal.executarReader(
+                    "SELECT DISTINCT Id_Estado_Livro, LTRIM(RTRIM(estado)) AS estado FROM Estado_Livro ORDER BY estado",
+                    null);
             }
 
             static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
@@ -243,8 +252,8 @@ namespace BusinessLogicLayer
 
                 if (!string.IsNullOrWhiteSpace(titulo))
                 {
-                    whereClauses.Add("L.Titulo LIKE @titulo");
-                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
+                    whereClauses.Add("L.Nome LIKE @nome");
+                    parameters.Add(new SqlParameter("@nome", "%" + titulo + "%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(autor))
@@ -264,12 +273,13 @@ namespace BusinessLogicLayer
                     }
 
                     if (inParams.Count > 0)
-                        whereClauses.Add("G.Nome IN (" + string.Join(", ", inParams) + ")");
+                        whereClauses.Add("G.Categoria IN (" + string.Join(", ", inParams) + ")");
                 }
 
+                // CORREÇÃO: comparar pelo nome na tabela Estado_Livro (EL.estado)
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
-                    whereClauses.Add("L.Estado = @estado");
+                    whereClauses.Add("EL.estado = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
 
