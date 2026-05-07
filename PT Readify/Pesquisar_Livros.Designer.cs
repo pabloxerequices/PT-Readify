@@ -64,7 +64,7 @@ namespace PT_Readify
             // labelCategoria
             // 
             this.labelCategoria.AutoSize = true;
-            this.labelCategoria.Location = new System.Drawing.Point(317, 14);
+            this.labelCategoria.Location = new System.Drawing.Point(496, 9);
             this.labelCategoria.Name = "labelCategoria";
             this.labelCategoria.Size = new System.Drawing.Size(55, 13);
             this.labelCategoria.TabIndex = 2;
@@ -99,7 +99,7 @@ namespace PT_Readify
             // 
             this.clbCategoria.CheckOnClick = true;
             this.clbCategoria.FormattingEnabled = true;
-            this.clbCategoria.Location = new System.Drawing.Point(381, 11);
+            this.clbCategoria.Location = new System.Drawing.Point(566, 4);
             this.clbCategoria.Name = "clbCategoria";
             this.clbCategoria.Size = new System.Drawing.Size(180, 64);
             this.clbCategoria.TabIndex = 6;
@@ -117,7 +117,7 @@ namespace PT_Readify
             // 
             // btnPesquisar
             // 
-            this.btnPesquisar.Location = new System.Drawing.Point(587, 9);
+            this.btnPesquisar.Location = new System.Drawing.Point(752, 4);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(120, 23);
             this.btnPesquisar.TabIndex = 8;
@@ -127,7 +127,7 @@ namespace PT_Readify
             // 
             // btnLimpar
             // 
-            this.btnLimpar.Location = new System.Drawing.Point(587, 38);
+            this.btnLimpar.Location = new System.Drawing.Point(752, 41);
             this.btnLimpar.Name = "btnLimpar";
             this.btnLimpar.Size = new System.Drawing.Size(120, 23);
             this.btnLimpar.TabIndex = 9;
