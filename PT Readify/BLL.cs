@@ -279,7 +279,7 @@ namespace BusinessLogicLayer
                 // CORREÇÃO: comparar pelo nome na tabela Estado_Livro (EL.estado)
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
-                    whereClauses.Add("EL.estado = @estado");
+                    whereClauses.Add("EL.Estado = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
 
