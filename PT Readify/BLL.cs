@@ -215,8 +215,8 @@ namespace BusinessLogicLayer
             static public List<string> ObterGeneros()
             {
                 DAL dal = new DAL();
-                DataTable dt = dal.executarReader("SELECT Nome FROM Genero", null);
-                return dt.AsEnumerable().Select(r => r["Nome"].ToString()).ToList();
+                DataTable dt = dal.executarReader("SELECT Categoria FROM Genero", null);
+                return dt.AsEnumerable().Select(r => r["Categoria"].ToString()).ToList();
             }
             static public List<string> ObterEstados()
             {
@@ -243,8 +243,8 @@ namespace BusinessLogicLayer
 
                 if (!string.IsNullOrWhiteSpace(titulo))
                 {
-                    whereClauses.Add("L.Titulo LIKE @titulo");
-                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
+                    whereClauses.Add("L.Nome LIKE @nome");
+                    parameters.Add(new SqlParameter("@nome", "%" + titulo + "%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(autor))
@@ -264,12 +264,12 @@ namespace BusinessLogicLayer
                     }
 
                     if (inParams.Count > 0)
-                        whereClauses.Add("G.Nome IN (" + string.Join(", ", inParams) + ")");
+                        whereClauses.Add("G.Categoria IN (" + string.Join(", ", inParams) + ")");
                 }
 
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
-                    whereClauses.Add("L.Estado = @estado");
+                    whereClauses.Add("EL.Estado = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
 
