@@ -151,6 +151,7 @@ namespace PT_Readify
             this.dataGridViewLivros.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewLivros.Size = new System.Drawing.Size(860, 390);
             this.dataGridViewLivros.TabIndex = 10;
+            this.dataGridViewLivros.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewLivros_CellContentClick);
             // 
             // Pesquisar_Livros
             // 
