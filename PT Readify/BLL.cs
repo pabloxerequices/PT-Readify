@@ -117,7 +117,7 @@ namespace BusinessLogicLayer
 
             };
                 return dal.executarNonQuery("Delete From Clientes WHERE[id]=@id", sqlParams);
-            }		
+            }		 
 
         }
 		
@@ -229,6 +229,15 @@ namespace BusinessLogicLayer
                          .ToList();
             }
 
+            static public DataTable ObterEstadosTabela()
+            {
+                DAL dal = new DAL();
+                // Garantir valores únicos, sem espaços e ordenados
+                return dal.executarReader(
+                    "SELECT DISTINCT Id_Estado_Livro, LTRIM(RTRIM(estado)) AS estado FROM Estado_Livro ORDER BY estado",
+                    null);
+            }
+
             static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
             {
                 DAL dal = new DAL();
@@ -267,6 +276,7 @@ namespace BusinessLogicLayer
                         whereClauses.Add("G.Categoria IN (" + string.Join(", ", inParams) + ")");
                 }
 
+                // CORREÇÃO: comparar pelo nome na tabela Estado_Livro (EL.estado)
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
                     whereClauses.Add("EL.Estado = @estado");

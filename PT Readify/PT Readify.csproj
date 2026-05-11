@@ -79,6 +79,12 @@
     <Compile Include="main_menu__admin_.Designer.cs">
       <DependentUpon>main_menu__admin_.cs</DependentUpon>
     </Compile>
+    <Compile Include="Perfil.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Perfil.Designer.cs">
+      <DependentUpon>Perfil.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pesquisar_Livros.cs">
       <SubType>Form</SubType>
     </Compile>
