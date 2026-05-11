@@ -73,5 +73,10 @@ namespace PT_Readify
                 }
             }
         }
+
+        private void registar_ultilizador_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
