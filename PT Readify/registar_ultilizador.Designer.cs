@@ -75,6 +75,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(455, 40);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
@@ -138,10 +139,11 @@
             this.textBox4.BackColor = System.Drawing.Color.White;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox4.Location = new System.Drawing.Point(136, 343);
+            this.textBox4.Location = new System.Drawing.Point(147, 343);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(369, 40);
+            this.textBox4.Size = new System.Drawing.Size(358, 40);
             this.textBox4.TabIndex = 7;
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // label4
             // 
@@ -159,12 +161,13 @@
             // 
             this.comboBox1.BackColor = System.Drawing.Color.White;
             this.comboBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.DropDownWidth = 260;
             this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.ForeColor = System.Drawing.SystemColors.Info;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(51, 343);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(79, 41);
+            this.comboBox1.Size = new System.Drawing.Size(90, 41);
             this.comboBox1.TabIndex = 9;
             // 
             // pictureBox1
