@@ -48,6 +48,14 @@ namespace BusinessLogicLayer
                 };
                 return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador,Estado_Conta,Email,Nome,Palavra_Passe) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe)", sqlParams);
             }
+            static public DataTable queryUtilizadorById(int Id_Utilizador)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+               new SqlParameter("@Id_Utilizador",Id_Utilizador)
+                };
+                return dal.executarReader("Select * from utilizador where Id_Utilizador=@Id_Utilizador", sqlParams);
+            }
 
 
         }
@@ -235,6 +243,14 @@ namespace BusinessLogicLayer
                 // Garantir valores únicos, sem espaços e ordenados
                 return dal.executarReader(
                     "SELECT DISTINCT Id_Estado_Livro, LTRIM(RTRIM(estado)) AS estado FROM Estado_Livro ORDER BY estado",
+                    null);
+            }
+            static public DataTable ObterGenerosTabela()
+            {
+                DAL dal = new DAL();
+                // Garantir valores únicos, sem espaços e ordenados
+                return dal.executarReader(
+                    "SELECT DISTINCT Id_Genero, LTRIM(RTRIM(Categoria)) AS Categoria FROM Genero ORDER BY Categoria",
                     null);
             }
 
