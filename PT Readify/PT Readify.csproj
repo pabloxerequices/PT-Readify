@@ -120,6 +120,9 @@
     <EmbeddedResource Include="main_menu__admin_.resx">
       <DependentUpon>main_menu__admin_.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Perfil.resx">
+      <DependentUpon>Perfil.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pesquisar_Livros.resx">
       <DependentUpon>Pesquisar_Livros.cs</DependentUpon>
     </EmbeddedResource>
