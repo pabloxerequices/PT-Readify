@@ -36,7 +36,7 @@ namespace BusinessLogicLayer
                 return dal.executarReader("select * from utilizador where Email=@Email", sqlParams);
             }
             //registar utilizador
-            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe)
+            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
@@ -44,9 +44,12 @@ namespace BusinessLogicLayer
                 new SqlParameter("@Tipo_Utilizador", Tipo_Utilizador),
                 new SqlParameter("@Email", Email),
                 new SqlParameter("@Nome", Nome),
-                new SqlParameter("@Palavra_Passe", Palavra_Passe)
+                new SqlParameter("@Palavra_Passe", Palavra_Passe),
+                new SqlParameter("@prefixo_telefone", prefixo_telefone),
+                new SqlParameter("@numero_telefone", numero_telefone)
+
                 };
-                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador,Estado_Conta,Email,Nome,Palavra_Passe) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe)", sqlParams);
+                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador,Estado_Conta,Email,Nome,Palavra_Passe,prefixo_telefone,numero_telefone) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe,@prefixo_telefone,@numero_telefone)", sqlParams);
             }
             static public DataTable queryUtilizadorById(int Id_Utilizador)
             {
@@ -55,6 +58,20 @@ namespace BusinessLogicLayer
                new SqlParameter("@Id_Utilizador",Id_Utilizador)
                 };
                 return dal.executarReader("Select * from utilizador where Id_Utilizador=@Id_Utilizador", sqlParams);
+            }
+            //update utilizador (perfil editar)
+            static public int updateUtilizador(int Id_Utilizador,  string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@Id_Utilizador", Id_Utilizador),
+                new SqlParameter("@Email", Email),
+                new SqlParameter("@Nome", Nome),
+                new SqlParameter("@Palavra_Passe", Palavra_Passe),
+                new SqlParameter("@prefixo_telefone", prefixo_telefone),
+                new SqlParameter("@numero_telefone", numero_telefone)
+                };
+                return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where [Id_Utilizador]=@Id_Utilizador", sqlParams);
             }
 
 
