@@ -13,7 +13,7 @@ namespace PT_Readify
 {
     public partial class Perfil : Form
     {
-        string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal;
+        string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal;
         bool modoEdicao = false;
 
         
@@ -35,18 +35,26 @@ namespace PT_Readify
 
         private void button2_Click(object sender, EventArgs e)
         {
+            new main_menu().Show();
             this.Close();
+
         }
 
         private void Perfil_Load(object sender, EventArgs e)
         {
-            // Supondo que você tem o ID do utilizador disponível, por exemplo, idUtilizador
-            int idUtilizador = 1; // Substitua pelo valor correto do ID do utilizador
+            // Adiciona a lista ao ComboBox
+            comboBox1.Items.AddRange(globais.prefixosEuropa);
+
+            // Carregar os dados do utilizador com base no ID armazenado em globais.id_utilizador depois do login
+            int idUtilizador = globais.id_utilizador; 
             DataTable dt = BLL.utilizador.queryUtilizadorById(idUtilizador);
             textBox1.Text = dt.Rows[0]["Nome"].ToString();
             textBox3.Text = dt.Rows[0]["Palavra_Passe"].ToString();
+            textBox4.Text = dt.Rows[0]["numero_telefone"].ToString();
             textBox2.Text = dt.Rows[0]["Email"].ToString();
-            
+            comboBox1.Text = dt.Rows[0]["prefixo_telefone"] + "+".ToString();
+
+
             textBox3.UseSystemPasswordChar = true;
             button3.Visible = false;
         }
@@ -59,6 +67,7 @@ namespace PT_Readify
             emailOriginal = textBox2.Text;
             passOriginal = textBox3.Text;
             telefoneOriginal = textBox4.Text;
+            prefixoOriginal = comboBox1.Text;
 
             // 1. Entrar no modo de edição
             modoEdicao = true;
@@ -73,12 +82,15 @@ namespace PT_Readify
             textBox2.ReadOnly = false; // Campo Email
             textBox3.ReadOnly = false; // Campo Palavra-Passe
             textBox4.ReadOnly = false; // Campo Telefone
+            comboBox1.Enabled = true; // Campo Prefixo de Telefone
 
             // 4. Feedback visual (Opcional: mudar a cor de fundo para indicar que é editável)
             textBox1.BackColor = Color.White;
             textBox2.BackColor = Color.White;
             textBox3.BackColor = Color.White;
             textBox4.BackColor = Color.White;
+            comboBox1.BackColor = Color.White;
+
 
             MessageBox.Show("Modo de edição ativado. Agora pode alterar os seus dados e clicar na foto de perfil.");
         }
@@ -98,6 +110,56 @@ namespace PT_Readify
             {
                 // Se clicar e não estiver em modo de edição, não faz nada ou avisa
                 MessageBox.Show("Clique em 'Editar' para poder alterar a foto de perfil.");
+            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //botao de olho para esconder a password por segurança
+            if (modoEdicao) {
+                if (textBox3.UseSystemPasswordChar == true)
+                {
+                    textBox3.UseSystemPasswordChar = false;
+                    // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
+                    // pictureBox5.Image = Properties.Resources.eye_open; 
+                }
+                else
+                {
+                    textBox3.UseSystemPasswordChar = true;
+                    // pictureBox5.Image = Properties.Resources.key_icon;
+                }
+            }
+            else
+            {
+                // Mensagem caso o utilizador tente ver a pass sem estar a editar
+                MessageBox.Show("Para visualizar ou alterar a palavra-passe, clique primeiro em 'Editar'.",
+                                "Acesso Restrito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
         }
 
@@ -150,8 +212,9 @@ namespace PT_Readify
             if (houveAlteracao)
             {
                 // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
-                SalvarDadosNaBaseDeDados();
+                BLL.utilizador.updateUtilizador(globais.id_utilizador, textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")), int.Parse(textBox4.Text));
                 MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
             else
             {
@@ -172,6 +235,7 @@ namespace PT_Readify
             textBox2.ReadOnly = true;
             textBox3.ReadOnly = true;
             textBox4.ReadOnly = true;
+            
 
             // 5. Inverter a visibilidade dos botões
             button3.Visible = false;

@@ -40,7 +40,10 @@ namespace PT_Readify
 
         private void button1_Click(object sender, EventArgs e)
         {
+            globais.id_utilizador = 0;
             new Form1().Show();
+            this.Close();
+            
             
 
         }
@@ -83,7 +86,8 @@ namespace PT_Readify
 
         private void button2_Click(object sender, EventArgs e)
         {
-            new Perfil ().Show();   
+            new Perfil ().Show();
+            this.Close();
         }
     }
 }

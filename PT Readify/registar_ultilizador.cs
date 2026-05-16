@@ -66,7 +66,7 @@ namespace PT_Readify
                                 else
                                 {
                                     //registar utilizador
-                                    BLL.utilizador.insertutilizador(false, "ativa", textBox2.Text, textBox1.Text, textBox3.Text);
+                                    BLL.utilizador.insertutilizador(false, "ativa", textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")), int.Parse(textBox4.Text));
                                     MessageBox.Show("Utilizador (" + textBox1.Text + ") registado com sucesso!");
                                     this.Close();
                                 }
@@ -92,24 +92,11 @@ namespace PT_Readify
         {
             //-------------------NUMEROS DE TELEFONE---------------------
 
-            // Lista completa de prefixos da Europa
-            string[] prefixosEuropa = {
-            "+351 (Portugal)", "+34 (Espanha)", "+33 (França)", "+44 (Reino Unido)",
-            "+49 (Alemanha)", "+39 (Itália)", "+32 (Bélgica)", "+31 (Países Baixos)",
-            "+41 (Suíça)", "+43 (Áustria)", "+30 (Grécia)", "+353 (Irlanda)",
-            "+45 (Dinamarca)", "+46 (Suécia)", "+47 (Noruega)", "+358 (Finlândia)",
-            "+48 (Polónia)", "+420 (Chéquia)", "+36 (Hungria)", "+40 (Roménia)",
-            "+359 (Bulgária)", "+385 (Croácia)", "+421 (Eslováquia)", "+386 (Eslovénia)",
-              "+372 (Estónia)", "+371 (Letónia)", "+370 (Lituânia)", "+352 (Luxemburgo)",
-             "+356 (Malta)", "+357 (Chipre)", "+354 (Islândia)", "+376 (Andorra)",
-             "+378 (San Marino)", "+379 (Vaticano)", "+423 (Liechtenstein)", "+377 (Mónaco)"
-            };
-
             // Limpa itens antigos 
             comboBox1.Items.Clear();
 
             // Adiciona a lista ao ComboBox
-            comboBox1.Items.AddRange(prefixosEuropa);
+            comboBox1.Items.AddRange(globais.prefixosEuropa);
 
             // Define Portugal
             comboBox1.SelectedIndex = 0;
@@ -121,6 +108,11 @@ namespace PT_Readify
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
