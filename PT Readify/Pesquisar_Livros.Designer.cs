@@ -143,6 +143,8 @@ namespace PT_Readify
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLivros.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewLivros.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridViewLivros.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewLivros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLivros.Location = new System.Drawing.Point(12, 79);
             this.dataGridViewLivros.MultiSelect = false;

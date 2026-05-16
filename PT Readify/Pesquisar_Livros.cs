@@ -85,39 +85,121 @@ namespace PT_Readify
         {
             if (resultado == null) return;
 
-            dataGridViewLivros.AutoGenerateColumns = true;
-            dataGridViewLivros.DataSource = resultado;
+            dataGridViewLivros.AutoGenerateColumns = false;
+            dataGridViewLivros.DataSource = null;
+            dataGridViewLivros.Columns.Clear();
 
-            // Ocultar coluna Id (se existir)
-            string[] possibleIdNames = new[] { "Id_Livro", "ID", "Id" };
-            foreach (var name in possibleIdNames)
+            // Detectar nomes possíveis das colunas
+            string colTituloName = null;
+            if (resultado.Columns.Contains("Titulo")) colTituloName = "Titulo";
+            else if (resultado.Columns.Contains("Título")) colTituloName = "Título";
+            else if (resultado.Columns.Contains("Nome")) colTituloName = "Nome";
+
+            string colAutorName = null;
+            if (resultado.Columns.Contains("Autor")) colAutorName = "Autor";
+            else if (resultado.Columns.Contains("Author")) colAutorName = "Author";
+
+            string colCategoriaTextName = null;
+            if (resultado.Columns.Contains("Categoria")) colCategoriaTextName = "Categoria";
+            else if (resultado.Columns.Contains("Genero")) colCategoriaTextName = "Genero";
+            else if (resultado.Columns.Contains("Gênero")) colCategoriaTextName = "Gênero";
+
+            string colCategoriaIdName = null;
+            if (resultado.Columns.Contains("Id_Genero")) colCategoriaIdName = "Id_Genero";
+            else if (resultado.Columns.Contains("Id_Categoria")) colCategoriaIdName = "Id_Categoria";
+
+            string colEstadoTextName = null;
+            if (resultado.Columns.Contains("Estado")) colEstadoTextName = "Estado";
+
+            string colEstadoIdName = null;
+            if (resultado.Columns.Contains("Id_Estado_Livro")) colEstadoIdName = "Id_Estado_Livro";
+            else if (resultado.Columns.Contains("Id_Estado")) colEstadoIdName = "Id_Estado";
+
+            // Coluna Título / Nome
+            if (colTituloName != null)
             {
-                if (dataGridViewLivros.Columns.Contains(name))
+                var tituloCol = new DataGridViewTextBoxColumn
                 {
-                    dataGridViewLivros.Columns[name].Visible = false;
-                    break;
-                }
+                    Name = "colTitulo",
+                    HeaderText = "Título",
+                    DataPropertyName = colTituloName,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                };
+                dataGridViewLivros.Columns.Add(tituloCol);
             }
 
-            // Remover colunas antigas de estado para evitar duplicações/ligação incorreta
-            if (dataGridViewLivros.Columns.Contains("Estado"))
-                dataGridViewLivros.Columns.Remove("Estado");
-            if (dataGridViewLivros.Columns.Contains("Id_Estado_Livro"))
-                dataGridViewLivros.Columns.Remove("Id_Estado_Livro");
+            // Coluna Autor
+            if (colAutorName != null)
+            {
+                var autorCol = new DataGridViewTextBoxColumn
+                {
+                    Name = "colAutor",
+                    HeaderText = "Autor",
+                    DataPropertyName = colAutorName,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                };
+                dataGridViewLivros.Columns.Add(autorCol);
+            }
 
-            // Inserir ComboBox ligado à tabela de estados (por id -> mostra nome)
-            if (resultado.Columns.Contains("Id_Estado_Livro"))
+            // Coluna Categoria (Id -> Combo; texto -> TextBox)
+            if (colCategoriaIdName != null)
             {
                 try
                 {
-                    var estadosDt = BusinessLogicLayer.BLL.Livros.ObterEstadosTabela(); // DataTable limpo
+                    var generosDt = BusinessLogicLayer.BLL.Livros.ObterGeneros(); // pode lançar se não existir
+                    var bsGen = new BindingSource { DataSource = generosDt };
+
+                    var comboCat = new DataGridViewComboBoxColumn
+                    {
+                        Name = "Categoria",
+                        HeaderText = "Categoria",
+                        DataPropertyName = colCategoriaIdName,
+                        DataSource = bsGen,
+                        DisplayMember = "genero",
+                       
+                        FlatStyle = FlatStyle.Flat,
+                        DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+                    };
+                    dataGridViewLivros.Columns.Add(comboCat);
+                }
+                catch
+                {
+                    // fallback para coluna de texto se não for possível carregar tabela de gêneros
+                    var catTxt = new DataGridViewTextBoxColumn
+                    {
+                        Name = "Categoria",
+                        HeaderText = "Categoria",
+                        DataPropertyName = colCategoriaIdName,
+                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                    };
+                    dataGridViewLivros.Columns.Add(catTxt);
+                }
+            }
+            else if (colCategoriaTextName != null)
+            {
+                var catCol = new DataGridViewTextBoxColumn
+                {
+                    Name = "Categoria",
+                    HeaderText = "Categoria",
+                    DataPropertyName = colCategoriaTextName,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                };
+                dataGridViewLivros.Columns.Add(catCol);
+            }
+
+            // Coluna Estado (Id -> Combo baseado em tabela; texto -> Combo com lista de estados)
+            if (colEstadoIdName != null)
+            {
+                try
+                {
+                    var estadosDt = BusinessLogicLayer.BLL.Livros.ObterEstadosTabela();
                     var bs = new BindingSource { DataSource = estadosDt };
 
                     var comboCol = new DataGridViewComboBoxColumn
                     {
                         Name = "Estado",
                         HeaderText = "Estado",
-                        DataPropertyName = "Id_Estado_Livro",
+                        DataPropertyName = colEstadoIdName,
                         DataSource = bs,
                         DisplayMember = "estado",
                         ValueMember = "Id_Estado_Livro",
@@ -128,14 +210,21 @@ namespace PT_Readify
 
                     dataGridViewLivros.Columns.Add(comboCol);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show("Não foi possível carregar estados por id: " + ex.Message);
+                    // fallback: exibir id como texto
+                    var estadoTxt = new DataGridViewTextBoxColumn
+                    {
+                        Name = "Estado",
+                        HeaderText = "Estado",
+                        DataPropertyName = colEstadoIdName,
+                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                    };
+                    dataGridViewLivros.Columns.Add(estadoTxt);
                 }
             }
-            else if (resultado.Columns.Contains("Estado"))
+            else if (colEstadoTextName != null)
             {
-                // Se só existe texto 'Estado' no resultado: transformar em combo baseado em strings únicos
                 try
                 {
                     var estadosList = BusinessLogicLayer.BLL.Livros.ObterEstados().Select(s => s?.Trim()).Distinct().ToList();
@@ -143,16 +232,34 @@ namespace PT_Readify
                     {
                         Name = "Estado",
                         HeaderText = "Estado",
-                        DataPropertyName = "Estado",
+                        DataPropertyName = colEstadoTextName,
                         DataSource = estadosList,
                         FlatStyle = FlatStyle.Flat,
                         DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
                     };
                     dataGridViewLivros.Columns.Add(comboCol);
                 }
-                catch { /* fallback: manter coluna de texto */ }
+                catch
+                {
+                    // fallback para texto
+                    var estadoCol = new DataGridViewTextBoxColumn
+                    {
+                        Name = "Estado",
+                        HeaderText = "Estado",
+                        DataPropertyName = colEstadoTextName,
+                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                    };
+                    dataGridViewLivros.Columns.Add(estadoCol);
+                }
             }
 
+            // Se nenhuma coluna esperada foi adicionada, habilitar AutoGenerateColumns como fallback
+            if (dataGridViewLivros.Columns.Count == 0)
+            {
+                dataGridViewLivros.AutoGenerateColumns = true;
+            }
+
+            dataGridViewLivros.DataSource = resultado;
             dataGridViewLivros.Refresh();
         }
 
