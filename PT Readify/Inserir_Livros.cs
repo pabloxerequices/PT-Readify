@@ -72,5 +72,15 @@ namespace PT_Readify
                 MessageBox.Show("Livro inserido com sucesso!");
             }
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Imagens|*.jpg;*.png";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox1.Image = Image.FromFile(ofd.FileName);
+            }
+        }
     }
 }
