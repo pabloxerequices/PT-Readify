@@ -76,6 +76,7 @@ namespace PT_Readify
                 }
             }
 
+
             // Montar linhas com todas as colunas do DataRow
             table.SuspendLayout();
             table.Controls.Clear();
