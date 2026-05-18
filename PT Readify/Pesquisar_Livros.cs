@@ -20,6 +20,25 @@ namespace PT_Readify
             InicializarControles();
             CarregarDadosExemplo(); // ou carregue via BLL se preferir
             AplicarFiltro();
+
+            // Garantir que os eventos estão ligados em runtime (evita dupla inscrição)
+            dataGridViewLivros.CellDoubleClick -= DataGridViewLivros_CellDoubleClick;
+            dataGridViewLivros.CellDoubleClick += DataGridViewLivros_CellDoubleClick;
+
+            // Filtros: reagir a mudanças (registrar versões runtime é seguro)
+            // Designer já liga alguns eventos, mas manter aqui garante comportamento consistente
+            txtTitulo.TextChanged -= Filtro_TextChanged;
+            txtTitulo.TextChanged += Filtro_TextChanged;
+
+            txtAutor.TextChanged -= Filtro_TextChanged;
+            txtAutor.TextChanged += Filtro_TextChanged;
+
+            comboEstado.SelectedIndexChanged -= ComboEstado_SelectedIndexChanged;
+            comboEstado.SelectedIndexChanged += ComboEstado_SelectedIndexChanged;
+
+            // Usar o nome com maiúscula porque o Designer pode referenciar ClbCategoria_ItemCheck
+            clbCategoria.ItemCheck -= ClbCategoria_ItemCheck;
+            clbCategoria.ItemCheck += ClbCategoria_ItemCheck;
         }
 
         private void InicializarControles()
@@ -59,6 +78,35 @@ namespace PT_Readify
             {
                 MessageBox.Show("Erro ao carregar estados: " + ex.Message);
             }
+        }
+
+        // Chamado por TextChanged em título/autor
+        private void Filtro_TextChanged(object sender, EventArgs e)
+        {
+            AplicarFiltro();
+        }
+
+        private void ComboEstado_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AplicarFiltro();
+        }
+
+        // Handler legacy esperado pelo Designer (TextChanged / SelectedIndexChanged)
+        private void Filtro_Changed(object sender, EventArgs e)
+        {
+            AplicarFiltro();
+        }
+
+        // Handler com o nome que o Designer pode referenciar (ItemCheck) — ItemCheck ocorre antes da alteração, usamos BeginInvoke
+        private void ClbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            this.BeginInvoke(new Action(() => AplicarFiltro()));
+        }
+
+        // Mantém também o método com nome em lowercase (se existir referência em código antigo)
+        private void clbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            this.BeginInvoke(new Action(() => AplicarFiltro()));
         }
 
         private void AplicarFiltro()
@@ -136,161 +184,95 @@ namespace PT_Readify
                     Name = "colAutor",
                     HeaderText = "Autor",
                     DataPropertyName = colAutorName,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                    Width = 180,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(autorCol);
             }
 
-            // Coluna Categoria (Id -> Combo; texto -> TextBox)
-            if (colCategoriaIdName != null)
-            {
-                try
-                {
-                    var generosDt = BusinessLogicLayer.BLL.Livros.ObterGeneros(); // pode lançar se não existir
-                    var bsGen = new BindingSource { DataSource = generosDt };
-
-                    var comboCat = new DataGridViewComboBoxColumn
-                    {
-                        Name = "Categoria",
-                        HeaderText = "Categoria",
-                        DataPropertyName = colCategoriaIdName,
-                        DataSource = bsGen,
-                        DisplayMember = "genero",
-                       
-                        FlatStyle = FlatStyle.Flat,
-                        DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
-                    };
-                    dataGridViewLivros.Columns.Add(comboCat);
-                }
-                catch
-                {
-                    // fallback para coluna de texto se não for possível carregar tabela de gêneros
-                    var catTxt = new DataGridViewTextBoxColumn
-                    {
-                        Name = "Categoria",
-                        HeaderText = "Categoria",
-                        DataPropertyName = colCategoriaIdName,
-                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-                    };
-                    dataGridViewLivros.Columns.Add(catTxt);
-                }
-            }
-            else if (colCategoriaTextName != null)
+            // Coluna Categoria (texto)
+            if (colCategoriaTextName != null)
             {
                 var catCol = new DataGridViewTextBoxColumn
                 {
-                    Name = "Categoria",
+                    Name = "colCategoria",
                     HeaderText = "Categoria",
                     DataPropertyName = colCategoriaTextName,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                    Width = 140,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(catCol);
             }
 
-            // Coluna Estado (Id -> Combo baseado em tabela; texto -> Combo com lista de estados)
+            // Coluna Estado (texto)
+            if (colEstadoTextName != null)
+            {
+                var estadoCol = new DataGridViewTextBoxColumn
+                {
+                    Name = "colEstado",
+                    HeaderText = "Estado",
+                    DataPropertyName = colEstadoTextName,
+                    Width = 120,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                };
+                dataGridViewLivros.Columns.Add(estadoCol);
+            }
+
+            // Se houver colunas de id que sejam úteis, adicioná-las (ocultas)
+            if (colCategoriaIdName != null)
+            {
+                var idCat = new DataGridViewTextBoxColumn
+                {
+                    Name = "colIdCategoria",
+                    HeaderText = "IdCategoria",
+                    DataPropertyName = colCategoriaIdName,
+                    Visible = false
+                };
+                dataGridViewLivros.Columns.Add(idCat);
+            }
+
             if (colEstadoIdName != null)
             {
-                try
+                var idEst = new DataGridViewTextBoxColumn
                 {
-                    var estadosDt = BusinessLogicLayer.BLL.Livros.ObterEstadosTabela();
-                    var bs = new BindingSource { DataSource = estadosDt };
-
-                    var comboCol = new DataGridViewComboBoxColumn
-                    {
-                        Name = "Estado",
-                        HeaderText = "Estado",
-                        DataPropertyName = colEstadoIdName,
-                        DataSource = bs,
-                        DisplayMember = "estado",
-                        ValueMember = "Id_Estado_Livro",
-                        ValueType = typeof(int),
-                        FlatStyle = FlatStyle.Flat,
-                        DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
-                    };
-
-                    dataGridViewLivros.Columns.Add(comboCol);
-                }
-                catch
-                {
-                    // fallback: exibir id como texto
-                    var estadoTxt = new DataGridViewTextBoxColumn
-                    {
-                        Name = "Estado",
-                        HeaderText = "Estado",
-                        DataPropertyName = colEstadoIdName,
-                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-                    };
-                    dataGridViewLivros.Columns.Add(estadoTxt);
-                }
-            }
-            else if (colEstadoTextName != null)
-            {
-                try
-                {
-                    var estadosList = BusinessLogicLayer.BLL.Livros.ObterEstados().Select(s => s?.Trim()).Distinct().ToList();
-                    var comboCol = new DataGridViewComboBoxColumn
-                    {
-                        Name = "Estado",
-                        HeaderText = "Estado",
-                        DataPropertyName = colEstadoTextName,
-                        DataSource = estadosList,
-                        FlatStyle = FlatStyle.Flat,
-                        DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
-                    };
-                    dataGridViewLivros.Columns.Add(comboCol);
-                }
-                catch
-                {
-                    // fallback para texto
-                    var estadoCol = new DataGridViewTextBoxColumn
-                    {
-                        Name = "Estado",
-                        HeaderText = "Estado",
-                        DataPropertyName = colEstadoTextName,
-                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-                    };
-                    dataGridViewLivros.Columns.Add(estadoCol);
-                }
+                    Name = "colIdEstado",
+                    HeaderText = "IdEstado",
+                    DataPropertyName = colEstadoIdName,
+                    Visible = false
+                };
+                dataGridViewLivros.Columns.Add(idEst);
             }
 
-            // Se nenhuma coluna esperada foi adicionada, habilitar AutoGenerateColumns como fallback
-            if (dataGridViewLivros.Columns.Count == 0)
-            {
-                dataGridViewLivros.AutoGenerateColumns = true;
-            }
+            // Propriedades gerais da grid
+            dataGridViewLivros.ReadOnly = true;
+            dataGridViewLivros.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridViewLivros.MultiSelect = false;
+            dataGridViewLivros.AllowUserToAddRows = false;
+            dataGridViewLivros.AllowUserToDeleteRows = false;
 
+            // Associar o resultado (DataTable) como DataSource
             dataGridViewLivros.DataSource = resultado;
-            dataGridViewLivros.Refresh();
-        }
-
-        // Evento chamado quando se altera texto / estado
-        private void Filtro_Changed(object sender, EventArgs e)
-        {
-            AplicarFiltro();
-        }
-
-        // ItemCheck acontece antes do estado ser atualizado, por isso usamos BeginInvoke
-        private void clbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            this.BeginInvoke((MethodInvoker)(() => AplicarFiltro()));
-        }
-
-        private void btnLimpar_Click(object sender, EventArgs e)
-        {
-            txtTitulo.Clear();
-            txtAutor.Clear();
-            // desmarcar tudo e marcar "Todas"
-            for (int i = 0; i < clbCategoria.Items.Count; i++)
-                clbCategoria.SetItemChecked(i, false);
-            int idxTodas = clbCategoria.Items.IndexOf("Todas");
-            if (idxTodas >= 0) clbCategoria.SetItemChecked(idxTodas, true);
-
-            comboEstado.SelectedIndex = 0;
-            AplicarFiltro();
         }
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
+            AplicarFiltro();
+        }
+
+        // Limpa filtros e reaplica
+        private void btnLimpar_Click(object sender, EventArgs e)
+        {
+            txtTitulo.Text = string.Empty;
+            txtAutor.Text = string.Empty;
+
+            for (int i = 0; i < clbCategoria.Items.Count; i++)
+            {
+                clbCategoria.SetItemChecked(i, false);
+            }
+
+            if (comboEstado.Items.Count > 0)
+                comboEstado.SelectedIndex = 0;
+
             AplicarFiltro();
         }
 
@@ -311,6 +293,54 @@ namespace PT_Readify
         private void dataGridViewLivros_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        // Abre detalhes a partir do índice da linha
+        private void AbrirDetalhesDaLinha(int rowIndex)
+        {
+            if (rowIndex < 0) return;
+
+            DataRow rowToShow = null;
+
+            // Tentar obter DataRowView (binding normal de DataTable)
+            var drv = dataGridViewLivros.Rows[rowIndex].DataBoundItem as DataRowView;
+            if (drv != null)
+            {
+                rowToShow = drv.Row;
+            }
+            else
+            {
+                // Fallback: construir DataTable temporário com valores visíveis na grid
+                var dt = new DataTable("RowSnapshot");
+                foreach (DataGridViewColumn col in dataGridViewLivros.Columns)
+                {
+                    // usar header text como nome de coluna temporária
+                    dt.Columns.Add(col.HeaderText);
+                }
+                var newRow = dt.NewRow();
+                for (int i = 0; i < dataGridViewLivros.Columns.Count; i++)
+                {
+                    var val = dataGridViewLivros.Rows[rowIndex].Cells[i].Value;
+                    newRow[i] = val ?? DBNull.Value;
+                }
+                dt.Rows.Add(newRow);
+                rowToShow = dt.Rows[0];
+            }
+
+            if (rowToShow != null)
+            {
+                using (var detalhe = new Detalhes_Livro(rowToShow))
+                {
+                    detalhe.ShowDialog(this);
+                }
+            }
+        }
+
+        // Handler de duplo clique na linha — abre o formulário de detalhes
+        private void DataGridViewLivros_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            AbrirDetalhesDaLinha(e.RowIndex);
         }
     }
 }
