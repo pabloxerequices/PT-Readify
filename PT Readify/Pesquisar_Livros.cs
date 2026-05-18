@@ -13,6 +13,8 @@ namespace PT_Readify
         public Pesquisar_Livros()
         {
             InitializeComponent();
+            // Garantir que o evento está ligado mesmo que o Designer não o tenha feito
+            this.dataGridViewLivros.CellDoubleClick += DataGridViewLivros_CellDoubleClick;
         }
 
         private void Pesquisar_Livros_Load(object sender, EventArgs e)
@@ -311,6 +313,47 @@ namespace PT_Readify
         private void dataGridViewLivros_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        // Handler de duplo clique na linha — abre o formulário de detalhes
+        private void DataGridViewLivros_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataRow rowToShow = null;
+
+            // Tentar obter DataRowView (binding normal de DataTable)
+            var drv = dataGridViewLivros.Rows[e.RowIndex].DataBoundItem as DataRowView;
+            if (drv != null)
+            {
+                rowToShow = drv.Row;
+            }
+            else
+            {
+                // Fallback: construir DataTable temporário com valores visíveis na grid
+                var dt = new DataTable("RowSnapshot");
+                foreach (DataGridViewColumn col in dataGridViewLivros.Columns)
+                {
+                    // usar header text como nome de coluna temporária
+                    dt.Columns.Add(col.HeaderText);
+                }
+                var newRow = dt.NewRow();
+                for (int i = 0; i < dataGridViewLivros.Columns.Count; i++)
+                {
+                    var val = dataGridViewLivros.Rows[e.RowIndex].Cells[i].Value;
+                    newRow[i] = val ?? DBNull.Value;
+                }
+                dt.Rows.Add(newRow);
+                rowToShow = dt.Rows[0];
+            }
+
+            if (rowToShow != null)
+            {
+                using (var detalhe = new Detalhes_Livro(rowToShow))
+                {
+                    detalhe.ShowDialog(this);
+                }
+            }
         }
     }
 }
