@@ -212,7 +212,15 @@ namespace PT_Readify
             if (houveAlteracao)
             {
                 // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
-                BLL.utilizador.updateUtilizador(globais.id_utilizador, textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")), int.Parse(textBox4.Text));
+                BLL.utilizador.updateUtilizador(
+                    globais.id_utilizador,
+                    textBox2.Text,
+                    textBox1.Text,
+                    textBox3.Text,
+                    null, // Adicionado argumento para o parâmetro 'Foto'
+                    int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
+                    int.Parse(textBox4.Text)
+                );
                 MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }

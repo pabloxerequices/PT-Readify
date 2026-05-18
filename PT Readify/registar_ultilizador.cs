@@ -66,7 +66,16 @@ namespace PT_Readify
                                 else
                                 {
                                     //registar utilizador
-                                    BLL.utilizador.insertutilizador(false, "ativa", textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")), int.Parse(textBox4.Text));
+                                    BLL.utilizador.insertutilizador(
+                                        false,
+                                        "ativa",
+                                        textBox2.Text,
+                                        textBox1.Text,
+                                        textBox3.Text,
+                                        "", // Foto (campo obrigatório na assinatura do método)
+                                        int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")),
+                                        int.Parse(textBox4.Text)
+                                    );
                                     MessageBox.Show("Utilizador (" + textBox1.Text + ") registado com sucesso!");
                                     this.Close();
                                 }
