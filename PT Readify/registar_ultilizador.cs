@@ -30,7 +30,7 @@ namespace PT_Readify
             if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && textBox4.Text != "" && comboBox1.SelectedItem != null)
             {
                 //verificar se o email já existe
-                DataTable dt =  BLL.utilizador.QueryutilizadorByemail(textBox1.Text);
+                DataTable dt =  BLL.utilizador.QueryutilizadorByemail(textBox2.Text);
                 if (dt.Rows.Count == 0)
                 {
                     //verificar se a password tem mais de 6 caracteres
@@ -65,19 +65,31 @@ namespace PT_Readify
                                 }
                                 else
                                 {
-                                    //registar utilizador
-                                    BLL.utilizador.insertutilizador(
-                                        false,
-                                        "ativa",
-                                        textBox2.Text,
-                                        textBox1.Text,
-                                        textBox3.Text,
-                                        "", // Foto (campo obrigatório na assinatura do método)
-                                        int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")),
-                                        int.Parse(textBox4.Text)
-                                    );
-                                    MessageBox.Show("Utilizador (" + textBox1.Text + ") registado com sucesso!");
-                                    this.Close();
+                                    //verificar se o numero de telefone já existe
+                                    if (BLL.utilizador.Load().Select("prefixo_telefone = " + comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "") + " AND numero_telefone = " + textBox4.Text).Length > 0)
+                                    {
+                                        MessageBox.Show("Número de telefone já existe");
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        
+                                            //registar utilizador
+                                            BLL.utilizador.insertutilizador(
+                                                false,
+                                                "ativa",
+                                                textBox2.Text,
+                                                textBox1.Text,
+                                                textBox3.Text,
+
+                                                int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")),
+                                                int.Parse(textBox4.Text)
+                                            );
+                                            MessageBox.Show("Utilizador (" + textBox1.Text + ") registado com sucesso!");
+                                            this.Close();
+                                        
+                                    }
+                                    
                                 }
                                     
                             }
@@ -122,6 +134,11 @@ namespace PT_Readify
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
         }

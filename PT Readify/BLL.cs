@@ -36,7 +36,7 @@ namespace BusinessLogicLayer
                 return dal.executarReader("select * from utilizador where Email=@Email", sqlParams);
             }
             //registar utilizador
-            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe,string Foto, int prefixo_telefone, int numero_telefone)
+            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
@@ -45,12 +45,12 @@ namespace BusinessLogicLayer
                 new SqlParameter("@Email", Email),
                 new SqlParameter("@Nome", Nome),
                 new SqlParameter("@Palavra_Passe", Palavra_Passe),
-                new SqlParameter("@Foto", Foto),
+                
                 new SqlParameter("@prefixo_telefone", prefixo_telefone),
                 new SqlParameter("@numero_telefone", numero_telefone)
 
                 };
-                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador,Estado_Conta,Email,Nome,Palavra_Passe,Foto,prefixo_telefone,numero_telefone) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe,@Foto,@prefixo_telefone,@numero_telefone)", sqlParams);
+                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador, Estado_Conta, Email, Nome, Palavra_Passe, prefixo_telefone, numero_telefone) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe,@prefixo_telefone,@numero_telefone)", sqlParams);
             }
             static public DataTable queryUtilizadorById(int Id_Utilizador)
             {
@@ -61,19 +61,25 @@ namespace BusinessLogicLayer
                 return dal.executarReader("Select * from utilizador where Id_Utilizador=@Id_Utilizador", sqlParams);
             }
             //update utilizador (perfil editar)
-            static public int updateUtilizador(int Id_Utilizador,  string Email, string Nome, string Palavra_Passe,string Foto, int prefixo_telefone, int numero_telefone)
+            static public int updateUtilizador(int Id_Utilizador, string Email, string Nome, string Palavra_Passe, string Foto, int prefixo_telefone, int numero_telefone)
             {
                 DAL dal = new DAL();
-                SqlParameter[] sqlParams = new SqlParameter[]{
-                new SqlParameter("@Id_Utilizador", Id_Utilizador),
-                new SqlParameter("@Email", Email),
-                new SqlParameter("@Nome", Nome),
-                new SqlParameter("@Palavra_Passe", Palavra_Passe),
-                new SqlParameter("@Foto", Foto),
-                new SqlParameter("@prefixo_telefone", prefixo_telefone),
-                new SqlParameter("@numero_telefone", numero_telefone)
+                SqlParameter[] sqlParams = new SqlParameter[]
+                {
+        new SqlParameter("@Id_Utilizador", Id_Utilizador),
+        new SqlParameter("@Email", Email),
+        new SqlParameter("@Nome", Nome),
+        new SqlParameter("@Palavra_Passe", Palavra_Passe),
+        
+        // CORREÇÃO AQUI: Valida se a string da foto é nula ou vazia
+        new SqlParameter("@Foto", string.IsNullOrEmpty(Foto) ? (object)DBNull.Value : Foto),
+
+        new SqlParameter("@prefixo_telefone", prefixo_telefone),
+        new SqlParameter("@numero_telefone", numero_telefone)
                 };
-                return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe,[Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where [Id_Utilizador]=@Id_Utilizador", sqlParams);
+
+                // Executa a query de update que tens na linha 76
+                return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where [Id_Utilizador]=@Id_Utilizador", sqlParams);
             }
 
 

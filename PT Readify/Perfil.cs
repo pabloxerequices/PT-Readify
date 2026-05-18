@@ -211,17 +211,67 @@ namespace PT_Readify
 
             if (houveAlteracao)
             {
-                // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
-                BLL.utilizador.updateUtilizador(
-                    globais.id_utilizador,
-                    textBox2.Text,
-                    textBox1.Text,
-                    textBox3.Text,
-                    null, // Adicionado argumento para o parâmetro 'Foto'
-                    int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
-                    int.Parse(textBox4.Text)
-                );
-                MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //verificar se o numero de telefone é válido (apenas dígitos) e se tem 9 dígitos
+                if (!textBox4.Text.All(char.IsDigit))
+                {
+                    MessageBox.Show("Número de telefone inválido. Apenas dígitos são permitidos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else if (textBox4.Text.Length != 9)
+                {
+                    MessageBox.Show("Número de telefone inválido. Deve conter exatamente 9 dígitos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                    if (comboBox1.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Por favor, selecione um prefixo de telefone válido.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                     if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
+                {
+                    MessageBox.Show("Os campos Nome, Email e Palavra-Passe não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                     if (!textBox2.Text.Contains("@") || !textBox2.Text.Contains("."))
+                {
+                    MessageBox.Show("Endereço de email inválido. Certifique-se de que contém '@' e '.'.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                     if (textBox3.Text.Length < 6)
+                {
+                    MessageBox.Show("A palavra-passe deve conter pelo menos 6 caracteres.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else if (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch)))
+                {
+                    MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
+                    return;
+                }
+                else if (textBox3.Text.Contains(" "))
+                {
+                    MessageBox.Show("A password não pode conter espaços em branco");
+                    return;
+                }
+                else
+                {
+                    // Se tudo estiver válido, podemos atualizar os dados do utilizador
+                    // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
+                    BLL.utilizador.updateUtilizador(
+                                                    globais.id_utilizador,
+                                                    textBox2.Text,
+                                                    textBox1.Text,
+                                                    textBox3.Text,
+                                                    null, // Adicionado argumento para o parâmetro 'Foto'
+                                                    int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
+                                                    int.Parse(textBox4.Text)
+                                                );
+                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
 
             }
             else
