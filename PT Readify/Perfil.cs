@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,11 @@ namespace PT_Readify
     public partial class Perfil : Form
     {
         string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal;
+        byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
         bool modoEdicao = false;
+        byte[] fotoBytes = null;
 
-        
+
 
         public Perfil()
         {
@@ -54,6 +57,15 @@ namespace PT_Readify
             textBox2.Text = dt.Rows[0]["Email"].ToString();
             comboBox1.Text = dt.Rows[0]["prefixo_telefone"] + "+".ToString();
 
+            // Carregar a foto de perfil
+            if (dt.Rows[0]["Foto"] != DBNull.Value)
+            {
+                fotoBytes = (byte[])dt.Rows[0]["Foto"];
+                using (MemoryStream ms = new MemoryStream(fotoBytes))
+                {
+                    pictureBox6.Image = Image.FromStream(ms);
+                }
+            }
 
             textBox3.UseSystemPasswordChar = true;
             button3.Visible = false;
@@ -99,16 +111,21 @@ namespace PT_Readify
         {
             if (modoEdicao)
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Imagens|*.jpg;*.png";
-                if (ofd.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog ofd = new OpenFileDialog())
                 {
-                    pictureBox6.Image = Image.FromFile(ofd.FileName);
+                    ofd.Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
+
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        pictureBox6.Image = Image.FromFile(ofd.FileName);
+
+                        // 2. AQUI ELA JÁ VAI SER RECONHECIDA SEM ERRO
+                        fotoBytes = File.ReadAllBytes(ofd.FileName);
+                    }
                 }
             }
             else
             {
-                // Se clicar e não estiver em modo de edição, não faz nada ou avisa
                 MessageBox.Show("Clique em 'Editar' para poder alterar a foto de perfil.");
             }
         }
@@ -207,7 +224,9 @@ namespace PT_Readify
             bool houveAlteracao = (textBox1.Text != nomeOriginal ||
                                    textBox2.Text != emailOriginal ||
                                    textBox3.Text != passOriginal ||
-                                   textBox4.Text != telefoneOriginal);
+                                   textBox4.Text != telefoneOriginal ||
+                                      comboBox1.Text != prefixoOriginal ||
+                                      !fotoBytes.SequenceEqual(fotoOriginal ?? new byte[0]));
 
             if (houveAlteracao)
             {
@@ -222,12 +241,7 @@ namespace PT_Readify
                     MessageBox.Show("Número de telefone inválido. Deve conter exatamente 9 dígitos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else
-                    if (comboBox1.SelectedIndex == -1)
-                {
-                    MessageBox.Show("Por favor, selecione um prefixo de telefone válido.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+             
                 else
                      if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
                 {
@@ -265,7 +279,7 @@ namespace PT_Readify
                                                     textBox2.Text,
                                                     textBox1.Text,
                                                     textBox3.Text,
-                                                    null, // Adicionado argumento para o parâmetro 'Foto'
+                                                    fotoBytes, // <--- SUBSTÍTUIDO: Agora passa os bytes da foto (ou null se ele não escolheu nenhuma)
                                                     int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
                                                     int.Parse(textBox4.Text)
                                                 );
