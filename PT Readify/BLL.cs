@@ -61,7 +61,7 @@ namespace BusinessLogicLayer
                 return dal.executarReader("Select * from utilizador where Id_Utilizador=@Id_Utilizador", sqlParams);
             }
             //update utilizador (perfil editar)
-            static public int updateUtilizador(int Id_Utilizador, string Email, string Nome, string Palavra_Passe, string Foto, int prefixo_telefone, int numero_telefone)
+            static public int updateUtilizador(int Id_Utilizador, string Email, string Nome, string Palavra_Passe, object Foto, int prefixo_telefone, int numero_telefone)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]
@@ -71,15 +71,15 @@ namespace BusinessLogicLayer
         new SqlParameter("@Nome", Nome),
         new SqlParameter("@Palavra_Passe", Palavra_Passe),
         
-        // CORREÇÃO AQUI: Valida se a string da foto é nula ou vazia
-        new SqlParameter("@Foto", string.IsNullOrEmpty(Foto) ? (object)DBNull.Value : Foto),
+        // Forçamos o ADO.NET a enviar o parâmetro com o tipo correto para a BD (Image)
+        new SqlParameter("@Foto", SqlDbType.Image) { Value = Foto ?? (object)DBNull.Value },
 
         new SqlParameter("@prefixo_telefone", prefixo_telefone),
         new SqlParameter("@numero_telefone", numero_telefone)
                 };
 
                 // Executa a query de update que tens na linha 76
-                return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where [Id_Utilizador]=@Id_Utilizador", sqlParams);
+                return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where Id_Utilizador=@Id_Utilizador", sqlParams);
             }
 
 
