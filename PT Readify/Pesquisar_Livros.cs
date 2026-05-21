@@ -152,9 +152,9 @@ namespace PT_Readify
             else if (resultado.Columns.Contains("Genero")) colCategoriaTextName = "Genero";
             else if (resultado.Columns.Contains("Gênero")) colCategoriaTextName = "Gênero";
 
-            string colCategoriaIdName = null;
-            if (resultado.Columns.Contains("Id_Genero")) colCategoriaIdName = "Id_Genero";
-            else if (resultado.Columns.Contains("Id_Categoria")) colCategoriaIdName = "Id_Categoria";
+            string colGeneroIdName = null;
+            if (resultado.Columns.Contains("Id_Genero")) colGeneroIdName = "Id_Genero";
+            else if (resultado.Columns.Contains("Genero_Id")) colGeneroIdName = "Genero_Id";
 
             string colEstadoTextName = null;
             if (resultado.Columns.Contains("Estado")) colEstadoTextName = "Estado";
@@ -171,7 +171,8 @@ namespace PT_Readify
                     Name = "colTitulo",
                     HeaderText = "Título",
                     DataPropertyName = colTituloName,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                    Width = 70,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(tituloCol);
             }
@@ -184,7 +185,7 @@ namespace PT_Readify
                     Name = "colAutor",
                     HeaderText = "Autor",
                     DataPropertyName = colAutorName,
-                    Width = 180,
+                    Width = 70,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(autorCol);
@@ -198,7 +199,7 @@ namespace PT_Readify
                     Name = "colCategoria",
                     HeaderText = "Categoria",
                     DataPropertyName = colCategoriaTextName,
-                    Width = 140,
+                    Width = 70,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(catCol);
@@ -212,21 +213,22 @@ namespace PT_Readify
                     Name = "colEstado",
                     HeaderText = "Estado",
                     DataPropertyName = colEstadoTextName,
-                    Width = 120,
+                    Width = 70,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(estadoCol);
             }
 
             // Se houver colunas de id que sejam úteis, adicioná-las (ocultas)
-            if (colCategoriaIdName != null)
+            if (colGeneroIdName != null)
             {
                 var idCat = new DataGridViewTextBoxColumn
                 {
-                    Name = "colIdCategoria",
-                    HeaderText = "IdCategoria",
-                    DataPropertyName = colCategoriaIdName,
-                    Visible = false
+                    Name = "colIdGenero",
+                    HeaderText = "Categoria",
+                    DataPropertyName = colGeneroIdName,
+                    Width = 70,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(idCat);
             }
@@ -236,9 +238,10 @@ namespace PT_Readify
                 var idEst = new DataGridViewTextBoxColumn
                 {
                     Name = "colIdEstado",
-                    HeaderText = "IdEstado",
+                    HeaderText = "Estado",
                     DataPropertyName = colEstadoIdName,
-                    Visible = false
+                    Width = 70,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(idEst);
             }
