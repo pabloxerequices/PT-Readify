@@ -72,9 +72,9 @@
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(47, 482);
+            this.button5.Location = new System.Drawing.Point(26, 621);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(176, 54);
+            this.button5.Size = new System.Drawing.Size(216, 54);
             this.button5.TabIndex = 20;
             this.button5.Text = "Reservas";
             this.button5.UseVisualStyleBackColor = true;
@@ -82,9 +82,9 @@
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(47, 413);
+            this.button4.Location = new System.Drawing.Point(26, 552);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(176, 54);
+            this.button4.Size = new System.Drawing.Size(216, 54);
             this.button4.TabIndex = 19;
             this.button4.Text = "Requisições/Empréstimos";
             this.button4.UseVisualStyleBackColor = true;
@@ -103,9 +103,9 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(47, 344);
+            this.button3.Location = new System.Drawing.Point(26, 483);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(176, 54);
+            this.button3.Size = new System.Drawing.Size(216, 54);
             this.button3.TabIndex = 18;
             this.button3.Text = "Livros";
             this.button3.UseVisualStyleBackColor = true;

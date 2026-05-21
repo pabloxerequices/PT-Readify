@@ -73,6 +73,16 @@
     <Compile Include="Inserir_Livros.Designer.cs">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
     </Compile>
+    <Compile Include="Listar utilizadores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Listar utilizadores.Designer.cs">
+      <DependentUpon>Listar utilizadores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="listar_utilizadores.cs" />
+    <Compile Include="listar_utilizadores.Designer.cs">
+      <DependentUpon>listar_utilizadores.cs</DependentUpon>
+    </Compile>
     <Compile Include="livros.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +121,12 @@
     <Compile Include="registar_ultilizador.Designer.cs">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </Compile>
+    <Compile Include="Requesitar livros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Requesitar livros.Designer.cs">
+      <DependentUpon>Requesitar livros.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Detalhes_Livro.resx">
       <DependentUpon>Detalhes_Livro.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inserir_Livros.resx">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listar utilizadores.resx">
+      <DependentUpon>Listar utilizadores.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="livros.resx">
       <DependentUpon>livros.cs</DependentUpon>
