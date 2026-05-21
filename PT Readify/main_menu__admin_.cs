@@ -30,7 +30,7 @@ namespace PT_Readify
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            new Listar_utilizadores().Show();
         }
     }
 }
