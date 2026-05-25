@@ -18,6 +18,15 @@ namespace BusinessLogicLayer
         //--------------------------UTILIZADOR-------------------------
         public class utilizador
         {
+            //load utilizador por id
+                static public DataTable LoadById(int Id_Utilizador)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                    new SqlParameter("@Id_Utilizador", Id_Utilizador)
+                };
+                return dal.executarReader("select * from utilizador where Id_Utilizador=@Id_Utilizador", sqlParams);
+            }
             //load utilizador
             static public DataTable Load()
             {
