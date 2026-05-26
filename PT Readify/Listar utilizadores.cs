@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -24,12 +25,36 @@ namespace PT_Readify
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Carregar a foto de perfil
+            if (dataGridView1.CurrentRow.Cells["foto"].Value != DBNull.Value)
+            {
+                byte[] fotoBytes = (byte[])dataGridView1.CurrentRow.Cells["foto"].Value;
+                using (MemoryStream ms = new MemoryStream(fotoBytes))
+                {
+                    pictureBox6.Image = Image.FromStream(ms);
+                }
+            }
+            else
+            {
+                pictureBox6.Image = null; // Ou uma imagem padrão, se preferir
+            }
             textBox1.Text = dataGridView1.CurrentRow.Cells["nome"].Value.ToString();
             textBox2.Text = dataGridView1.CurrentRow.Cells["email"].Value.ToString();
             textBox3.Text = dataGridView1.CurrentRow.Cells["palavra_passe"].Value.ToString();
-            textBox4.Text = dataGridView1.CurrentRow.Cells["telefone"].Value.ToString();
+            textBox4.Text = dataGridView1.CurrentRow.Cells["numero_telefone"].Value.ToString();
                 comboBox1.Text = "+" + dataGridView1.CurrentRow.Cells["prefixo_telefone"].Value.ToString();
-            comboBox2.Text = dataGridView1.CurrentRow.Cells["Estado_"].Value.ToString();
+            comboBox2.Text = dataGridView1.CurrentRow.Cells["Estado_Conta"].Value.ToString();
+            checkBox1.Checked = (bool)dataGridView1.CurrentRow.Cells["tipo_utilizador"].Value;
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
 
         }
 
@@ -136,6 +161,9 @@ namespace PT_Readify
             textBox2.ReadOnly = true;
             textBox3.ReadOnly = true;
             textBox4.ReadOnly = true;
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+                checkBox1.Enabled = false;
 
 
             // 5. Inverter a visibilidade dos botões
@@ -166,7 +194,9 @@ namespace PT_Readify
             textBox2.ReadOnly = false; // Campo Email
             textBox3.ReadOnly = false; // Campo Palavra-Passe
             textBox4.ReadOnly = false; // Campo Telefone
-            comboBox1.Enabled = true; // Campo Prefixo de Telefone
+            comboBox1.Enabled = true;
+            comboBox2.Enabled = true;
+            checkBox1.Enabled = true;
 
             // 4. Feedback visual (Opcional: mudar a cor de fundo para indicar que é editável)
             textBox1.BackColor = Color.White;

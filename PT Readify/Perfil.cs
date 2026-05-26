@@ -69,6 +69,7 @@ namespace PT_Readify
 
             textBox3.UseSystemPasswordChar = true;
             button3.Visible = false;
+            comboBox1.Items.AddRange(globais.prefixosEuropa);
         }
 
         private void button1_Click(object sender, EventArgs e)
