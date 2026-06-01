@@ -201,10 +201,6 @@ namespace PT_Readify
             string colEstadoTextName = null;
             if (finalResult.Columns.Contains("Estado")) colEstadoTextName = "Estado";
 
-            string colEstadoIdName = null;
-            if (finalResult.Columns.Contains("Id_Estado_Livro")) colEstadoIdName = "Id_Estado_Livro";
-            else if (finalResult.Columns.Contains("Id_Estado")) colEstadoIdName = "Id_Estado";
-
             // Coluna Título / Nome
             if (colTituloName != null)
             {
@@ -213,7 +209,7 @@ namespace PT_Readify
                     Name = "colTitulo",
                     HeaderText = "Título",
                     DataPropertyName = colTituloName,
-                    Width = 70,
+                    Width = 400,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(tituloCol);
@@ -227,7 +223,7 @@ namespace PT_Readify
                     Name = "colAutor",
                     HeaderText = "Autor",
                     DataPropertyName = colAutorName,
-                    Width = 70,
+                    Width = 400,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(autorCol);
@@ -241,7 +237,7 @@ namespace PT_Readify
                     Name = "colCategoria",
                     HeaderText = "Categoria",
                     DataPropertyName = colCategoriaTextName,
-                    Width = 70,
+                    Width = 400,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(catCol);
@@ -255,23 +251,10 @@ namespace PT_Readify
                     Name = "colEstado",
                     HeaderText = "Estado",
                     DataPropertyName = colEstadoTextName,
-                    Width = 70,
+                    Width = 400,
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                 };
                 dataGridViewLivros.Columns.Add(estadoCol);
-            }
-
-            if (colEstadoIdName != null)
-            {
-                var idEst = new DataGridViewTextBoxColumn
-                {
-                    Name = "colIdEstado",
-                    HeaderText = "Estado",
-                    DataPropertyName = colEstadoIdName,
-                    Width = 70,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-                };
-                dataGridViewLivros.Columns.Add(idEst);
             }
 
             // Propriedades gerais da grid

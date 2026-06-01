@@ -19,7 +19,7 @@ namespace BusinessLogicLayer
         public class utilizador
         {
             //load utilizador por id
-                static public DataTable LoadById(int Id_Utilizador)
+            static public DataTable LoadById(int Id_Utilizador)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
@@ -45,7 +45,7 @@ namespace BusinessLogicLayer
                 return dal.executarReader("select * from utilizador where Email=@Email", sqlParams);
             }
             //registar utilizador
-            static public int insertutilizador(bool Tipo_Utilizador,string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
+            static public int insertutilizador(bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
@@ -54,7 +54,7 @@ namespace BusinessLogicLayer
                 new SqlParameter("@Email", Email),
                 new SqlParameter("@Nome", Nome),
                 new SqlParameter("@Palavra_Passe", Palavra_Passe),
-                
+
                 new SqlParameter("@prefixo_telefone", prefixo_telefone),
                 new SqlParameter("@numero_telefone", numero_telefone)
 
@@ -109,7 +109,7 @@ namespace BusinessLogicLayer
             }
 
 
-            }
+        }
 
         //---------------------------------------------------------------
 
@@ -128,7 +128,7 @@ namespace BusinessLogicLayer
                 new SqlParameter("@nome", nome),
                 new SqlParameter("@morada", morada),
                 new SqlParameter("@telefone", telefone)
-				};
+                };
 
                 return dal.executarNonQuery("INSERT into Clientes (Nome,Morada,Telefone) VALUES(@nome,@morada,@telefone)", sqlParams);
             }
@@ -177,11 +177,11 @@ namespace BusinessLogicLayer
 
             };
                 return dal.executarNonQuery("Delete From Clientes WHERE[id]=@id", sqlParams);
-            }		 
+            }
 
         }
-		
-		public class Imagem
+
+        public class Imagem
         {
             static public object loadpic()
             {
@@ -223,8 +223,9 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-                static public void InserirLivro( int paginas,string nome, string bio,int preço,DateTime ano,string autor,string estado_livro,string editora, string idioma,Image capa, List<string> generos, List<string> tipos)
-            {                 DAL dal = new DAL();
+            static public void InserirLivro(int paginas, string nome, string bio, int preço, DateTime ano, string autor, string estado_livro, string editora, string idioma, Image capa, List<string> generos, List<string> tipos)
+            {
+                DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
                     new SqlParameter("@Quantas_Paginas", paginas),
                     new SqlParameter("@Nome", nome),
@@ -310,10 +311,16 @@ namespace BusinessLogicLayer
             {
                 DAL dal = new DAL();
 
-                string sql = "SELECT L.* FROM Livro L " +
-                             "LEFT JOIN Livro_Genero LG ON L.Id_Livro = LG.Id_Livro " +
-                             "LEFT JOIN Genero G ON LG.Id_Genero = G.Id_Genero " +
-                             "LEFT JOIN Estado_Livro EL ON L.Id_Estado_Livro = EL.Id_Estado_Livro ";
+                string sql = @" SELECT L.*, EL.estado AS Estado,
+                 STUFF((
+                 SELECT ', ' + G2.Categoria
+                 FROM Livro_Genero LG2
+                 INNER JOIN Genero G2 ON LG2.Id_Genero = G2.Id_Genero
+                 WHERE LG2.Id_Livro = L.Id_Livro
+                 FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
+                 ,1,2,'') AS Categoria
+                 FROM Livro L
+                 LEFT JOIN Estado_Livro EL ON L.Id_Estado_Livro = EL.Id_Estado_Livro ";
 
                 var whereClauses = new List<string>();
                 var parameters = new List<SqlParameter>();
@@ -341,13 +348,15 @@ namespace BusinessLogicLayer
                     }
 
                     if (inParams.Count > 0)
-                        whereClauses.Add("G.Categoria IN (" + string.Join(", ", inParams) + ")");
+                    {
+                        // Filtrar livros que têm pelo menos um dos géneros selecionados
+                        whereClauses.Add("EXISTS (SELECT 1 FROM Livro_Genero LGf INNER JOIN Genero Gf ON LGf.Id_Genero = Gf.Id_Genero WHERE LGf.Id_Livro = L.Id_Livro AND Gf.Categoria IN (" + string.Join(", ", inParams) + "))");
+                    }
                 }
 
-                // CORREÇÃO: comparar pelo nome na tabela Estado_Livro (EL.estado)
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
-                    whereClauses.Add("EL.Estado = @estado");
+                    whereClauses.Add("EL.estado = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
 
