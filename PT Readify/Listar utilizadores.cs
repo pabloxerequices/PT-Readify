@@ -9,10 +9,11 @@ namespace PT_Readify
 {
     public partial class Listar_utilizadores : Form
     {
-        string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal;
+        string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal, estadoContaOriginal, tipoUtilizadorOriginal;
         byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
         bool modoEdicao = false;
         byte[] fotoBytes = null;
+        
         public Listar_utilizadores()
         {
             InitializeComponent();
@@ -80,6 +81,8 @@ namespace PT_Readify
                                    textBox3.Text != passOriginal ||
                                    textBox4.Text != telefoneOriginal ||
                                       comboBox1.Text != prefixoOriginal ||
+                                        comboBox2.Text != estadoContaOriginal ||
+                                        checkBox1.Checked.ToString() != tipoUtilizadorOriginal ||
                                       !fotoBytes.SequenceEqual(fotoOriginal ?? new byte[0]));
 
             if (houveAlteracao)
@@ -128,14 +131,22 @@ namespace PT_Readify
                 {
                     // Se tudo estiver válido, podemos atualizar os dados do utilizador
                     // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
-                    BLL.utilizador.updateUtilizador(
-                                                    globais.id_utilizador,
-                                                    textBox2.Text,
-                                                    textBox1.Text,
-                                                    textBox3.Text,
-                                                    fotoBytes, // <--- SUBSTÍTUIDO: Agora passa os bytes da foto (ou null se ele não escolheu nenhuma)
-                                                    int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
-                                                    int.Parse(textBox4.Text)
+                    BLL.utilizador.updateutilizadoradmin(int.Parse(dataGridView1.CurrentRow.Cells["Id_Utilizador"].Value.ToString()),
+                        checkBox1.Checked, // Tipo_Utilizador
+                        comboBox2.Text, // Estado_Conta
+                        textBox2.Text, // Email
+                        textBox1.Text, // Nome
+                        textBox3.Text, // Palavra_Passe
+                        
+                        int.Parse(comboBox1.Text.Replace("+", "")), // Prefixo do telefone (removendo o "+")
+                        int.Parse(textBox4.Text), // Número de telefone
+                        pictureBox6.Image != null ? (byte[])dataGridView1.CurrentRow.Cells["foto"].Value : null // Foto (se houver)
+
+
+
+
+
+
                                                 );
                     MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
