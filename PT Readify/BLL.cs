@@ -223,7 +223,7 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-            static public void InserirLivro(int paginas, string nome, string bio, int preço, DateTime ano, string autor, string estado_livro, string editora, string idioma, Image capa, List<string> generos, List<string> tipos)
+            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, Image capa, List<string> generos, List<string> tipos)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
