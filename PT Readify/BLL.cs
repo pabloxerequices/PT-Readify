@@ -90,9 +90,26 @@ namespace BusinessLogicLayer
                 // Executa a query de update que tens na linha 76
                 return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where Id_Utilizador=@Id_Utilizador", sqlParams);
             }
+            static public int updateutilizadoradmin(int Id_Utilizador, bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]
+                { new SqlParameter("@Id_Utilizador", Id_Utilizador),
+                new SqlParameter("@Tipo_Utilizador", Tipo_Utilizador),
+                new SqlParameter("@Estado_Conta", Estado_Conta),
+                new SqlParameter("@Email", Email),
+                new SqlParameter("@Nome", Nome),
+                new SqlParameter("@Palavra_Passe", Palavra_Passe),
+                new SqlParameter("@prefixo_telefone", prefixo_telefone),
+                new SqlParameter("@numero_telefone", numero_telefone),
+                new SqlParameter("@Foto", DBNull.Value)
+
+                };
+                return dal.executarNonQuery("update [utilizador] set [Tipo_Utilizador]=@Tipo_Utilizador, [Estado_Conta]=@Estado_Conta, [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone, [Foto]=@Foto where Id_Utilizador=@Id_Utilizador", sqlParams);
+            }
 
 
-        }
+            }
 
         //---------------------------------------------------------------
 
@@ -151,6 +168,7 @@ namespace BusinessLogicLayer
             };
                 return dal.executarNonQuery("update [Clientes] set [nome]=@nome, [morada]=@morada, [telefone]=@telefone where [id]=@id", sqlParams);
             }
+
             static public int deleteCliente(string id)
             {
                 DAL dal = new DAL();
