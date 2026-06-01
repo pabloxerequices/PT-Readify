@@ -127,29 +127,22 @@ namespace PT_Readify
                     MessageBox.Show("A password não pode conter espaços em branco");
                     return;
                 }
-                //else
-                //{
-                //    // Se tudo estiver válido, podemos atualizar os dados do utilizador
-                //    // Se algo mudou, gravamos na base de dados (Referência: image_8665bc.png)
-                //    BLL.utilizador.updateutilizadoradmin(int.Parse(dataGridView1.CurrentRow.Cells["Id_Utilizador"].Value.ToString()),
-                //        checkBox1.Checked, // Tipo_Utilizador
-                //        comboBox2.Text, // Estado_Conta
-                //        textBox2.Text, // Email
-                //        textBox1.Text, // Nome
-                //        textBox3.Text, // Palavra_Passe
+                else
+                {
+                    
+                    BLL.utilizador.updateutilizadoradmin(int.Parse(dataGridView1.CurrentRow.Cells["Id_Utilizador"].Value.ToString()),
+                        checkBox1.Checked, // Tipo_Utilizador
+                        comboBox2.Text, // Estado_Conta
+                        textBox2.Text, // Email
+                        textBox1.Text, // Nome
+                        textBox3.Text, // Palavra_Passe
 
-                //    int.Parse(comboBox1.Text.Replace("+", "")), // Prefixo do telefone (removendo o "+")
-                //        int.Parse(textBox4.Text), // Número de telefone
-                //        pictureBox6.Image != null ? (byte[])dataGridView1.CurrentRow.Cells["foto"].Value : null // Foto (se houver)
-
-
-
-
-
-
-                //                                );
-                //    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //}
+                    int.Parse(comboBox1.Text.Replace("+", "")), // Prefixo do telefone (removendo o "+")
+                        int.Parse(textBox4.Text) // Número de telefone
+                        
+                            );
+                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
 
             }
