@@ -133,35 +133,77 @@ namespace PT_Readify
         {
             if (resultado == null) return;
 
-            dataGridViewLivros.AutoGenerateColumns = false;
-            dataGridViewLivros.DataSource = null;
-            dataGridViewLivros.Columns.Clear();
-
-            // Detectar nomes possíveis das colunas
-            string colTituloName = null;
-            if (resultado.Columns.Contains("Titulo")) colTituloName = "Titulo";
-            else if (resultado.Columns.Contains("Título")) colTituloName = "Título";
-            else if (resultado.Columns.Contains("Nome")) colTituloName = "Nome";
-
-            string colAutorName = null;
-            if (resultado.Columns.Contains("Autor")) colAutorName = "Autor";
-            else if (resultado.Columns.Contains("Author")) colAutorName = "Author";
+            // Se a query retornar múltiplas linhas por livro (um género por linha),
+            // agregamos aqui por Id do livro concatenando as categorias numa só célula.
+            string idColName = null;
+            if (resultado.Columns.Contains("Id_Livro")) idColName = "Id_Livro";
+            else if (resultado.Columns.Contains("ID")) idColName = "ID";
+            else if (resultado.Columns.Contains("Id")) idColName = "Id";
 
             string colCategoriaTextName = null;
             if (resultado.Columns.Contains("Categoria")) colCategoriaTextName = "Categoria";
             else if (resultado.Columns.Contains("Genero")) colCategoriaTextName = "Genero";
             else if (resultado.Columns.Contains("Gênero")) colCategoriaTextName = "Gênero";
 
-            string colGeneroIdName = null;
-            if (resultado.Columns.Contains("Id_Genero")) colGeneroIdName = "Id_Genero";
-            else if (resultado.Columns.Contains("Genero_Id")) colGeneroIdName = "Genero_Id";
+            DataTable finalResult = resultado;
+
+            if (!string.IsNullOrEmpty(idColName) && !string.IsNullOrEmpty(colCategoriaTextName))
+            {
+                var groups = resultado.AsEnumerable().GroupBy(r => r[idColName] ?? DBNull.Value);
+                bool needsAggregation = groups.Any(g => g.Count() > 1);
+                if (needsAggregation)
+                {
+                    finalResult = resultado.Clone(); // mantém schema
+                    foreach (var g in groups)
+                    {
+                        var newRow = finalResult.NewRow();
+                        foreach (DataColumn col in resultado.Columns)
+                        {
+                            if (col.ColumnName == colCategoriaTextName)
+                            {
+                                var vals = g.Select(r => r[colCategoriaTextName]?.ToString())
+                                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                                            .Distinct();
+                                newRow[colCategoriaTextName] = string.Join(", ", vals);
+                            }
+                            else
+                            {
+                                var first = g.Select(r => r[col.ColumnName]).FirstOrDefault(x => x != DBNull.Value);
+                                newRow[col.ColumnName] = first ?? DBNull.Value;
+                            }
+                        }
+                        finalResult.Rows.Add(newRow);
+                    }
+                }
+            }
+
+            dataGridViewLivros.AutoGenerateColumns = false;
+            dataGridViewLivros.DataSource = null;
+            dataGridViewLivros.Columns.Clear();
+
+            // Detectar nomes possíveis das colunas (usar finalResult)
+            string colTituloName = null;
+            if (finalResult.Columns.Contains("Titulo")) colTituloName = "Titulo";
+            else if (finalResult.Columns.Contains("Título")) colTituloName = "Título";
+            else if (finalResult.Columns.Contains("Nome")) colTituloName = "Nome";
+
+            string colAutorName = null;
+            if (finalResult.Columns.Contains("Autor")) colAutorName = "Autor";
+            else if (finalResult.Columns.Contains("Author")) colAutorName = "Author";
+
+            if (string.IsNullOrEmpty(colCategoriaTextName))
+            {
+                if (finalResult.Columns.Contains("Categoria")) colCategoriaTextName = "Categoria";
+                else if (finalResult.Columns.Contains("Genero")) colCategoriaTextName = "Genero";
+                else if (finalResult.Columns.Contains("Gênero")) colCategoriaTextName = "Gênero";
+            }
 
             string colEstadoTextName = null;
-            if (resultado.Columns.Contains("Estado")) colEstadoTextName = "Estado";
+            if (finalResult.Columns.Contains("Estado")) colEstadoTextName = "Estado";
 
             string colEstadoIdName = null;
-            if (resultado.Columns.Contains("Id_Estado_Livro")) colEstadoIdName = "Id_Estado_Livro";
-            else if (resultado.Columns.Contains("Id_Estado")) colEstadoIdName = "Id_Estado";
+            if (finalResult.Columns.Contains("Id_Estado_Livro")) colEstadoIdName = "Id_Estado_Livro";
+            else if (finalResult.Columns.Contains("Id_Estado")) colEstadoIdName = "Id_Estado";
 
             // Coluna Título / Nome
             if (colTituloName != null)
@@ -219,20 +261,6 @@ namespace PT_Readify
                 dataGridViewLivros.Columns.Add(estadoCol);
             }
 
-            // Se houver colunas de id que sejam úteis, adicioná-las (ocultas)
-            if (colGeneroIdName != null)
-            {
-                var idCat = new DataGridViewTextBoxColumn
-                {
-                    Name = "colIdGenero",
-                    HeaderText = "Categoria",
-                    DataPropertyName = colGeneroIdName,
-                    Width = 70,
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-                };
-                dataGridViewLivros.Columns.Add(idCat);
-            }
-
             if (colEstadoIdName != null)
             {
                 var idEst = new DataGridViewTextBoxColumn
@@ -254,7 +282,7 @@ namespace PT_Readify
             dataGridViewLivros.AllowUserToDeleteRows = false;
 
             // Associar o resultado (DataTable) como DataSource
-            dataGridViewLivros.DataSource = resultado;
+            dataGridViewLivros.DataSource = finalResult;
         }
 
         private void btnPesquisar_Click(object sender, EventArgs e)
