@@ -58,6 +58,11 @@
     </Compile>
     <Compile Include="Criar ultilizadores%28admin%29.Designer.cs">
       <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
+    <Compile Include="Carrinho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Carrinho.Designer.cs">
+      <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL.cs" />
     <Compile Include="Detalhes_Livro.cs">
@@ -171,6 +176,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="registar_ultilizador.resx">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
@@ -188,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\carrinho-carrinho.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
