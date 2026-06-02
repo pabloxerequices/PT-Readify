@@ -49,6 +49,13 @@ namespace PT_Readify
 
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            main_menu__admin_ mainMenuAdmin = new main_menu__admin_();
+            mainMenuAdmin.Show();
+            this.Hide();
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -56,7 +63,25 @@ namespace PT_Readify
 
         private void pictureBox6_Click(object sender, EventArgs e)
         {
+            if (modoEdicao)
+            {
+                using (OpenFileDialog ofd = new OpenFileDialog())
+                {
+                    ofd.Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
 
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        pictureBox6.Image = Image.FromFile(ofd.FileName);
+
+                        // 2. AQUI ELA JÁ VAI SER RECONHECIDA SEM ERRO
+                        fotoBytes = File.ReadAllBytes(ofd.FileName);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Clique em 'Editar' para poder alterar a foto de perfil.");
+            }
         }
 
         private void Listar_utilizadores_Load(object sender, EventArgs e)
@@ -64,7 +89,7 @@ namespace PT_Readify
             // Carregar os dados do utilizador selecionado na datagrifview para os TextBoxes
             dataGridView1.DataSource = BLL.utilizador.Load();
 
-
+            comboBox1.Items.AddRange(globais.prefixosEuropa);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -137,11 +162,14 @@ namespace PT_Readify
                         textBox1.Text, // Nome
                         textBox3.Text, // Palavra_Passe
 
+
                     int.Parse(comboBox1.Text.Replace("+", "")), // Prefixo do telefone (removendo o "+")
                         int.Parse(textBox4.Text) // Número de telefone
-                        
+                        , fotoBytes
+
                             );
                     MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                 }
 
 
@@ -173,6 +201,9 @@ namespace PT_Readify
             // 5. Inverter a visibilidade dos botões
             button3.Visible = false;
             button1.Visible = true;
+
+            //recarregar os dados para atualizar a datagridview
+            dataGridView1.DataSource = BLL.utilizador.Load();
         }
 
         private void button1_Click(object sender, EventArgs e)

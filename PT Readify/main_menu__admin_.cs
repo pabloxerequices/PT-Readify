@@ -31,6 +31,13 @@ namespace PT_Readify
         private void button4_Click(object sender, EventArgs e)
         {
             new Listar_utilizadores().Show();
+            this.Hide();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            new Criar_ultilizadores_admin_().Show();
+            this.Hide();
         }
     }
 }
