@@ -1,14 +1,10 @@
 ﻿using BusinessLogicLayer;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PT_Readify
@@ -25,45 +21,40 @@ namespace PT_Readify
             {
                 comboBox1 = new ComboBox();
                 comboBox1.Name = "comboBox1";
-                comboBox1.Items.AddRange(new string[] { "Novo", "Usado", "Raro" });
+                comboBox1.Items.AddRange(new string[] { "Novo", "Usado", "Danificado", "Emprestado", "Indisponivel" });
                 comboBox1.SelectedIndex = 0;
-                this.Controls.Add(comboBox1);
+                this.Controls.Add(guna2ComboBox1);
             }
         }
-        private byte[] ConverterImagemParaBytes(Image imagem)
+       
+        public byte[] imgToByteArray(Image img)
         {
-            if (imagem == null) return null;
-
-            using (var ms = new System.IO.MemoryStream())
+            using (MemoryStream mStream = new MemoryStream())
             {
-                // Salva a imagem no stream usando o formato original dela
-                imagem.Save(ms, imagem.RawFormat);
-                return ms.ToArray();
+                img.Save(mStream, img.RawFormat);
+                return mStream.ToArray();
             }
         }
 
         private void label4_Click(object sender, EventArgs e)
         {
-
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-
         }
 
         private void Inserir_Livros_Load(object sender, EventArgs e)
         {
-
         }
-
+       
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             // 1. Array explícito com todos os campos obrigatórios para garantir que nenhum falha
             var campos = new[] {
-        guna2TextBox1, guna2TextBox2, guna2TextBox3, guna2TextBox4,
-        guna2TextBox5, guna2TextBox6, guna2TextBox7, guna2TextBox9, guna2TextBox8
-    };
+                guna2TextBox1, guna2TextBox2, guna2TextBox3, guna2TextBox4,
+                guna2TextBox5, guna2TextBox6, guna2TextBox7, guna2TextBox9, guna2TextBox8
+            };
 
             if (campos.Any(t => string.IsNullOrWhiteSpace(t.Text)))
             {
@@ -101,18 +92,13 @@ namespace PT_Readify
             string autor = guna2TextBox2.Text.Trim();
             string editora = guna2TextBox3.Text.Trim();
             string idioma = guna2TextBox6.Text.Trim();
-            string estadoLivro = guna2ComboBox1.Text;
+            string estadoLivro = guna2ComboBox1.Text.Trim();
 
             // Listas e Imagem
             var generos = new List<string> { guna2TextBox5.Text.Trim() };
             var tipos = new List<string>();
 
-
-            // Se quiser guardar a imagem selecionada da PictureBox para a BD:
-            Image imagemCapa = pictureBox1.Image;
-            byte[] Capa = ConverterImagemParaBytes(imagemCapa);
-
-            // 4. Execução da BLL protegida contra falhas de conexão ou BD
+            // 2. Execução da BLL
             try
             {
                 BLL.Livros.InserirLivro(
@@ -125,7 +111,7 @@ namespace PT_Readify
                     estadoLivro,
                     editora,
                     idioma,
-                    Capa,
+                    pictureBox1.Image,
                     generos,
                     tipos
                 );
@@ -134,8 +120,15 @@ namespace PT_Readify
             }
             catch (Exception ex)
             {
-                // Exibe o erro REAL que a Base de Dados ou a BLL devolver para sabermos o que falhou
-                MessageBox.Show($"Erro ao salvar na Base de Dados: {ex.Message}", "Erro BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao inserir livro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        public Image byteArrayToImage(byte[] byteArrayIn)
+        {
+            using (MemoryStream mStream = new MemoryStream(byteArrayIn))
+            {
+                return Image.FromStream(mStream);
             }
         }
 
