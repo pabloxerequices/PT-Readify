@@ -53,6 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL.cs" />
+    <Compile Include="Carrinho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Carrinho.Designer.cs">
+      <DependentUpon>Carrinho.cs</DependentUpon>
+    </Compile>
     <Compile Include="DAL.cs" />
     <Compile Include="Detalhes_Livro.cs">
       <SubType>Form</SubType>
@@ -127,6 +133,9 @@
     <Compile Include="Requesitar livros.Designer.cs">
       <DependentUpon>Requesitar livros.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Carrinho.resx">
+      <DependentUpon>Carrinho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Detalhes_Livro.resx">
       <DependentUpon>Detalhes_Livro.cs</DependentUpon>
     </EmbeddedResource>
@@ -162,6 +171,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="registar_ultilizador.resx">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
@@ -179,6 +189,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\carrinho-carrinho.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
