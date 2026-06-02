@@ -53,6 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL.cs" />
+    <Compile Include="Criar ultilizadores%28admin%29.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Criar ultilizadores%28admin%29.Designer.cs">
+      <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
     <Compile Include="Carrinho.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,8 +138,8 @@
     <Compile Include="Requesitar livros.Designer.cs">
       <DependentUpon>Requesitar livros.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Carrinho.resx">
-      <DependentUpon>Carrinho.cs</DependentUpon>
+    <EmbeddedResource Include="Criar ultilizadores%28admin%29.resx">
+      <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Detalhes_Livro.resx">
       <DependentUpon>Detalhes_Livro.cs</DependentUpon>
