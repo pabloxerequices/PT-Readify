@@ -11,6 +11,7 @@ namespace PT_Readify
 {
     public partial class Inserir_Livros : Form
     {
+        byte[] fotoBytes = null;
         private ComboBox comboBox1;
 
         public Inserir_Livros()
@@ -110,8 +111,8 @@ namespace PT_Readify
                     autor,
                     estadoLivro,
                     editora,
-                    idioma,
-                    pictureBox1.Image,
+                    idioma,fotoBytes
+                    ,
                     generos,
                     tipos
                 );
@@ -134,11 +135,17 @@ namespace PT_Readify
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Imagens|*.jpg;*.png";
-            if (ofd.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                pictureBox1.Image = Image.FromFile(ofd.FileName);
+                ofd.Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    pictureBox1.Image = Image.FromFile(ofd.FileName);
+
+                    // 2. AQUI ELA JÁ VAI SER RECONHECIDA SEM ERRO
+                    fotoBytes = File.ReadAllBytes(ofd.FileName);
+                }
             }
         }
     }
