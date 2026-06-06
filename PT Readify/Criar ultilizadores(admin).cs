@@ -14,6 +14,7 @@ namespace PT_Readify
 {
     public partial class Criar_ultilizadores_admin_ : Form
     {
+        byte[] fotoBytes = null;
         public Criar_ultilizadores_admin_()
         {
             InitializeComponent();
@@ -27,7 +28,18 @@ namespace PT_Readify
 
         private void pictureBox6_Click(object sender, EventArgs e)
         {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
 
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    pictureBox6.Image = Image.FromFile(ofd.FileName);
+
+                    // 2. AQUI ELA JÁ VAI SER RECONHECIDA SEM ERRO
+                    fotoBytes = File.ReadAllBytes(ofd.FileName);
+                }
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -44,25 +56,61 @@ namespace PT_Readify
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.CurrentRow.Cells["foto"].Value != DBNull.Value)
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //verificar se o numero de telefone é válido (apenas dígitos) e se tem 9 dígitos
+            if (!textBox4.Text.All(char.IsDigit))
             {
-                byte[] fotoBytes = (byte[])dataGridView1.CurrentRow.Cells["foto"].Value;
-                using (MemoryStream ms = new MemoryStream(fotoBytes))
-                {
-                    pictureBox6.Image = Image.FromStream(ms);
-                }
+                MessageBox.Show("Número de telefone inválido. Apenas dígitos são permitidos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (textBox4.Text.Length != 9)
+            {
+                MessageBox.Show("Número de telefone inválido. Deve conter exatamente 9 dígitos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            else
+                 if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
+            {
+                MessageBox.Show("Os campos Nome, Email e Palavra-Passe não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+                 if (!textBox2.Text.Contains("@") || !textBox2.Text.Contains("."))
+            {
+                MessageBox.Show("Endereço de email inválido. Certifique-se de que contém '@' e '.'.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+                 if (textBox3.Text.Length < 6)
+            {
+                MessageBox.Show("A palavra-passe deve conter pelo menos 6 caracteres.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
+                return;
+            }
+            else if (textBox3.Text.Contains(" "))
+            {
+                MessageBox.Show("A password não pode conter espaços em branco");
+                return;
+            }
+            else if (!int.TryParse(new string(comboBox1.Text.Where(char.IsDigit).ToArray()), out int prefixo) || !int.TryParse(textBox4.Text, out int telefone))
+            {
+                MessageBox.Show("Por favor, insira um prefixo e um número de telefone válidos (apenas números).", "Erro de Formatação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Para a execução para não quebrar o código abaixo
             }
             else
             {
-                pictureBox6.Image = null; // Ou uma imagem padrão, se preferir
+                BLL.utilizador.insertutilizadoradmin(checkBox1.Checked, "Ativa", textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(new string(comboBox1.Text.Where(char.IsDigit).ToArray())), int.Parse(textBox4.Text), fotoBytes);
+                MessageBox.Show("Utilizador criado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            textBox1.Text = dataGridView1.CurrentRow.Cells["nome"].Value.ToString();
-            textBox2.Text = dataGridView1.CurrentRow.Cells["email"].Value.ToString();
-            textBox3.Text = dataGridView1.CurrentRow.Cells["palavra_passe"].Value.ToString();
-            textBox4.Text = dataGridView1.CurrentRow.Cells["numero_telefone"].Value.ToString();
-            comboBox1.Text = "+" + dataGridView1.CurrentRow.Cells["prefixo_telefone"].Value.ToString();
-            comboBox2.Text = dataGridView1.CurrentRow.Cells["Estado_Conta"].Value.ToString();
-            checkBox1.Checked = (bool)dataGridView1.CurrentRow.Cells["tipo_utilizador"].Value;
         }
     }
 }

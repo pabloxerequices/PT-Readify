@@ -61,6 +61,23 @@ namespace BusinessLogicLayer
                 };
                 return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador, Estado_Conta, Email, Nome, Palavra_Passe, prefixo_telefone, numero_telefone) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe,@prefixo_telefone,@numero_telefone)", sqlParams);
             }
+            //criar utilizador admin
+
+            static public int insertutilizadoradmin(bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone, object Foto)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                    new SqlParameter("@Estado_Conta", Estado_Conta),
+                new SqlParameter("@Tipo_Utilizador", Tipo_Utilizador),
+                new SqlParameter("@Email", Email),
+                new SqlParameter("@Nome", Nome),
+                new SqlParameter("@Palavra_Passe", Palavra_Passe),
+                new SqlParameter("@prefixo_telefone", prefixo_telefone),
+                new SqlParameter("@numero_telefone", numero_telefone),
+                new SqlParameter("@Foto", SqlDbType.Image) { Value = Foto ?? (object)DBNull.Value }
+                };
+                return dal.executarNonQuery("INSERT into utilizador (Tipo_Utilizador, Estado_Conta, Email, Nome, Palavra_Passe, prefixo_telefone, numero_telefone, Foto) VALUES(@Tipo_Utilizador,@Estado_Conta,@Email,@Nome,@Palavra_Passe,@prefixo_telefone,@numero_telefone,@Foto)", sqlParams);
+            }
             static public DataTable queryUtilizadorById(int Id_Utilizador)
             {
                 DAL dal = new DAL();
@@ -223,7 +240,7 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, Image capa, List<string> generos, List<string> tipos)
+            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos, List<string> tipos)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
