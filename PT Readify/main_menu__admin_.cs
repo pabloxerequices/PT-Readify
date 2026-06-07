@@ -19,7 +19,7 @@ namespace PT_Readify
 
         private void button2_Click(object sender, EventArgs e)
         {
-            new Inserir_Livros().Show();
+            new inserir_livros_rodrigo_admin_().Show();
         }
 
         private void button1_Click(object sender, EventArgs e)

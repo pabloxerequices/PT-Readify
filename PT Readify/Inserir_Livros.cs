@@ -12,20 +12,10 @@ namespace PT_Readify
     public partial class Inserir_Livros : Form
     {
         byte[] fotoBytes = null;
-        private ComboBox comboBox1;
 
         public Inserir_Livros()
         {
             InitializeComponent();
-
-            if (comboBox1 == null)
-            {
-                comboBox1 = new ComboBox();
-                comboBox1.Name = "comboBox1";
-                comboBox1.Items.AddRange(new string[] { "Novo", "Usado", "Danificado", "Emprestado", "Indisponivel" });
-                comboBox1.SelectedIndex = 0;
-                this.Controls.Add(guna2ComboBox1);
-            }
         }
        
         public byte[] imgToByteArray(Image img)
@@ -60,6 +50,13 @@ namespace PT_Readify
             if (campos.Any(t => string.IsNullOrWhiteSpace(t.Text)))
             {
                 MessageBox.Show("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            // Validação do ComboBox
+            if (string.IsNullOrWhiteSpace(guna2ComboBox1.Text))
+            {
+                MessageBox.Show("Por favor, selecione o estado do livro.");
                 return;
             }
 
@@ -102,27 +99,44 @@ namespace PT_Readify
             // 2. Execução da BLL
             try
             {
+                // Chamada corrigida com 11 argumentos na ordem exata esperada pela BLL
                 BLL.Livros.InserirLivro(
-                    paginas,
-                    titulo,
-                    biografia,
-                    precoInt,
-                    dataPublicacao,
-                    autor,
-                    estadoLivro,
-                    editora,
-                    idioma,fotoBytes
-                    ,
-                    generos,
-                    tipos
+                    paginas,          // int paginas
+                    titulo,           // string nome
+                    biografia,        // string bio
+                    precoInt,         // int preço
+                    dataPublicacao,   // int ano
+                    autor,            // string autor
+                    estadoLivro,      // string estado_livro
+                    editora,          // string editora
+                    idioma,           // string idioma
+                    fotoBytes,        // object capa
+                    generos           // List<string> generos
                 );
 
                 MessageBox.Show("Livro inserido com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimparFormulario();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao inserir livro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void LimparFormulario()
+        {
+            guna2TextBox1.Clear();
+            guna2TextBox2.Clear();
+            guna2TextBox3.Clear();
+            guna2TextBox4.Clear();
+            guna2TextBox5.Clear();
+            guna2TextBox6.Clear();
+            guna2TextBox7.Clear();
+            guna2TextBox8.Clear();
+            guna2TextBox9.Clear();
+            guna2ComboBox1.SelectedIndex = 0;
+            pictureBox1.Image = null;
+            fotoBytes = null;
         }
         
         public Image byteArrayToImage(byte[] byteArrayIn)
@@ -142,8 +156,6 @@ namespace PT_Readify
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     pictureBox1.Image = Image.FromFile(ofd.FileName);
-
-                    // 2. AQUI ELA JÁ VAI SER RECONHECIDA SEM ERRO
                     fotoBytes = File.ReadAllBytes(ofd.FileName);
                 }
             }

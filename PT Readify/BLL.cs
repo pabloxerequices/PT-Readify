@@ -240,71 +240,106 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos, List<string> tipos)
+            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos)
             {
                 DAL dal = new DAL();
-                SqlParameter[] sqlParams = new SqlParameter[]{
-                    new SqlParameter("@Quantas_Paginas", paginas),
-                    new SqlParameter("@Nome", nome),
-                    new SqlParameter("@Bio", bio),
-                    new SqlParameter("Preço", preço),
-                    new SqlParameter("@Ano", ano),
-                    new SqlParameter("@Autor", autor),
-                    new SqlParameter("@Id_Estado_Livro", estado_livro),
-                    new SqlParameter("@Editora", editora),
-                    new SqlParameter("@Idioma", idioma),
-                    new SqlParameter("@Capa", capa != null ? (object)capa : DBNull.Value)
-                };
-                // Inserir o livro e obter o ID gerado
-                int livroId = Convert.ToInt32(dal.executarScalar("INSERT INTO Livro (Quantas_Paginas, Nome, Bio, Preço, Ano, Autor, Id_Estado_Livro, Editora , Idioma, Capa) OUTPUT INSERTED.ID VALUES (@quantas_Paginas,@nome,@bio,@preço,@ano,@autor,@estado_livro,@editora,@idioma,@capa)", sqlParams));
-                // Inserir os gêneros associados
-                if (generos != null)
+
+                try
                 {
-                    foreach (var genero in generos)
+                    // 1. Parâmetros para a tabela Livro
+                    SqlParameter[] sqlParams = new SqlParameter[]{
+            new SqlParameter("@Quantas_Paginas", paginas),
+            new SqlParameter("@Titulo", nome),
+            new SqlParameter("@Bio", bio),
+            new SqlParameter("@Preço", preço),
+            new SqlParameter("@Ano", ano),
+            new SqlParameter("@Autor", autor),
+            new SqlParameter("@Estado_Livro", estado_livro),
+            new SqlParameter("@Editora", editora),
+            new SqlParameter("@Idioma", idioma),
+            new SqlParameter("@Capa", capa != null ? (object)capa : DBNull.Value)
+        };
+
+                    // 2. Insere na tabela Livro e obtém o ID gerado
+                    object resultado = dal.executarScalar(
+                        "INSERT INTO Livro (Quantas_Paginas, Titulo, Bio, Preço, Ano, Autor, Estado_Livro, Editora, Idioma, Capa) " +
+                        "OUTPUT INSERTED.Id_Livro " +
+                        "VALUES (@Quantas_Paginas, @Titulo, @Bio, @Preço, @Ano, @Autor, @Estado_Livro, @Editora, @Idioma, @Capa)",
+                        sqlParams);
+
+                    if (resultado == null || resultado == DBNull.Value)
                     {
-                        var generoId = Convert.ToInt32(dal.executarScalar(
-                            "SELECT ID FROM Genero WHERE Nome = @nome",
-                            new SqlParameter[] { new SqlParameter("@nome", genero) })); // Corrigido aqui
-                        dal.executarNonQuery(
-                            "INSERT INTO LivroGenero (LivroID, GeneroID) VALUES (@livroId, @generoId)",
-                            new SqlParameter[] {
-                                new SqlParameter("@livroId", livroId),
-                                new SqlParameter("@generoId", generoId)
-                            });
+                        throw new Exception("Falha ao obter o ID do livro inserido.");
+                    }
+
+                    int livroId = Convert.ToInt32(resultado);
+
+                    // 3. Inserção na tabela de ligação Livro_Genero
+                    if (generos != null && generos.Count > 0)
+                    {
+                        foreach (var genero in generos)
+                        {
+                            if (string.IsNullOrWhiteSpace(genero))
+                                continue;
+
+                            string generoLimpo = genero.Trim();
+
+                            // Busca o Id_Genero pela Categoria
+                            object objGeneroId = dal.executarScalar(
+                                "SELECT Id_Genero FROM Genero WHERE Categoria = @categoria",
+                                new SqlParameter[] { new SqlParameter("@categoria", generoLimpo) });
+
+                            if (objGeneroId != null && objGeneroId != DBNull.Value)
+                            {
+                                int generoId = Convert.ToInt32(objGeneroId);
+
+                                // Insere na tabela de ligação Livro_Genero
+                                dal.executarNonQuery(
+                                    "INSERT INTO Livro_Genero (Id_Livro, Id_Genero) VALUES (@livroId, @generoId)",
+                                    new SqlParameter[] {
+                            new SqlParameter("@livroId", livroId),
+                            new SqlParameter("@generoId", generoId)
+                        });
+                            }
+                        }
                     }
                 }
-                // Inserir os tipos associadoss
-                if (tipos != null)
+                catch (Exception ex)
                 {
-                    foreach (var tipo in tipos)
-                    {
-                        var tipoId = Convert.ToInt32(dal.executarScalar(
-                            "SELECT ID FROM Tipo WHERE Nome = @nome",
-                            new SqlParameter[] { new SqlParameter("@nome", tipo) })); // Corrigido aqui
-                        dal.executarNonQuery(
-                            "INSERT INTO LivroTipo (LivroID, TipoID) VALUES (@livroId, @tipoId)",
-                            new SqlParameter[] {
-                                new SqlParameter("@livroId", livroId),
-                                new SqlParameter("@tipoId", tipoId)
-                            });
-                    }
+                    throw new Exception("Erro ao inserir livro: " + ex.Message, ex);
                 }
             }
             static public List<string> ObterGeneros()
             {
                 DAL dal = new DAL();
-                DataTable dt = dal.executarReader("SELECT Categoria FROM Genero", null);
-                return dt.AsEnumerable().Select(r => r["Categoria"].ToString()).ToList();
+                DataTable dt = dal.executarReader("SELECT Categoria FROM Genero ORDER BY Categoria", null);
+                
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable()
+                             .Where(r => r["Categoria"] != DBNull.Value)
+                             .Select(r => r["Categoria"].ToString().Trim())
+                             .Distinct()
+                             .ToList();
+                }
+                
+                return new List<string>();
             }
             static public List<string> ObterEstados()
             {
                 DAL dal = new DAL();
-                DataTable dt = dal.executarReader("SELECT estado FROM Estado_Livro", null);
-                // Garante que não haja nulls e mantém a ordem tal como na tabela
-                return dt.AsEnumerable()
-                         .Where(r => r["estado"] != DBNull.Value)
-                         .Select(r => r["estado"].ToString())
-                         .ToList();
+                DataTable dt = dal.executarReader("SELECT Estado_Livro FROM Livro GROUP BY Estado_Livro ORDER BY Estado_Livro", null);
+                
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable()
+                             .Where(r => r["Estado_Livro"] != DBNull.Value)
+                             .Select(r => r["Estado_Livro"].ToString().Trim())
+                             .Distinct()
+                             .ToList();
+                }
+                
+                return new List<string>();
             }
 
             static public DataTable ObterEstadosTabela()
@@ -328,24 +363,25 @@ namespace BusinessLogicLayer
             {
                 DAL dal = new DAL();
 
-                string sql = @" SELECT L.*, EL.estado AS Estado,
-                 STUFF((
-                 SELECT ', ' + G2.Categoria
-                 FROM Livro_Genero LG2
-                 INNER JOIN Genero G2 ON LG2.Id_Genero = G2.Id_Genero
-                 WHERE LG2.Id_Livro = L.Id_Livro
-                 FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
-                 ,1,2,'') AS Categoria
-                 FROM Livro L
-                 LEFT JOIN Estado_Livro EL ON L.Id_Estado_Livro = EL.Id_Estado_Livro ";
+                string sql = @"SELECT DISTINCT L.Id_Livro, L.Titulo, L.Autor, L.Estado_Livro AS Estado, L.Preço,
+                         STUFF((
+                         SELECT ', ' + G2.Categoria
+                         FROM Livro_Genero LG2
+                         INNER JOIN Genero G2 ON LG2.Id_Genero = G2.Id_Genero
+                         WHERE LG2.Id_Livro = L.Id_Livro
+                         FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
+                         ,1,2,'') AS Categoria
+                         FROM Livro L
+                         LEFT JOIN Livro_Genero LG ON L.Id_Livro = LG.Id_Livro
+                         LEFT JOIN Genero G ON LG.Id_Genero = G.Id_Genero ";
 
                 var whereClauses = new List<string>();
                 var parameters = new List<SqlParameter>();
 
                 if (!string.IsNullOrWhiteSpace(titulo))
                 {
-                    whereClauses.Add("L.Nome LIKE @nome");
-                    parameters.Add(new SqlParameter("@nome", "%" + titulo + "%"));
+                    whereClauses.Add("L.Titulo LIKE @titulo");
+                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(autor))
@@ -363,24 +399,45 @@ namespace BusinessLogicLayer
                         inParams.Add(pname);
                         parameters.Add(new SqlParameter(pname, categorias[i]));
                     }
-
-                    if (inParams.Count > 0)
-                    {
-                        // Filtrar livros que têm pelo menos um dos géneros selecionados
-                        whereClauses.Add("EXISTS (SELECT 1 FROM Livro_Genero LGf INNER JOIN Genero Gf ON LGf.Id_Genero = Gf.Id_Genero WHERE LGf.Id_Livro = L.Id_Livro AND Gf.Categoria IN (" + string.Join(", ", inParams) + "))");
-                    }
+                    whereClauses.Add("G.Categoria IN (" + string.Join(",", inParams) + ")");
                 }
 
                 if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
                 {
-                    whereClauses.Add("EL.estado = @estado");
+                    whereClauses.Add("L.Estado_Livro = @estado");
                     parameters.Add(new SqlParameter("@estado", estado));
                 }
 
                 if (whereClauses.Count > 0)
+                {
                     sql += " WHERE " + string.Join(" AND ", whereClauses);
+                }
 
-                return dal.executarReader(sql, parameters.Count > 0 ? parameters.ToArray() : null);
+                sql += " GROUP BY L.Id_Livro, L.Titulo, L.Autor, L.Estado_Livro, L.Preço";
+
+                try
+                {
+                    return dal.executarReader(sql, parameters.Count > 0 ? parameters.ToArray() : null);
+                }
+                catch (Exception ex)
+                {
+                        throw new Exception("Erro ao pesquisar livros: " + ex.Message, ex);
+                }
+            }
+
+            static public DataTable ObterLivroPorId(int idLivro)
+            {
+                DAL dal = new DAL();
+                try
+                {
+                    return dal.executarReader(
+                        "SELECT Id_Livro, Titulo, Autor, Preço, Estado_Livro FROM Livro WHERE Id_Livro = @idLivro",
+                        new SqlParameter[] { new SqlParameter("@idLivro", idLivro) });
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Erro ao obter livro: " + ex.Message, ex);
+                }
             }
         }
     }

@@ -1,39 +1,34 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLogicLayer;
 
 namespace PT_Readify
 {
-    public partial class Pesquisar_Livros : Form
+    public partial class PesquisarLivrosVisual : Form
     {
         private DataTable livrosTable;
         public int LivroSelecionado { get; set; }
-        private FlowLayoutPanel flowPanel;
-        private int quantidadeCarrinho = 0;
+        public Label labelCarrinho { get; set; }
 
-        public Pesquisar_Livros()
+        public PesquisarLivrosVisual()
         {
             InitializeComponent();
-        }
-
-        public Label LabelCarrinho { get; set; }
-
-        private void Pesquisar_Livros_Load(object sender, EventArgs e)
-        {
+            this.Text = "Pesquisar Livros - PT Readify";
             this.WindowState = FormWindowState.Maximized;
+            this.BackColor = Color.FromArgb(240, 242, 245);
             InicializarControles();
-            CriarInterfaceVisual();
         }
 
-        private void CriarInterfaceVisual()
+        private void InicializarControles()
         {
-            this.Controls.Clear();
-
             // Panel Superior com Filtros
             Panel panelFiltros = new Panel();
             panelFiltros.BackColor = Color.FromArgb(33, 41, 52);
@@ -42,7 +37,7 @@ namespace PT_Readify
             panelFiltros.Padding = new Padding(10);
 
             Label lblTitulo = new Label();
-            lblTitulo.Text = "TÃ­tulo:";
+            lblTitulo.Text = "Título:";
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(10, 10);
             lblTitulo.AutoSize = true;
@@ -81,14 +76,14 @@ namespace PT_Readify
             {
                 comboEstado.Items.Add("Todos");
                 var estados = BLL.Livros.ObterEstados();
-                foreach (var est in estados)
-                    comboEstado.Items.Add(est);
+                foreach (var e in estados)
+                    comboEstado.Items.Add(e);
                 comboEstado.SelectedIndex = 0;
             }
             catch { }
 
             Label lblGenero = new Label();
-            lblGenero.Text = "GÃªnero:";
+            lblGenero.Text = "Gênero:";
             lblGenero.ForeColor = Color.White;
             lblGenero.Location = new Point(280, 40);
             lblGenero.AutoSize = true;
@@ -121,7 +116,7 @@ namespace PT_Readify
             this.Controls.Add(panelFiltros);
 
             // FlowLayoutPanel para Cards
-            flowPanel = new FlowLayoutPanel();
+            FlowLayoutPanel flowPanel = new FlowLayoutPanel();
             flowPanel.Name = "flowPanel";
             flowPanel.Dock = DockStyle.Fill;
             flowPanel.BackColor = Color.FromArgb(240, 242, 245);
@@ -131,19 +126,6 @@ namespace PT_Readify
             this.Controls.Add(flowPanel);
 
             AplicarFiltro();
-        }
-
-        private void InicializarControles()
-        {
-            try
-            {
-                var generos = BLL.Livros.ObterGeneros();
-                var estados = BLL.Livros.ObterEstados();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao carregar dados: " + ex.Message);
-            }
         }
 
         private void AplicarFiltro()
@@ -171,6 +153,7 @@ namespace PT_Readify
 
         private void AtualizarCards()
         {
+            FlowLayoutPanel flowPanel = this.Controls.Find("flowPanel", true).FirstOrDefault() as FlowLayoutPanel;
             if (flowPanel == null || livrosTable == null) return;
 
             flowPanel.Controls.Clear();
@@ -191,6 +174,7 @@ namespace PT_Readify
             card.BorderStyle = BorderStyle.FixedSingle;
             card.Margin = new Padding(10);
             card.Cursor = Cursors.Hand;
+            card.Tag = row["Id_Livro"];
 
             // PictureBox para Capa
             PictureBox pic = new PictureBox();
@@ -214,6 +198,7 @@ namespace PT_Readify
                 }
                 else
                 {
+                    // Criar imagem padrão se não houver capa
                     Bitmap defaultImg = new Bitmap(180, 200);
                     using (Graphics g = Graphics.FromImage(defaultImg))
                     {
@@ -223,7 +208,7 @@ namespace PT_Readify
                     pic.Image = defaultImg;
                 }
             }
-            catch
+            catch 
             {
                 Bitmap errorImg = new Bitmap(180, 200);
                 using (Graphics g = Graphics.FromImage(errorImg))
@@ -234,7 +219,7 @@ namespace PT_Readify
                 pic.Image = errorImg;
             }
 
-            // Label TÃ­tulo
+            // Label Título
             Label lblTitulo = new Label();
             lblTitulo.Text = row["Titulo"].ToString();
             lblTitulo.Width = 180;
@@ -245,9 +230,9 @@ namespace PT_Readify
             lblTitulo.TextAlign = ContentAlignment.TopLeft;
             lblTitulo.Cursor = Cursors.Hand;
 
-            // Label PreÃ§o
+            // Label Preço
             Label lblPreco = new Label();
-            decimal preco = Convert.ToDecimal(row["PreÃ§o"]) / 100;
+            decimal preco = Convert.ToDecimal(row["Preço"]) / 100;
             lblPreco.Text = preco.ToString("C2");
             lblPreco.Width = 180;
             lblPreco.Height = 30;
@@ -321,6 +306,7 @@ namespace PT_Readify
                 Label lbl = new Label();
                 string texto = col.ColumnName + ": " + row[col].ToString();
                 
+                // Se o texto for muito longo, quebrar em múltiplas linhas
                 if (texto.Length > 60)
                 {
                     lbl.Text = texto;
@@ -341,7 +327,7 @@ namespace PT_Readify
             }
 
             Button btnAdicionar = new Button();
-            btnAdicionar.Text = "âœ“ Adicionar ao Carrinho";
+            btnAdicionar.Text = "? Adicionar ao Carrinho";
             btnAdicionar.Location = new Point(200, yPos + 20);
             btnAdicionar.Width = 200;
             btnAdicionar.Height = 40;
@@ -366,12 +352,23 @@ namespace PT_Readify
             try
             {
                 LivroSelecionado = idLivro;
-                quantidadeCarrinho++;
                 
                 // Atualizar label do carrinho se existir
-                if (LabelCarrinho != null)
+                if (labelCarrinho != null)
                 {
-                    LabelCarrinho.Text = "ðŸ›’ (" + quantidadeCarrinho + ")";
+                    int qtd = 1;
+                    object tagValue = labelCarrinho.Tag;
+                    if (tagValue != null)
+                    {
+                        string tagStr = tagValue.ToString();
+                        if (int.TryParse(tagStr, out int atual))
+                        {
+                            qtd = atual + 1;
+                        }
+                    }
+                    
+                    labelCarrinho.Tag = qtd;
+                    labelCarrinho.Text = "Total: " + qtd + " livro(s)";
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -383,49 +380,9 @@ namespace PT_Readify
             }
         }
 
-        // MÃ©todos de handler obrigatÃ³rios do Designer
-        private void Filtro_Changed(object sender, EventArgs e)
+        private void PesquisarLivrosVisual_Load(object sender, EventArgs e)
         {
-            AplicarFiltro();
-        }
 
-        private void clbCategoria_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            AplicarFiltro();
-        }
-
-        private void btnPesquisar_Click(object sender, EventArgs e)
-        {
-            AplicarFiltro();
-        }
-
-        private void btnLimpar_Click(object sender, EventArgs e)
-        {
-            txtTitulo.Clear();
-            txtAutor.Clear();
-            comboEstado.SelectedIndex = 0;
-            
-            for (int i = 0; i < clbCategoria.Items.Count; i++)
-            {
-                clbCategoria.SetItemChecked(i, false);
-            }
-            
-            AplicarFiltro();
-        }
-
-        private void dataGridViewLivros_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            
-            if (dataGridViewLivros.Rows[e.RowIndex].DataBoundItem is DataRowView rowView)
-            {
-                MostrarDetalhes(rowView.Row);
-            }
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            // Implementar aÃ§Ã£o do botÃ£o de imagem se necessÃ¡rio
         }
     }
 }
