@@ -29,6 +29,7 @@ namespace PT_Readify
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Pesquisar_Livros));
             this.labelTitulo = new System.Windows.Forms.Label();
             this.labelAutor = new System.Windows.Forms.Label();
             this.labelCategoria = new System.Windows.Forms.Label();
@@ -40,7 +41,11 @@ namespace PT_Readify
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
             this.dataGridViewLivros = new System.Windows.Forms.DataGridView();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLivros)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // labelTitulo
@@ -146,18 +151,51 @@ namespace PT_Readify
             this.dataGridViewLivros.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridViewLivros.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewLivros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLivros.Location = new System.Drawing.Point(12, 79);
+            this.dataGridViewLivros.Location = new System.Drawing.Point(12, 141);
             this.dataGridViewLivros.MultiSelect = false;
             this.dataGridViewLivros.Name = "dataGridViewLivros";
             this.dataGridViewLivros.ReadOnly = true;
             this.dataGridViewLivros.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewLivros.Size = new System.Drawing.Size(860, 390);
+            this.dataGridViewLivros.Size = new System.Drawing.Size(1563, 870);
             this.dataGridViewLivros.TabIndex = 10;
             this.dataGridViewLivros.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewLivros_CellContentClick);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(1509, 24);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(42, 33);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1506, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(13, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "0";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1377, 1042);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(193, 29);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "adicionar ao carrinho";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Pesquisar_Livros
             // 
-            this.ClientSize = new System.Drawing.Size(890, 490);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(1605, 1100);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.dataGridViewLivros);
             this.Controls.Add(this.btnLimpar);
             this.Controls.Add(this.btnPesquisar);
@@ -173,6 +211,7 @@ namespace PT_Readify
             this.Text = "Pesquisar Livros";
             this.Load += new System.EventHandler(this.Pesquisar_Livros_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLivros)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -191,5 +230,8 @@ namespace PT_Readify
         private System.Windows.Forms.Button btnPesquisar;
         private System.Windows.Forms.Button btnLimpar;
         private System.Windows.Forms.DataGridView dataGridViewLivros;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
     }
 }

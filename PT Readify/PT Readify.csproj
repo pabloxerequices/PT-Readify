@@ -52,13 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-	  <Compile Include="BLL.cs" />
-	  <Compile Include="Criar ultilizadores%28admin%29.cs">
-		  <SubType>Form</SubType>
-	  </Compile>
-	  <Compile Include="Criar ultilizadores%28admin%29.Designer.cs">
-		  <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
-	  </Compile>
+    <Compile Include="BLL.cs" />
+    <Compile Include="Criar ultilizadores%28admin%29.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Criar ultilizadores%28admin%29.Designer.cs">
+      <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
+    </Compile>
     <Compile Include="Carrinho.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,6 +79,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="globais.cs" />
+    <Compile Include="inserir livros rodrigo%28admin%29.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="inserir livros rodrigo%28admin%29.Designer.cs">
+      <DependentUpon>inserir livros rodrigo%28admin%29.cs</DependentUpon>
+    </Compile>
     <Compile Include="Inserir_Livros.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,12 @@
     <Compile Include="Perfil.Designer.cs">
       <DependentUpon>Perfil.cs</DependentUpon>
     </Compile>
+    <Compile Include="PesquisarLivrosVisual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PesquisarLivrosVisual.Designer.cs">
+      <DependentUpon>PesquisarLivrosVisual.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pesquisar_Livros.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,6 +151,9 @@
     <Compile Include="Requesitar livros.Designer.cs">
       <DependentUpon>Requesitar livros.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Carrinho.resx">
+      <DependentUpon>Carrinho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Criar ultilizadores%28admin%29.resx">
       <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
     </EmbeddedResource>
@@ -147,6 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="inserir livros rodrigo%28admin%29.resx">
+      <DependentUpon>inserir livros rodrigo%28admin%29.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Inserir_Livros.resx">
       <DependentUpon>Inserir_Livros.cs</DependentUpon>
@@ -165,6 +183,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Perfil.resx">
       <DependentUpon>Perfil.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PesquisarLivrosVisual.resx">
+      <DependentUpon>PesquisarLivrosVisual.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pesquisar_Livros.resx">
       <DependentUpon>Pesquisar_Livros.cs</DependentUpon>
