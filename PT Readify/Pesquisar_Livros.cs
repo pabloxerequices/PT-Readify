@@ -159,7 +159,7 @@ namespace PT_Readify
                 if (!string.IsNullOrEmpty(genero) && genero != "Todos")
                     generos = new List<string> { genero };
 
-                livrosTable = BLL.Livros.Pesquisar(titulo, autor, generos, estado);
+                livrosTable = BLL.Livros.pesquisarLivro(titulo, autor, Convert.ToString(generos), estado);
 
                 AtualizarCards();
             }

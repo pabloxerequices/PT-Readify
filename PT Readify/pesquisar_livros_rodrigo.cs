@@ -1,0 +1,314 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BusinessLogicLayer;
+
+namespace PT_Readify
+{
+    public partial class pesquisar_livros_rodrigo : Form
+    {
+        private DataTable todosLivros;
+
+        public pesquisar_livros_rodrigo()
+        {
+            InitializeComponent();
+        }
+
+        private void pesquisar_livros_rodrigo_Load(object sender, EventArgs e)
+        {
+            CarregarTodosLivros();
+            ConfigurarEventos();
+        }
+
+        private void CarregarTodosLivros()
+        {
+            try
+            {
+                todosLivros = BLL.Livros.Load();
+
+                // Preencher ComboBox de Idiomas
+                var idiomas = new HashSet<string> { "Todos" };
+                if (todosLivros != null)
+                {
+                    foreach (DataRow row in todosLivros.Rows)
+                    {
+                        string idioma = row["Idioma"]?.ToString();
+                        if (!string.IsNullOrEmpty(idioma))
+                        {
+                            idiomas.Add(idioma);
+                        }
+                    }
+                }
+
+                combobox1.Items.Clear();
+                foreach (var idioma in idiomas.OrderBy(x => x))
+                {
+                    combobox1.Items.Add(idioma);
+                }
+                combobox1.SelectedIndex = 0;
+
+                ExibirLivros(todosLivros);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar livros: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ConfigurarEventos()
+        {
+            textbox1.TextChanged += (s, e) => AplicarFiltros();
+            textbox2.TextChanged += (s, e) => AplicarFiltros();
+            textbox3.TextChanged += (s, e) => AplicarFiltros();
+            textbox4.TextChanged += (s, e) => AplicarFiltros();
+            textbox5.TextChanged += (s, e) => AplicarFiltros();
+            combobox1.SelectedValueChanged += (s, e) => AplicarFiltros();
+
+            button1.Click += (s, e) => LimparFiltros();
+            button2.Click += (s, e) => AplicarFiltros();
+            button3.Click += (s, e) => AbrirCarrinho();
+        }
+
+        private void AplicarFiltros()
+        {
+            if (todosLivros == null || todosLivros.Rows.Count == 0)
+                return;
+
+            string titulo = textbox1.Text.ToLower().Trim();
+            string editora = textbox2.Text.ToLower().Trim();
+            string autor = textbox3.Text.ToLower().Trim();
+            string idioma = combobox1.SelectedItem?.ToString() ?? "Todos";
+            bool precoMinValido = decimal.TryParse(textbox4.Text, out decimal precoMin);
+            bool precoMaxValido = decimal.TryParse(textbox5.Text, out decimal precoMax);
+
+            if (!precoMinValido) precoMin = 0;
+            if (!precoMaxValido) precoMax = 1000000;
+
+            DataTable filtrado = todosLivros.Clone();
+
+            foreach (DataRow row in todosLivros.Rows)
+            {
+                string rowTitulo = row["Titulo"]?.ToString().ToLower() ?? "";
+                string rowEditora = row["Editora"]?.ToString().ToLower() ?? "";
+                string rowAutor = row["Autor"]?.ToString().ToLower() ?? "";
+                string rowIdioma = row["Idioma"]?.ToString() ?? "";
+                decimal rowPreco = Convert.ToDecimal(row["Preço"] ?? 0);
+
+                bool cumpreTitulo = string.IsNullOrEmpty(titulo) || rowTitulo.Contains(titulo);
+                bool cumpreEditora = string.IsNullOrEmpty(editora) || rowEditora.Contains(editora);
+                bool cumpreAutor = string.IsNullOrEmpty(autor) || rowAutor.Contains(autor);
+                bool cumpreIdioma = idioma == "Todos" || rowIdioma == idioma;
+                bool cumprePreco = rowPreco >= precoMin && rowPreco <= precoMax;
+
+                if (cumpreTitulo && cumpreEditora && cumpreAutor && cumpreIdioma && cumprePreco)
+                {
+                    filtrado.ImportRow(row);
+                }
+            }
+
+            ExibirLivros(filtrado);
+        }
+
+        private void LimparFiltros()
+        {
+            textbox1.Text = "";
+            textbox2.Text = "";
+            textbox3.Text = "";
+            textbox4.Text = "0";
+            textbox5.Text = "1000";
+            combobox1.SelectedIndex = 0;
+
+            ExibirLivros(todosLivros);
+        }
+
+        private void ExibirLivros(DataTable livros)
+        {
+            flowLayoutPanel1.Controls.Clear();
+
+            if (livros == null || livros.Rows.Count == 0)
+            {
+                Label lblVazio = new Label
+                {
+                    Text = "Nenhum livro encontrado",
+                    Font = new Font("Segoe UI", 14, FontStyle.Regular),
+                    ForeColor = Color.FromArgb(100, 100, 100),
+                    AutoSize = true,
+                    Padding = new Padding(20)
+                };
+                flowLayoutPanel1.Controls.Add(lblVazio);
+                return;
+            }
+
+            foreach (DataRow row in livros.Rows)
+            {
+                Panel card = CriarCardLivro(row);
+                flowLayoutPanel1.Controls.Add(card);
+            }
+        }
+
+        private Panel CriarCardLivro(DataRow livro)
+        {
+            int idLivro = Convert.ToInt32(livro["Id_Livro"]);
+            string titulo = livro["Titulo"]?.ToString() ?? "Sem título";
+            string autor = livro["Autor"]?.ToString() ?? "Autor desconhecido";
+            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0);
+            object capaObj = livro["Capa"];
+
+            Panel card = new Panel
+            {
+                Size = new Size(200, 350),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                Margin = new Padding(10)
+            };
+
+            // Desenhar borda do card
+            card.Paint += (s, e) =>
+            {
+                e.Graphics.Clear(Color.White);
+                using (Pen pen = new Pen(Color.FromArgb(200, 200, 200), 1))
+                {
+                    e.Graphics.DrawRectangle(pen, 0, 0, card.Width - 1, card.Height - 1);
+                }
+            };
+
+            // PictureBox para a capa
+            PictureBox picCapa = new PictureBox
+            {
+                Size = new Size(180, 240),
+                Location = new Point(10, 10),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BackColor = Color.FromArgb(240, 240, 240),
+                BorderStyle = BorderStyle.FixedSingle,
+                Cursor = Cursors.Hand,
+                Tag = livro
+            };
+
+            if (capaObj != null && capaObj != System.DBNull.Value)
+            {
+                try
+                {
+                    byte[] imagemBytes = (byte[])capaObj;
+                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream(imagemBytes))
+                    {
+                        picCapa.Image = Image.FromStream(ms);
+                    }
+                }
+                catch
+                {
+                    picCapa.BackColor = Color.FromArgb(220, 220, 220);
+                }
+            }
+
+            picCapa.Click += (s, e) => MostrarDetalhesLivro(livro);
+            card.Controls.Add(picCapa);
+
+            // Label Título
+            Label lblTitulo = new Label
+            {
+                Location = new Point(10, 260),
+                Size = new Size(180, 30),
+                Text = titulo,
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                AutoEllipsis = true,
+                ForeColor = Color.FromArgb(50, 50, 50)
+            };
+            card.Controls.Add(lblTitulo);
+
+            // Label Preço
+            Label lblPreco = new Label
+            {
+                Location = new Point(10, 300),
+                Size = new Size(180, 25),
+                Text = $"€ {preco:F2}",
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 168, 83)
+            };
+            card.Controls.Add(lblPreco);
+
+            // Botão Adicionar ao Carrinho
+            Button btnAdicionar = new Button
+            {
+                Location = new Point(10, 320),
+                Size = new Size(180, 30),
+                Text = "+ Carrinho",
+                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                BackColor = Color.FromArgb(52, 168, 83),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Tag = idLivro
+            };
+            btnAdicionar.Click += (s, e) => AdicionarAoCarrinho(idLivro, titulo, autor, preco);
+            card.Controls.Add(btnAdicionar);
+
+            return card;
+        }
+
+        private void MostrarDetalhesLivro(DataRow livro)
+        {
+            string titulo = livro["Titulo"]?.ToString() ?? "";
+            string autor = livro["Autor"]?.ToString() ?? "";
+            string editora = livro["Editora"]?.ToString() ?? "";
+            int paginas = Convert.ToInt32(livro["Quantas_Paginas"] ?? 0);
+            int ano = Convert.ToInt32(livro["Ano"] ?? 0);
+            string idioma = livro["Idioma"]?.ToString() ?? "";
+            string estado = livro["Estado_Livro"]?.ToString() ?? "";
+            string bio = livro["Bio"]?.ToString() ?? "";
+            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0);
+
+            string detalhes = $"Título: {titulo}\n" +
+                              $"Autor: {autor}\n" +
+                              $"Editora: {editora}\n" +
+                              $"Páginas: {paginas}\n" +
+                              $"Ano: {ano}\n" +
+                              $"Idioma: {idioma}\n" +
+                              $"Estado: {estado}\n" +
+                              $"Preço: €{preco:F2}\n\n" +
+                              $"Descrição:\n{bio}";
+
+            MessageBox.Show(detalhes, titulo, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, decimal preco)
+        {
+            try
+            {
+                MessageBox.Show($"'{titulo}' adicionado ao carrinho!\nPreço: €{preco:F2}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao adicionar ao carrinho: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AbrirCarrinho()
+        {
+            try
+            {
+                Carrinho carrinhoForm = new Carrinho();
+                carrinhoForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao abrir carrinho: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void textbox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new Carrinho().Show();
+        }
+    }
+}

@@ -342,12 +342,12 @@ namespace BusinessLogicLayer
                 return new List<string>();
             }
 
-            static public DataTable ObterEstadosTabela()
+            static public DataTable obterestadosTabela()
             {
                 DAL dal = new DAL();
                 // Garantir valores únicos, sem espaços e ordenados
                 return dal.executarReader(
-                    "SELECT DISTINCT Id_Estado_Livro, LTRIM(RTRIM(estado)) AS estado FROM Estado_Livro ORDER BY estado",
+                    "SELECT DISTINCT Estado_Livro FROM Livro ORDER BY Estado_Livro",
                     null);
             }
             static public DataTable ObterGenerosTabela()
@@ -359,69 +359,30 @@ namespace BusinessLogicLayer
                     null);
             }
 
-            static public DataTable Pesquisar(string titulo, string autor, List<string> categorias, string estado)
+            static public DataTable pesquisarLivro(string titulo, string autor, string genero, string estado)
             {
                 DAL dal = new DAL();
-
-                string sql = @"SELECT DISTINCT L.Id_Livro, L.Titulo, L.Autor, L.Estado_Livro AS Estado, L.Preço,
-                         STUFF((
-                         SELECT ', ' + G2.Categoria
-                         FROM Livro_Genero LG2
-                         INNER JOIN Genero G2 ON LG2.Id_Genero = G2.Id_Genero
-                         WHERE LG2.Id_Livro = L.Id_Livro
-                         FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
-                         ,1,2,'') AS Categoria
-                         FROM Livro L
-                         LEFT JOIN Livro_Genero LG ON L.Id_Livro = LG.Id_Livro
-                         LEFT JOIN Genero G ON LG.Id_Genero = G.Id_Genero ";
-
-                var whereClauses = new List<string>();
-                var parameters = new List<SqlParameter>();
-
-                if (!string.IsNullOrWhiteSpace(titulo))
-                {
-                    whereClauses.Add("L.Titulo LIKE @titulo");
-                    parameters.Add(new SqlParameter("@titulo", "%" + titulo + "%"));
-                }
-
-                if (!string.IsNullOrWhiteSpace(autor))
-                {
-                    whereClauses.Add("L.Autor LIKE @autor");
-                    parameters.Add(new SqlParameter("@autor", "%" + autor + "%"));
-                }
-
-                if (categorias != null && categorias.Count > 0)
-                {
-                    var inParams = new List<string>();
-                    for (int i = 0; i < categorias.Count; i++)
-                    {
-                        string pname = "@cat" + i;
-                        inParams.Add(pname);
-                        parameters.Add(new SqlParameter(pname, categorias[i]));
-                    }
-                    whereClauses.Add("G.Categoria IN (" + string.Join(",", inParams) + ")");
-                }
-
-                if (!string.IsNullOrWhiteSpace(estado) && estado != "Todos")
-                {
-                    whereClauses.Add("L.Estado_Livro = @estado");
-                    parameters.Add(new SqlParameter("@estado", estado));
-                }
-
-                if (whereClauses.Count > 0)
-                {
-                    sql += " WHERE " + string.Join(" AND ", whereClauses);
-                }
-
-                sql += " GROUP BY L.Id_Livro, L.Titulo, L.Autor, L.Estado_Livro, L.Preço";
-
                 try
                 {
-                    return dal.executarReader(sql, parameters.Count > 0 ? parameters.ToArray() : null);
+                    return dal.executarReader(
+                        "SELECT l.Id_Livro, l.Titulo, l.Autor, l.Preço, l.Estado_Livro " +
+                        "FROM Livro l " +
+                        "LEFT JOIN Livro_Genero lg ON l.Id_Livro = lg.Id_Livro " +
+                        "LEFT JOIN Genero g ON lg.Id_Genero = g.Id_Genero " +
+                        "WHERE (@titulo IS NULL OR l.Titulo LIKE '%' + @titulo + '%') " +
+                        "AND (@autor IS NULL OR l.Autor LIKE '%' + @autor + '%') " +
+                        "AND (@genero IS NULL OR g.Categoria = @genero) " +
+                        "AND (@estado IS NULL OR l.Estado_Livro = @estado)",
+                        new SqlParameter[] {
+                            new SqlParameter("@titulo", string.IsNullOrWhiteSpace(titulo) ? (object)DBNull.Value : titulo),
+                            new SqlParameter("@autor", string.IsNullOrWhiteSpace(autor) ? (object)DBNull.Value : autor),
+                            new SqlParameter("@genero", string.IsNullOrWhiteSpace(genero) ? (object)DBNull.Value : genero),
+                            new SqlParameter("@estado", string.IsNullOrWhiteSpace(estado) ? (object)DBNull.Value : estado)
+                        });
                 }
                 catch (Exception ex)
                 {
-                        throw new Exception("Erro ao pesquisar livros: " + ex.Message, ex);
+                    throw new Exception("Erro ao pesquisar livros: " + ex.Message, ex);
                 }
             }
 

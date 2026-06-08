@@ -34,7 +34,7 @@ namespace PT_Readify
 
         private void button3_Click(object sender, EventArgs e)
         {
-            panel_livros (new Pesquisar_Livros());
+            panel_livros (new pesquisar_livros_rodrigo());
 
         }
 
