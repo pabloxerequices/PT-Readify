@@ -28,8 +28,8 @@ namespace PT_Readify
         {
             try
             {
-                var estados = BLL.Livros.ObterEstados();
-                guna2ComboBox1.DataSource = estados;
+                
+                guna2ComboBox1.DataSource = new[] { "novo", "Usado", "Danificado", "Emprestado", "Indisponivel" };
                 guna2ComboBox1.SelectedIndex = 0;
             }
             catch (Exception ex)
