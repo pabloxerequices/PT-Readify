@@ -34,6 +34,8 @@ namespace PT_Readify
 
                 // Preencher ComboBox de Idiomas
                 var idiomas = new HashSet<string> { "Todos" };
+                var generos = new HashSet<string> { "Todos" };
+                
                 if (todosLivros != null)
                 {
                     foreach (DataRow row in todosLivros.Rows)
@@ -46,12 +48,29 @@ namespace PT_Readify
                     }
                 }
 
+                // Obter gêneros da tabela Genero
+                List<string> generosLista = BLL.Livros.ObterGeneros();
+                foreach (var genero in generosLista)
+                {
+                    if (!string.IsNullOrEmpty(genero))
+                    {
+                        generos.Add(genero);
+                    }
+                }
+
                 combobox1.Items.Clear();
                 foreach (var idioma in idiomas.OrderBy(x => x))
                 {
                     combobox1.Items.Add(idioma);
                 }
                 combobox1.SelectedIndex = 0;
+
+                comboBox2.Items.Clear();
+                foreach (var genero in generos.OrderBy(x => x))
+                {
+                    comboBox2.Items.Add(genero);
+                }
+                comboBox2.SelectedIndex = 0;
 
                 ExibirLivros(todosLivros);
             }
@@ -69,6 +88,7 @@ namespace PT_Readify
             textbox4.TextChanged += (s, e) => AplicarFiltros();
             textbox5.TextChanged += (s, e) => AplicarFiltros();
             combobox1.SelectedValueChanged += (s, e) => AplicarFiltros();
+            comboBox2.SelectedValueChanged += (s, e) => AplicarFiltros();
 
             button1.Click += (s, e) => LimparFiltros();
             button2.Click += (s, e) => AplicarFiltros();
@@ -84,6 +104,7 @@ namespace PT_Readify
             string editora = textbox2.Text.ToLower().Trim();
             string autor = textbox3.Text.ToLower().Trim();
             string idioma = combobox1.SelectedItem?.ToString() ?? "Todos";
+            string generoSelecionado = comboBox2.SelectedItem?.ToString() ?? "Todos";
             bool precoMinValido = decimal.TryParse(textbox4.Text, out decimal precoMin);
             bool precoMaxValido = decimal.TryParse(textbox5.Text, out decimal precoMax);
 
@@ -99,6 +120,7 @@ namespace PT_Readify
                 string rowAutor = row["Autor"]?.ToString().ToLower() ?? "";
                 string rowIdioma = row["Idioma"]?.ToString() ?? "";
                 decimal rowPreco = Convert.ToDecimal(row["Preço"] ?? 0);
+                int idLivro = Convert.ToInt32(row["Id_Livro"]);
 
                 bool cumpreTitulo = string.IsNullOrEmpty(titulo) || rowTitulo.Contains(titulo);
                 bool cumpreEditora = string.IsNullOrEmpty(editora) || rowEditora.Contains(editora);
@@ -106,13 +128,28 @@ namespace PT_Readify
                 bool cumpreIdioma = idioma == "Todos" || rowIdioma == idioma;
                 bool cumprePreco = rowPreco >= precoMin && rowPreco <= precoMax;
 
-                if (cumpreTitulo && cumpreEditora && cumpreAutor && cumpreIdioma && cumprePreco)
+                bool cumpreGenero = generoSelecionado == "Todos" || VerificaGeneroLivro(idLivro, generoSelecionado);
+
+                if (cumpreTitulo && cumpreEditora && cumpreAutor && cumpreIdioma && cumpreGenero && cumprePreco)
                 {
                     filtrado.ImportRow(row);
                 }
             }
 
             ExibirLivros(filtrado);
+        }
+
+        private bool VerificaGeneroLivro(int idLivro, string genero)
+        {
+            try
+            {
+                List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
+                return generosLivro.Any(g => g.Equals(genero, StringComparison.OrdinalIgnoreCase));
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void LimparFiltros()
@@ -123,6 +160,7 @@ namespace PT_Readify
             textbox4.Text = "0";
             textbox5.Text = "1000";
             combobox1.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 0;
 
             ExibirLivros(todosLivros);
         }
@@ -206,7 +244,7 @@ namespace PT_Readify
                 }
             }
 
-            picCapa.Click += (s, e) => MostrarDetalhesLivro(livro);
+            picCapa.Click += (s, e) => MostrarDetalhesLivro(idLivro, livro);
             card.Controls.Add(picCapa);
 
             // Label Título
@@ -251,7 +289,7 @@ namespace PT_Readify
             return card;
         }
 
-        private void MostrarDetalhesLivro(DataRow livro)
+        private void MostrarDetalhesLivro(int idLivro, DataRow livro)
         {
             string titulo = livro["Titulo"]?.ToString() ?? "";
             string autor = livro["Autor"]?.ToString() ?? "";
@@ -262,13 +300,17 @@ namespace PT_Readify
             string estado = livro["Estado_Livro"]?.ToString() ?? "";
             string bio = livro["Bio"]?.ToString() ?? "";
             decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0);
-
+            
+            List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
+            string generos = generosLivro.Count > 0 ? string.Join(", ", generosLivro) : "Sem gênero";
+            
             string detalhes = $"Título: {titulo}\n" +
                               $"Autor: {autor}\n" +
                               $"Editora: {editora}\n" +
                               $"Páginas: {paginas}\n" +
                               $"Ano: {ano}\n" +
                               $"Idioma: {idioma}\n" +
+                              $"Gêneros: {generos}\n" +
                               $"Estado: {estado}\n" +
                               $"Preço: €{preco:F2}\n\n" +
                               $"Descrição:\n{bio}";
@@ -292,8 +334,8 @@ namespace PT_Readify
         {
             try
             {
-                Carrinho carrinhoForm = new Carrinho();
-                carrinhoForm.Show();
+                Carrinho carrinho = new Carrinho();
+                carrinho.Show();
             }
             catch (Exception ex)
             {
@@ -308,7 +350,28 @@ namespace PT_Readify
 
         private void button3_Click(object sender, EventArgs e)
         {
-            new Carrinho().Show();
+            
+        }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //refresh dos livros
+                AplicarFiltros();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
