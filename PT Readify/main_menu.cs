@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace PT_Readify
 {
@@ -88,6 +89,28 @@ namespace PT_Readify
         {
             new Perfil ().Show();
             this.Close();
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            OpenUrl("https://siteptreadify.vercel.app/");
+        }
+
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Não foi possível abrir o navegador: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -78,7 +78,7 @@ namespace PT_Readify
             // 1. Validação de campos vazios
             var campos = new[] {
                 guna2TextBox1, guna2TextBox2, guna2TextBox3, guna2TextBox4,
-                 guna2TextBox6, guna2TextBox7, guna2TextBox8, guna2TextBox9
+                 guna2TextBox5, guna2TextBox7, guna2TextBox8, guna2TextBox9
             };
 
             if (campos.Any(t => string.IsNullOrWhiteSpace(t.Text)))
@@ -128,7 +128,7 @@ namespace PT_Readify
             string titulo = guna2TextBox1.Text.Trim();
             string autor = guna2TextBox2.Text.Trim();
             string editora = guna2TextBox3.Text.Trim();
-            string idioma = guna2TextBox6.Text.Trim();
+            string idioma = guna2TextBox5.Text.Trim();
             string biografia = guna2TextBox8.Text.Trim();
             string estado_livro = guna2ComboBox1.Text.Trim();
             string genero = guna2ComboBox2.Text.Trim();
@@ -169,7 +169,7 @@ namespace PT_Readify
             guna2TextBox3.Clear();
             guna2TextBox4.Clear();
             
-            guna2TextBox6.Clear();
+            guna2TextBox5.Clear();
             guna2TextBox7.Clear();
             guna2TextBox8.Clear();
             guna2TextBox9.Clear();
