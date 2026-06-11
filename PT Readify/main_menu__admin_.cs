@@ -39,5 +39,15 @@ namespace PT_Readify
             new Criar_ultilizadores_admin_().Show();
             this.Hide();
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

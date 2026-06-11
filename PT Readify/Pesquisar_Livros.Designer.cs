@@ -156,7 +156,7 @@ namespace PT_Readify
             this.dataGridViewLivros.Name = "dataGridViewLivros";
             this.dataGridViewLivros.ReadOnly = true;
             this.dataGridViewLivros.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewLivros.Size = new System.Drawing.Size(1563, 870);
+            this.dataGridViewLivros.Size = new System.Drawing.Size(1563, 831);
             this.dataGridViewLivros.TabIndex = 10;
             this.dataGridViewLivros.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewLivros_CellContentClick);
             // 
@@ -192,7 +192,7 @@ namespace PT_Readify
             // Pesquisar_Livros
             // 
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1605, 1100);
+            this.ClientSize = new System.Drawing.Size(1605, 1061);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
