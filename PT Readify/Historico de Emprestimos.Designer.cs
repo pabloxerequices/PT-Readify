@@ -1,0 +1,186 @@
+﻿namespace PT_Readify
+{
+    partial class Historico_de_Emprestimos
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.labelTitulo = new System.Windows.Forms.Label();
+            this.panelBottom = new System.Windows.Forms.Panel();
+            this.labelTotal = new System.Windows.Forms.Label();
+            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2Button3 = new Guna.UI2.WinForms.Guna2Button();
+            this.panelContent = new System.Windows.Forms.Panel();
+            this.dataGridViewHistorico_Emprestimos = new System.Windows.Forms.DataGridView();
+            this.panelTop.SuspendLayout();
+            this.panelBottom.SuspendLayout();
+            this.panelContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistorico_Emprestimos)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // panelTop
+            // 
+            this.panelTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(41)))), ((int)(((byte)(52)))));
+            this.panelTop.Controls.Add(this.labelTitulo);
+            this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelTop.Location = new System.Drawing.Point(0, 0);
+            this.panelTop.Name = "panelTop";
+            this.panelTop.Size = new System.Drawing.Size(1068, 60);
+            this.panelTop.TabIndex = 4;
+            // 
+            // labelTitulo
+            // 
+            this.labelTitulo.AutoSize = true;
+            this.labelTitulo.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTitulo.ForeColor = System.Drawing.Color.White;
+            this.labelTitulo.Location = new System.Drawing.Point(7, 9);
+            this.labelTitulo.Name = "labelTitulo";
+            this.labelTitulo.Size = new System.Drawing.Size(443, 45);
+            this.labelTitulo.TabIndex = 0;
+            this.labelTitulo.Text = "⟳ Histórico de Emprestimos";
+            // 
+            // panelBottom
+            // 
+            this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(41)))), ((int)(((byte)(52)))));
+            this.panelBottom.Controls.Add(this.labelTotal);
+            this.panelBottom.Controls.Add(this.guna2Button1);
+            this.panelBottom.Controls.Add(this.guna2Button2);
+            this.panelBottom.Controls.Add(this.guna2Button3);
+            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBottom.Location = new System.Drawing.Point(0, 476);
+            this.panelBottom.Name = "panelBottom";
+            this.panelBottom.Size = new System.Drawing.Size(1068, 80);
+            this.panelBottom.TabIndex = 8;
+            // 
+            // labelTotal
+            // 
+            this.labelTotal.AutoSize = true;
+            this.labelTotal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.labelTotal.ForeColor = System.Drawing.Color.White;
+            this.labelTotal.Location = new System.Drawing.Point(20, 25);
+            this.labelTotal.Name = "labelTotal";
+            this.labelTotal.Size = new System.Drawing.Size(0, 25);
+            this.labelTotal.TabIndex = 0;
+            // 
+            // guna2Button1
+            // 
+            this.guna2Button1.BorderRadius = 6;
+            this.guna2Button1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.guna2Button1.ForeColor = System.Drawing.Color.White;
+            this.guna2Button1.Location = new System.Drawing.Point(72, 20);
+            this.guna2Button1.Name = "guna2Button1";
+            this.guna2Button1.Size = new System.Drawing.Size(193, 40);
+            this.guna2Button1.TabIndex = 1;
+            this.guna2Button1.Text = "+ Adicionar";
+            // 
+            // guna2Button2
+            // 
+            this.guna2Button2.BorderRadius = 6;
+            this.guna2Button2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.guna2Button2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.guna2Button2.ForeColor = System.Drawing.Color.White;
+            this.guna2Button2.Location = new System.Drawing.Point(466, 20);
+            this.guna2Button2.Name = "guna2Button2";
+            this.guna2Button2.Size = new System.Drawing.Size(213, 40);
+            this.guna2Button2.TabIndex = 2;
+            this.guna2Button2.Text = "✓ Listar por  Datas";
+            // 
+            // guna2Button3
+            // 
+            this.guna2Button3.BorderRadius = 6;
+            this.guna2Button3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
+            this.guna2Button3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.guna2Button3.ForeColor = System.Drawing.Color.White;
+            this.guna2Button3.Location = new System.Drawing.Point(789, 20);
+            this.guna2Button3.Name = "guna2Button3";
+            this.guna2Button3.Size = new System.Drawing.Size(220, 40);
+            this.guna2Button3.TabIndex = 3;
+            this.guna2Button3.Text = "🗑 Devolução Imediata";
+            // 
+            // panelContent
+            // 
+            this.panelContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
+            this.panelContent.Controls.Add(this.dataGridViewHistorico_Emprestimos);
+            this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelContent.Location = new System.Drawing.Point(0, 60);
+            this.panelContent.Name = "panelContent";
+            this.panelContent.Padding = new System.Windows.Forms.Padding(15);
+            this.panelContent.Size = new System.Drawing.Size(1068, 416);
+            this.panelContent.TabIndex = 9;
+            // 
+            // dataGridViewHistorico_Emprestimos
+            // 
+            this.dataGridViewHistorico_Emprestimos.AllowUserToAddRows = false;
+            this.dataGridViewHistorico_Emprestimos.AllowUserToDeleteRows = false;
+            this.dataGridViewHistorico_Emprestimos.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridViewHistorico_Emprestimos.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridViewHistorico_Emprestimos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewHistorico_Emprestimos.Location = new System.Drawing.Point(15, 15);
+            this.dataGridViewHistorico_Emprestimos.Name = "dataGridViewHistorico_Emprestimos";
+            this.dataGridViewHistorico_Emprestimos.RowHeadersVisible = false;
+            this.dataGridViewHistorico_Emprestimos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridViewHistorico_Emprestimos.Size = new System.Drawing.Size(1038, 386);
+            this.dataGridViewHistorico_Emprestimos.TabIndex = 0;
+            this.dataGridViewHistorico_Emprestimos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewHistorico_Emprestimos_CellContentClick);
+            // 
+            // Historico_de_Emprestimos
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1068, 556);
+            this.Controls.Add(this.panelContent);
+            this.Controls.Add(this.panelBottom);
+            this.Controls.Add(this.panelTop);
+            this.Name = "Historico_de_Emprestimos";
+            this.Text = "Historico_de_Emprestimos";
+            this.Load += new System.EventHandler(this.Historico_de_Emprestimos_Load);
+            this.panelTop.ResumeLayout(false);
+            this.panelTop.PerformLayout();
+            this.panelBottom.ResumeLayout(false);
+            this.panelBottom.PerformLayout();
+            this.panelContent.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistorico_Emprestimos)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Panel panelTop;
+        private System.Windows.Forms.Label labelTitulo;
+        private System.Windows.Forms.Panel panelBottom;
+        private System.Windows.Forms.Label labelTotal;
+        private Guna.UI2.WinForms.Guna2Button guna2Button1;
+        private Guna.UI2.WinForms.Guna2Button guna2Button2;
+        private Guna.UI2.WinForms.Guna2Button guna2Button3;
+        private System.Windows.Forms.Panel panelContent;
+        private System.Windows.Forms.DataGridView dataGridViewHistorico_Emprestimos;
+    }
+}

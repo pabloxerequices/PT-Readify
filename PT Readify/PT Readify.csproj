@@ -72,6 +72,12 @@
     <Compile Include="Detalhes_Livro.Designer.cs">
       <DependentUpon>Detalhes_Livro.cs</DependentUpon>
     </Compile>
+    <Compile Include="Devolução da Compra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Devolução da Compra.Designer.cs">
+      <DependentUpon>Devolução da Compra.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,6 +85,18 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="globais.cs" />
+    <Compile Include="Historico de Emprestimos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Historico de Emprestimos.Designer.cs">
+      <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Hstórico de compras.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Hstórico de compras.Designer.cs">
+      <DependentUpon>Hstórico de compras.cs</DependentUpon>
+    </Compile>
     <Compile Include="inserir livros rodrigo%28admin%29.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,8 +184,17 @@
     <EmbeddedResource Include="Detalhes_Livro.resx">
       <DependentUpon>Detalhes_Livro.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Devolução da Compra.resx">
+      <DependentUpon>Devolução da Compra.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Historico de Emprestimos.resx">
+      <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Hstórico de compras.resx">
+      <DependentUpon>Hstórico de compras.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="inserir livros rodrigo%28admin%29.resx">
       <DependentUpon>inserir livros rodrigo%28admin%29.cs</DependentUpon>
