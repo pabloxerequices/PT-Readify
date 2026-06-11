@@ -198,6 +198,118 @@ namespace BusinessLogicLayer
 
         }
 
+        //---------------------------------------------------------------------------------------------------------------
+        public class Compra
+        {
+            static public DataTable Load()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader("select * from Compra", null);
+            }
+            static public int insertCompra(int id_cliente, int id_livro, DateTime data_compra)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@id_cliente", id_cliente),
+                new SqlParameter("@id_livro", id_livro),
+                new SqlParameter("@data_compra", data_compra)
+             };
+                return dal.executarNonQuery("INSERT into Compra (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+            }
+            
+        }
+        //---------------------------------------------------------------------------------------------------------------
+        public class Historicos
+        {
+            static public int insertHistorico_de_compras(int id_cliente, int id_livro, DateTime data_compra)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[] {
+                    new SqlParameter("@id_cliente", id_cliente),
+                    new SqlParameter("@id_livro", id_livro),
+                    new SqlParameter("@data_compra", data_compra)
+                };
+                return dal.executarNonQuery("INSERT into Historico_de_compras (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+            }
+
+            // Renomeado para evitar duplicidade
+            public static DataTable LoadHistoricoCompras()
+            {
+                DataTable dal = new DataTable();
+                return dal;
+            }
+
+            static public int insertHistoricoEmp(int id_cliente, int id_livro, DateTime data_compra)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[] {
+                    new SqlParameter("@id_cliente", id_cliente),
+                    new SqlParameter("@id_livro", id_livro),
+                    new SqlParameter("@data_compra", data_compra)
+                };
+                return dal.executarNonQuery("INSERT into HistoricoEmp (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+            }
+
+            // Renomeado para evitar duplicidade
+            public static DataTable LoadHistoricoEmp()
+            {
+                DataTable dal = new DataTable();
+                return dal;
+            }
+        }
+
+        //---------------------------------------------------------------------------------------------------------------
+        public class  Devolução
+        {
+            static public int insertDevoluçãoCompra (int id_cliente, int id_livro, DateTime data_devolução)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@id_cliente", id_cliente),
+                new SqlParameter("@id_livro", id_livro),
+                new SqlParameter("@data_devolução", data_devolução)
+             };
+                return dal.executarNonQuery("INSERT into DevoluçãoCompra (Id_Cliente, Id_Livro, Data_Devolução) VALUES(@id_cliente,@id_livro,@data_devolução)", sqlParams);
+            }
+             public static DataTable Load()
+            {
+                DataTable dal = new DataTable();
+                return dal;
+            }
+
+
+            static public int insertDevoluçãoEmp(int id_cliente, int id_livro, DateTime data_devolução)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@id_cliente", id_cliente),
+                new SqlParameter("@id_livro", id_livro),
+                new SqlParameter("@data_devolução", data_devolução)
+             };
+                return dal.executarNonQuery("INSERT into DevoluçãoEmp (Id_Cliente, Id_Livro, Data_Devolução) VALUES(@id_cliente,@id_livro,@data_devolução)", sqlParams);
+            }
+             public static DataTable LoadEmp()
+            {
+                DataTable dal = new DataTable();
+                return dal;
+            }
+
+        }
+
+
+
+
+
+
+        //---------------------------------------------------------------------------------------------------------------
+       
+
+
+
+
+
+
+
         public class Imagem
         {
             static public object loadpic()
