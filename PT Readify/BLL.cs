@@ -400,6 +400,28 @@ namespace BusinessLogicLayer
                     throw new Exception("Erro ao obter livro: " + ex.Message, ex);
                 }
             }
+
+            static public List<string> ObterGenerosLivro(int idLivro)
+            {
+                DAL dal = new DAL();
+                DataTable dt = dal.executarReader(
+                    "SELECT g.Categoria FROM Genero g " +
+                    "INNER JOIN Livro_Genero lg ON g.Id_Genero = lg.Id_Genero " +
+                    "WHERE lg.Id_Livro = @idLivro " +
+                    "ORDER BY g.Categoria",
+                    new SqlParameter[] { new SqlParameter("@idLivro", idLivro) });
+                
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable()
+                             .Where(r => r["Categoria"] != DBNull.Value)
+                             .Select(r => r["Categoria"].ToString().Trim())
+                             .Distinct()
+                             .ToList();
+                }
+                
+                return new List<string>();
+            }
         }
     }
 }
