@@ -16,5 +16,10 @@ namespace PT_Readify
         {
             InitializeComponent();
         }
+
+        private void toggleTemaEscuro_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

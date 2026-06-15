@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Configurações));
             this.headerPanel = new Guna.UI2.WinForms.Guna2Panel();
             this.headerLabel = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.containerPanel = new Guna.UI2.WinForms.Guna2Panel();
@@ -43,10 +42,10 @@
             this.lblTextoTam = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.trackTextSize = new Guna.UI2.WinForms.Guna2TrackBar();
             this.groupAcess = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTTS = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.comboTTSVoices = new Guna.UI2.WinForms.Guna2ComboBox();
             this.lblTTSRate = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.trackTTSRate = new Guna.UI2.WinForms.Guna2TrackBar();
+            this.lbTDD = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.comboTTSVoices = new Guna.UI2.WinForms.Guna2ComboBox();
             this.groupAvancadas = new Guna.UI2.WinForms.Guna2Panel();
             this.btnLimparHistorico = new Guna.UI2.WinForms.Guna2Button();
             this.btnRestaurarPadrao = new Guna.UI2.WinForms.Guna2Button();
@@ -64,12 +63,11 @@
             // 
             // headerPanel
             // 
-            this.headerPanel.BackColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.headerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.headerPanel.Controls.Add(this.headerLabel);
             this.headerPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.headerPanel.Location = new System.Drawing.Point(0, 0);
             this.headerPanel.Name = "headerPanel";
-            this.headerPanel.ShadowDecoration.Parent = this.headerPanel;
             this.headerPanel.Size = new System.Drawing.Size(720, 72);
             this.headerPanel.TabIndex = 0;
             // 
@@ -80,13 +78,13 @@
             this.headerLabel.ForeColor = System.Drawing.Color.White;
             this.headerLabel.Location = new System.Drawing.Point(18, 18);
             this.headerLabel.Name = "headerLabel";
-            this.headerLabel.Size = new System.Drawing.Size(120, 33);
+            this.headerLabel.Size = new System.Drawing.Size(140, 32);
             this.headerLabel.TabIndex = 0;
             this.headerLabel.Text = "Configurações";
             // 
             // containerPanel
             // 
-            this.containerPanel.BackColor = System.Drawing.Color.FromArgb(245, 245, 245);
+            this.containerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
             this.containerPanel.Controls.Add(this.groupTema);
             this.containerPanel.Controls.Add(this.groupVisual);
             this.containerPanel.Controls.Add(this.groupAcess);
@@ -96,7 +94,6 @@
             this.containerPanel.Location = new System.Drawing.Point(0, 72);
             this.containerPanel.Name = "containerPanel";
             this.containerPanel.Padding = new System.Windows.Forms.Padding(18);
-            this.containerPanel.ShadowDecoration.Parent = this.containerPanel;
             this.containerPanel.Size = new System.Drawing.Size(720, 649);
             this.containerPanel.TabIndex = 1;
             // 
@@ -110,7 +107,6 @@
             this.groupTema.Controls.Add(this.chkFullscreen);
             this.groupTema.Location = new System.Drawing.Point(18, 18);
             this.groupTema.Name = "groupTema";
-            this.groupTema.ShadowDecoration.Parent = this.groupTema;
             this.groupTema.Size = new System.Drawing.Size(684, 80);
             this.groupTema.TabIndex = 0;
             // 
@@ -118,45 +114,44 @@
             // 
             this.lblTema.BackColor = System.Drawing.Color.Transparent;
             this.lblTema.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTema.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.lblTema.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.lblTema.Location = new System.Drawing.Point(16, 20);
             this.lblTema.Name = "lblTema";
-            this.lblTema.Size = new System.Drawing.Size(89, 23);
+            this.lblTema.Size = new System.Drawing.Size(90, 22);
             this.lblTema.TabIndex = 0;
             this.lblTema.Text = "Tema Escuro:";
             // 
             // toggleTemaEscuro
             // 
-            this.toggleTemaEscuro.CheckedState.BorderColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.toggleTemaEscuro.CheckedState.FillColor = System.Drawing.Color.FromArgb(31, 139, 147);
+            this.toggleTemaEscuro.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.toggleTemaEscuro.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
             this.toggleTemaEscuro.CheckedState.InnerBorderColor = System.Drawing.Color.White;
             this.toggleTemaEscuro.CheckedState.InnerColor = System.Drawing.Color.White;
             this.toggleTemaEscuro.Location = new System.Drawing.Point(580, 20);
             this.toggleTemaEscuro.Name = "toggleTemaEscuro";
-            this.toggleTemaEscuro.ShadowDecoration.Parent = this.toggleTemaEscuro;
             this.toggleTemaEscuro.Size = new System.Drawing.Size(42, 20);
             this.toggleTemaEscuro.TabIndex = 1;
+            this.toggleTemaEscuro.CheckedChanged += new System.EventHandler(this.toggleTemaEscuro_CheckedChanged);
             // 
             // lblFullscreen
             // 
             this.lblFullscreen.BackColor = System.Drawing.Color.Transparent;
             this.lblFullscreen.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblFullscreen.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.lblFullscreen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.lblFullscreen.Location = new System.Drawing.Point(16, 44);
             this.lblFullscreen.Name = "lblFullscreen";
-            this.lblFullscreen.Size = new System.Drawing.Size(120, 23);
+            this.lblFullscreen.Size = new System.Drawing.Size(164, 22);
             this.lblFullscreen.TabIndex = 2;
             this.lblFullscreen.Text = "Modo Leitura Fullscreen:";
             // 
             // chkFullscreen
             // 
-            this.chkFullscreen.CheckedState.BorderColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.chkFullscreen.CheckedState.FillColor = System.Drawing.Color.FromArgb(31, 139, 147);
+            this.chkFullscreen.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.chkFullscreen.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
             this.chkFullscreen.CheckedState.InnerBorderColor = System.Drawing.Color.White;
             this.chkFullscreen.CheckedState.InnerColor = System.Drawing.Color.White;
             this.chkFullscreen.Location = new System.Drawing.Point(580, 46);
             this.chkFullscreen.Name = "chkFullscreen";
-            this.chkFullscreen.ShadowDecoration.Parent = this.chkFullscreen;
             this.chkFullscreen.Size = new System.Drawing.Size(42, 20);
             this.chkFullscreen.TabIndex = 3;
             // 
@@ -170,7 +165,6 @@
             this.groupVisual.Controls.Add(this.trackTextSize);
             this.groupVisual.Location = new System.Drawing.Point(18, 110);
             this.groupVisual.Name = "groupVisual";
-            this.groupVisual.ShadowDecoration.Parent = this.groupVisual;
             this.groupVisual.Size = new System.Drawing.Size(684, 120);
             this.groupVisual.TabIndex = 2;
             // 
@@ -178,10 +172,10 @@
             // 
             this.lblFonte.BackColor = System.Drawing.Color.Transparent;
             this.lblFonte.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblFonte.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.lblFonte.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.lblFonte.Location = new System.Drawing.Point(16, 16);
             this.lblFonte.Name = "lblFonte";
-            this.lblFonte.Size = new System.Drawing.Size(48, 23);
+            this.lblFonte.Size = new System.Drawing.Size(43, 22);
             this.lblFonte.TabIndex = 0;
             this.lblFonte.Text = "Fonte:";
             // 
@@ -191,14 +185,13 @@
             this.comboFont.BorderRadius = 6;
             this.comboFont.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboFont.FocusedColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.comboFont.FocusedState.BorderColor = System.Drawing.Color.FromArgb(94, 148, 255);
+            this.comboFont.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.comboFont.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.comboFont.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.comboFont.ForeColor = System.Drawing.Color.FromArgb(68, 88, 112);
+            this.comboFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.comboFont.ItemHeight = 30;
             this.comboFont.Location = new System.Drawing.Point(240, 12);
             this.comboFont.Name = "comboFont";
-            this.comboFont.ShadowDecoration.Parent = this.comboFont;
             this.comboFont.Size = new System.Drawing.Size(300, 36);
             this.comboFont.TabIndex = 1;
             // 
@@ -206,10 +199,10 @@
             // 
             this.lblTextoTam.BackColor = System.Drawing.Color.Transparent;
             this.lblTextoTam.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTextoTam.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.lblTextoTam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.lblTextoTam.Location = new System.Drawing.Point(16, 64);
             this.lblTextoTam.Name = "lblTextoTam";
-            this.lblTextoTam.Size = new System.Drawing.Size(126, 23);
+            this.lblTextoTam.Size = new System.Drawing.Size(131, 22);
             this.lblTextoTam.TabIndex = 2;
             this.lblTextoTam.Text = "Tamanho do Texto:";
             // 
@@ -220,7 +213,7 @@
             this.trackTextSize.Name = "trackTextSize";
             this.trackTextSize.Size = new System.Drawing.Size(300, 23);
             this.trackTextSize.TabIndex = 3;
-            this.trackTextSize.ThumbColor = System.Drawing.Color.FromArgb(31, 139, 147);
+            this.trackTextSize.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
             this.trackTextSize.Value = 14;
             // 
             // groupAcess
@@ -229,50 +222,21 @@
             this.groupAcess.BorderRadius = 8;
             this.groupAcess.Controls.Add(this.lblTTSRate);
             this.groupAcess.Controls.Add(this.trackTTSRate);
-            this.groupAcess.Controls.Add(this.lblTTS);
+            this.groupAcess.Controls.Add(this.lbTDD);
             this.groupAcess.Controls.Add(this.comboTTSVoices);
             this.groupAcess.Location = new System.Drawing.Point(18, 242);
             this.groupAcess.Name = "groupAcess";
-            this.groupAcess.ShadowDecoration.Parent = this.groupAcess;
             this.groupAcess.Size = new System.Drawing.Size(684, 120);
             this.groupAcess.TabIndex = 3;
-            // 
-            // lblTTS
-            // 
-            this.lblTTS.BackColor = System.Drawing.Color.Transparent;
-            this.lblTTS.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTTS.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
-            this.lblTTS.Location = new System.Drawing.Point(16, 16);
-            this.lblTTS.Name = "lblTTS";
-            this.lblTTS.Size = new System.Drawing.Size(86, 23);
-            this.lblTTS.TabIndex = 0;
-            this.lblTTS.Text = "Voz TTS:";
-            // 
-            // comboTTSVoices
-            // 
-            this.comboTTSVoices.BackColor = System.Drawing.Color.Transparent;
-            this.comboTTSVoices.BorderRadius = 6;
-            this.comboTTSVoices.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboTTSVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTTSVoices.FocusedColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.comboTTSVoices.FocusedState.BorderColor = System.Drawing.Color.FromArgb(94, 148, 255);
-            this.comboTTSVoices.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.comboTTSVoices.ForeColor = System.Drawing.Color.FromArgb(68, 88, 112);
-            this.comboTTSVoices.ItemHeight = 30;
-            this.comboTTSVoices.Location = new System.Drawing.Point(240, 12);
-            this.comboTTSVoices.Name = "comboTTSVoices";
-            this.comboTTSVoices.ShadowDecoration.Parent = this.comboTTSVoices;
-            this.comboTTSVoices.Size = new System.Drawing.Size(300, 36);
-            this.comboTTSVoices.TabIndex = 1;
             // 
             // lblTTSRate
             // 
             this.lblTTSRate.BackColor = System.Drawing.Color.Transparent;
             this.lblTTSRate.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTTSRate.ForeColor = System.Drawing.Color.FromArgb(21, 135, 140);
+            this.lblTTSRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
             this.lblTTSRate.Location = new System.Drawing.Point(16, 64);
             this.lblTTSRate.Name = "lblTTSRate";
-            this.lblTTSRate.Size = new System.Drawing.Size(142, 23);
+            this.lblTTSRate.Size = new System.Drawing.Size(151, 22);
             this.lblTTSRate.TabIndex = 2;
             this.lblTTSRate.Text = "Velocidade da Leitura:";
             // 
@@ -283,8 +247,35 @@
             this.trackTTSRate.Name = "trackTTSRate";
             this.trackTTSRate.Size = new System.Drawing.Size(300, 23);
             this.trackTTSRate.TabIndex = 3;
-            this.trackTTSRate.ThumbColor = System.Drawing.Color.FromArgb(31, 139, 147);
+            this.trackTTSRate.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
             this.trackTTSRate.Value = 0;
+            // 
+            // lbTDD
+            // 
+            this.lbTDD.BackColor = System.Drawing.Color.Transparent;
+            this.lbTDD.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.lbTDD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
+            this.lbTDD.Location = new System.Drawing.Point(16, 16);
+            this.lbTDD.Name = "lbTDD";
+            this.lbTDD.Size = new System.Drawing.Size(206, 22);
+            this.lbTDD.TabIndex = 0;
+            this.lbTDD.Text = "Temporizador de Desconexão:";
+            // 
+            // comboTTSVoices
+            // 
+            this.comboTTSVoices.BackColor = System.Drawing.Color.Transparent;
+            this.comboTTSVoices.BorderRadius = 6;
+            this.comboTTSVoices.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.comboTTSVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTTSVoices.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.comboTTSVoices.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.comboTTSVoices.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.comboTTSVoices.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.comboTTSVoices.ItemHeight = 30;
+            this.comboTTSVoices.Location = new System.Drawing.Point(240, 12);
+            this.comboTTSVoices.Name = "comboTTSVoices";
+            this.comboTTSVoices.Size = new System.Drawing.Size(300, 36);
+            this.comboTTSVoices.TabIndex = 1;
             // 
             // groupAvancadas
             // 
@@ -294,22 +285,17 @@
             this.groupAvancadas.Controls.Add(this.btnRestaurarPadrao);
             this.groupAvancadas.Location = new System.Drawing.Point(18, 374);
             this.groupAvancadas.Name = "groupAvancadas";
-            this.groupAvancadas.ShadowDecoration.Parent = this.groupAvancadas;
             this.groupAvancadas.Size = new System.Drawing.Size(684, 120);
             this.groupAvancadas.TabIndex = 4;
             // 
             // btnLimparHistorico
             // 
             this.btnLimparHistorico.BorderRadius = 8;
-            this.btnLimparHistorico.CheckedState.Parent = this.btnLimparHistorico;
-            this.btnLimparHistorico.CustomImages.Parent = this.btnLimparHistorico;
-            this.btnLimparHistorico.FillColor = System.Drawing.Color.FromArgb(242, 195, 85);
+            this.btnLimparHistorico.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(195)))), ((int)(((byte)(85)))));
             this.btnLimparHistorico.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnLimparHistorico.ForeColor = System.Drawing.Color.FromArgb(110, 70, 50);
-            this.btnLimparHistorico.HoverState.Parent = this.btnLimparHistorico;
+            this.btnLimparHistorico.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(70)))), ((int)(((byte)(50)))));
             this.btnLimparHistorico.Location = new System.Drawing.Point(18, 20);
             this.btnLimparHistorico.Name = "btnLimparHistorico";
-            this.btnLimparHistorico.ShadowDecoration.Parent = this.btnLimparHistorico;
             this.btnLimparHistorico.Size = new System.Drawing.Size(300, 40);
             this.btnLimparHistorico.TabIndex = 0;
             this.btnLimparHistorico.Text = "Limpar Histórico de Leitura";
@@ -317,15 +303,11 @@
             // btnRestaurarPadrao
             // 
             this.btnRestaurarPadrao.BorderRadius = 8;
-            this.btnRestaurarPadrao.CheckedState.Parent = this.btnRestaurarPadrao;
-            this.btnRestaurarPadrao.CustomImages.Parent = this.btnRestaurarPadrao;
-            this.btnRestaurarPadrao.FillColor = System.Drawing.Color.FromArgb(230, 230, 230);
+            this.btnRestaurarPadrao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.btnRestaurarPadrao.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnRestaurarPadrao.ForeColor = System.Drawing.Color.FromArgb(45, 45, 45);
-            this.btnRestaurarPadrao.HoverState.Parent = this.btnRestaurarPadrao;
+            this.btnRestaurarPadrao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.btnRestaurarPadrao.Location = new System.Drawing.Point(18, 70);
             this.btnRestaurarPadrao.Name = "btnRestaurarPadrao";
-            this.btnRestaurarPadrao.ShadowDecoration.Parent = this.btnRestaurarPadrao;
             this.btnRestaurarPadrao.Size = new System.Drawing.Size(300, 36);
             this.btnRestaurarPadrao.TabIndex = 1;
             this.btnRestaurarPadrao.Text = "Restaurar Padrões";
@@ -337,22 +319,17 @@
             this.actionsPanel.Controls.Add(this.btnCancelar);
             this.actionsPanel.Location = new System.Drawing.Point(18, 510);
             this.actionsPanel.Name = "actionsPanel";
-            this.actionsPanel.ShadowDecoration.Parent = this.actionsPanel;
             this.actionsPanel.Size = new System.Drawing.Size(684, 64);
             this.actionsPanel.TabIndex = 5;
             // 
             // btnSalvarConfig
             // 
             this.btnSalvarConfig.BorderRadius = 8;
-            this.btnSalvarConfig.CheckedState.Parent = this.btnSalvarConfig;
-            this.btnSalvarConfig.CustomImages.Parent = this.btnSalvarConfig;
-            this.btnSalvarConfig.FillColor = System.Drawing.Color.FromArgb(31, 139, 147);
+            this.btnSalvarConfig.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
             this.btnSalvarConfig.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSalvarConfig.ForeColor = System.Drawing.Color.White;
-            this.btnSalvarConfig.HoverState.Parent = this.btnSalvarConfig;
             this.btnSalvarConfig.Location = new System.Drawing.Point(366, 12);
             this.btnSalvarConfig.Name = "btnSalvarConfig";
-            this.btnSalvarConfig.ShadowDecoration.Parent = this.btnSalvarConfig;
             this.btnSalvarConfig.Size = new System.Drawing.Size(168, 40);
             this.btnSalvarConfig.TabIndex = 0;
             this.btnSalvarConfig.Text = "Guardar";
@@ -360,15 +337,11 @@
             // btnCancelar
             // 
             this.btnCancelar.BorderRadius = 8;
-            this.btnCancelar.CheckedState.Parent = this.btnCancelar;
-            this.btnCancelar.CustomImages.Parent = this.btnCancelar;
-            this.btnCancelar.FillColor = System.Drawing.Color.FromArgb(230, 230, 230);
+            this.btnCancelar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnCancelar.ForeColor = System.Drawing.Color.FromArgb(45, 45, 45);
-            this.btnCancelar.HoverState.Parent = this.btnCancelar;
+            this.btnCancelar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.btnCancelar.Location = new System.Drawing.Point(540, 12);
             this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.ShadowDecoration.Parent = this.btnCancelar;
             this.btnCancelar.Size = new System.Drawing.Size(162, 40);
             this.btnCancelar.TabIndex = 1;
             this.btnCancelar.Text = "Cancelar";
@@ -416,7 +389,7 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel lblFullscreen;
         private Guna.UI2.WinForms.Guna2ToggleSwitch chkFullscreen;
         private Guna.UI2.WinForms.Guna2Panel groupAcess;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblTTS;
+        private Guna.UI2.WinForms.Guna2HtmlLabel lbTDD;
         private Guna.UI2.WinForms.Guna2ComboBox comboTTSVoices;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTTSRate;
         private Guna.UI2.WinForms.Guna2TrackBar trackTTSRate;
