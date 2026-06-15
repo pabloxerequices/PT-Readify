@@ -239,15 +239,20 @@ namespace BusinessLogicLayer
                 return dal;
             }
 
-            static public int insertHistoricoEmp(int id_cliente, int id_livro, DateTime data_compra)
+            static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Date_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[] {
-                    new SqlParameter("@id_cliente", id_cliente),
-                    new SqlParameter("@id_livro", id_livro),
-                    new SqlParameter("@data_compra", data_compra)
+                    new SqlParameter("@Estado_Emprestimo", Estado_Emprestimo),
+                    new SqlParameter("@Date_Entrega", Date_Entrega),
+                    new SqlParameter("@Data_Prevista", Data_Prevista),
+                    new SqlParameter("@Data_Levantamento", Data_Levantamento),
+                    new SqlParameter("@Id_Livro", Id_Livro),
+                    new SqlParameter("@Id_Utilizador", Id_Utilizador)
                 };
-                return dal.executarNonQuery("INSERT into HistoricoEmp (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+                return dal.executarNonQuery(
+                    "INSERT into HistoricoEmp (Estado_Emprestimo, Date_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador) VALUES(@Estado_Emprestimo, @Date_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador)",
+                    sqlParams);
             }
 
             // Renomeado para evitar duplicidade

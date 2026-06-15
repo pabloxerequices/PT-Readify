@@ -298,7 +298,7 @@ namespace PT_Readify
 
         private void dataGridViewCarrinho_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridViewHistorico_Émprestimos.DataSource
+            
         }
     }
 }

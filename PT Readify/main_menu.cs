@@ -112,5 +112,11 @@ namespace PT_Readify
                 MessageBox.Show("Não foi possível abrir o navegador: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Historico_de_Emprestimos historico = new Historico_de_Emprestimos();
+            historico.Show();
+        }
     }
 }
