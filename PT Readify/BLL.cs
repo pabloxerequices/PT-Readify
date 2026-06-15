@@ -107,7 +107,7 @@ namespace BusinessLogicLayer
                 // Executa a query de update que tens na linha 76
                 return dal.executarNonQuery("update [utilizador] set [Email]=@Email, [Nome]=@Nome, [Palavra_Passe]=@Palavra_Passe, [Foto]=@Foto, [prefixo_telefone]=@prefixo_telefone, [numero_telefone]=@numero_telefone where Id_Utilizador=@Id_Utilizador", sqlParams);
             }
-            static public int updateutilizadoradmin(int Id_Utilizador, bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone , object Foto)
+            static public int updateutilizadoradmin(int Id_Utilizador, bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone, object Foto)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]
@@ -216,52 +216,92 @@ namespace BusinessLogicLayer
              };
                 return dal.executarNonQuery("INSERT into Compra (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
             }
-            
+
         }
         //---------------------------------------------------------------------------------------------------------------
         public class Historicos
         {
-            static public int insertHistorico_de_compras(int id_cliente, int id_livro, DateTime data_compra)
+            static public int insertHistorico_de_compras(DateTime data_compra, string titulo, string autor, int preco, string estado_livro, int id_livro, int Id_Utilizador)
             {
                 DAL dal = new DAL();
+
+                // Criamos os parâmetros com todos os campos da tabela
                 SqlParameter[] sqlParams = new SqlParameter[] {
-                    new SqlParameter("@id_cliente", id_cliente),
-                    new SqlParameter("@id_livro", id_livro),
-                    new SqlParameter("@data_compra", data_compra)
+                 new SqlParameter("@data_compra", data_compra),
+                 new SqlParameter("@titulo", titulo),
+                 new SqlParameter("@autor", autor),
+                 new SqlParameter("@preco", preco),
+                 new SqlParameter("@estado_livro", estado_livro),
+                 new SqlParameter("@id_livro", id_livro),
+                 new SqlParameter("@Id_Utilizador", Id_Utilizador),
                 };
-                return dal.executarNonQuery("INSERT into Historico_de_compras (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+
+                // Executamos o INSERT mapeando cada coluna ao seu respetivo parâmetro
+                return dal.executarNonQuery(
+                    "INSERT into Historico_Compra ( Data_Compra, Titulo, Autor, Preço, Estado_Livro,Id_Livro,Id_Utilizador) " +
+                    "VALUES (@data_compra, @titulo, @autor, @preco, @estado_livro, @id_livro, @Id_Utilizador)",
+                    sqlParams);
             }
+
 
             // Renomeado para evitar duplicidade
-            public static DataTable LoadHistoricoCompras()
+            public static DataTable LoadHistoricoComprasPorUtilizador(int Id_Utilizador)
             {
-                DataTable dal = new DataTable();
-                return dal;
+                DAL dal = new DAL();
+
+                // Criamos o parâmetro baseado no ID do cliente logado
+                SqlParameter[] sqlParams = new SqlParameter[] {
+                new SqlParameter("@Id_Utilizador", Id_Utilizador)
+                };
+
+                // CORREÇÃO: Mudado de Historico_do_compras para Historico_de_compras
+                string query = "SELECT Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro " +
+                               "FROM Historico_Compra WHERE Id_Utilizador = @Id_Utilizador";
+
+                // Chamada ao método correto da tua DAL que preenche a DataTable
+                DataTable dt = dal.executarReader(query, sqlParams);
+
+                return dt;
             }
 
-            static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Date_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador)
+            static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Data_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[] {
                     new SqlParameter("@Estado_Emprestimo", Estado_Emprestimo),
-                    new SqlParameter("@Date_Entrega", Date_Entrega),
+                    new SqlParameter("@Date_Entrega", Data_Entrega),
                     new SqlParameter("@Data_Prevista", Data_Prevista),
                     new SqlParameter("@Data_Levantamento", Data_Levantamento),
                     new SqlParameter("@Id_Livro", Id_Livro),
                     new SqlParameter("@Id_Utilizador", Id_Utilizador)
                 };
                 return dal.executarNonQuery(
-                    "INSERT into HistoricoEmp (Estado_Emprestimo, Date_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador) VALUES(@Estado_Emprestimo, @Date_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador)",
+                    "INSERT into HistoricoEmp (Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador) VALUES(@Estado_Emprestimo, @Data_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador)",
                     sqlParams);
             }
 
             // Renomeado para evitar duplicidade
-            public static DataTable LoadHistoricoEmp()
+            public static DataTable LoadHistoricoEmpPorUtilizador(int idUtilizador)
             {
-                DataTable dal = new DataTable();
-                return dal;
+                DAL dal = new DAL();
+
+                // Criamos o parâmetro corretamente
+                SqlParameter[] sqlParams = new SqlParameter[] {
+                new SqlParameter("@Id_Utilizador", idUtilizador)
+                };
+
+                // Montamos a query SQL com o filtro WHERE
+                string query = "SELECT Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador " +
+                               "FROM HistoricoEmp WHERE Id_Utilizador = @Id_Utilizador";
+
+                // CORREÇÃO: Chamamos o método correto da tua DAL -> executarConsultasSelect
+                DataTable dt = dal.executarReader(query, sqlParams);
+
+                return dt;
             }
         }
+    
+        
 
         //---------------------------------------------------------------------------------------------------------------
         public class  Devolução
