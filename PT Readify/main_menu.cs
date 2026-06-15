@@ -118,5 +118,11 @@ namespace PT_Readify
             Historico_de_Emprestimos historico = new Historico_de_Emprestimos();
             historico.Show();
         }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            Hstórico_de_compras historico = new Hstórico_de_compras();
+            historico.Show();
+        }
     }
 }

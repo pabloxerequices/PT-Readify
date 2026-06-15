@@ -34,13 +34,12 @@
             this.panelTop = new System.Windows.Forms.Panel();
             this.labelTitulo = new System.Windows.Forms.Label();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.guna2Button5 = new Guna.UI2.WinForms.Guna2Button();
             this.labelTotal = new System.Windows.Forms.Label();
-            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button3 = new Guna.UI2.WinForms.Guna2Button();
             this.panelContent = new System.Windows.Forms.Panel();
-            this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button5 = new Guna.UI2.WinForms.Guna2Button();
             this.dataGridViewHistorico_Emprestimos = new Guna.UI2.WinForms.Guna2DataGridView();
             this.panelTop.SuspendLayout();
             this.panelBottom.SuspendLayout();
@@ -76,7 +75,6 @@
             this.panelBottom.Controls.Add(this.guna2Button5);
             this.panelBottom.Controls.Add(this.labelTotal);
             this.panelBottom.Controls.Add(this.guna2Button4);
-            this.panelBottom.Controls.Add(this.guna2Button1);
             this.panelBottom.Controls.Add(this.guna2Button2);
             this.panelBottom.Controls.Add(this.guna2Button3);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -84,6 +82,19 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1068, 80);
             this.panelBottom.TabIndex = 8;
+            // 
+            // guna2Button5
+            // 
+            this.guna2Button5.BorderRadius = 6;
+            this.guna2Button5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.guna2Button5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.guna2Button5.ForeColor = System.Drawing.Color.White;
+            this.guna2Button5.Location = new System.Drawing.Point(530, 20);
+            this.guna2Button5.Name = "guna2Button5";
+            this.guna2Button5.Size = new System.Drawing.Size(213, 40);
+            this.guna2Button5.TabIndex = 4;
+            this.guna2Button5.Text = "△Crescente";
+            this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
             // 
             // labelTotal
             // 
@@ -95,17 +106,18 @@
             this.labelTotal.Size = new System.Drawing.Size(0, 25);
             this.labelTotal.TabIndex = 0;
             // 
-            // guna2Button1
+            // guna2Button4
             // 
-            this.guna2Button1.BorderRadius = 6;
-            this.guna2Button1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
-            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.guna2Button1.ForeColor = System.Drawing.Color.White;
-            this.guna2Button1.Location = new System.Drawing.Point(72, 20);
-            this.guna2Button1.Name = "guna2Button1";
-            this.guna2Button1.Size = new System.Drawing.Size(193, 40);
-            this.guna2Button1.TabIndex = 1;
-            this.guna2Button1.Text = "+ Adicionar";
+            this.guna2Button4.BorderRadius = 6;
+            this.guna2Button4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.guna2Button4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.guna2Button4.ForeColor = System.Drawing.Color.White;
+            this.guna2Button4.Location = new System.Drawing.Point(289, 20);
+            this.guna2Button4.Name = "guna2Button4";
+            this.guna2Button4.Size = new System.Drawing.Size(213, 40);
+            this.guna2Button4.TabIndex = 3;
+            this.guna2Button4.Text = "▽Decrescente";
+            this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // guna2Button2
             // 
@@ -113,7 +125,7 @@
             this.guna2Button2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.guna2Button2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button2.ForeColor = System.Drawing.Color.White;
-            this.guna2Button2.Location = new System.Drawing.Point(466, 20);
+            this.guna2Button2.Location = new System.Drawing.Point(26, 20);
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(213, 40);
             this.guna2Button2.TabIndex = 2;
@@ -144,34 +156,11 @@
             this.panelContent.Size = new System.Drawing.Size(1068, 416);
             this.panelContent.TabIndex = 9;
             // 
-            // guna2Button4
-            // 
-            this.guna2Button4.BorderRadius = 6;
-            this.guna2Button4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
-            this.guna2Button4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Location = new System.Drawing.Point(319, 20);
-            this.guna2Button4.Name = "guna2Button4";
-            this.guna2Button4.Size = new System.Drawing.Size(213, 40);
-            this.guna2Button4.TabIndex = 3;
-            this.guna2Button4.Text = "▽Decrescente";
-            this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
-            // 
-            // guna2Button5
-            // 
-            this.guna2Button5.BorderRadius = 6;
-            this.guna2Button5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
-            this.guna2Button5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.guna2Button5.ForeColor = System.Drawing.Color.White;
-            this.guna2Button5.Location = new System.Drawing.Point(559, 20);
-            this.guna2Button5.Name = "guna2Button5";
-            this.guna2Button5.Size = new System.Drawing.Size(213, 40);
-            this.guna2Button5.TabIndex = 4;
-            this.guna2Button5.Text = "△Crescente";
-            this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
-            // 
             // dataGridViewHistorico_Emprestimos
             // 
+            this.dataGridViewHistorico_Emprestimos.AllowUserToAddRows = false;
+            this.dataGridViewHistorico_Emprestimos.AllowUserToDeleteRows = false;
+            this.dataGridViewHistorico_Emprestimos.AllowUserToOrderColumns = true;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             this.dataGridViewHistorico_Emprestimos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -182,7 +171,8 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewHistorico_Emprestimos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewHistorico_Emprestimos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewHistorico_Emprestimos.ColumnHeadersHeight = 4;
+            this.dataGridViewHistorico_Emprestimos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -192,17 +182,16 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridViewHistorico_Emprestimos.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewHistorico_Emprestimos.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.dataGridViewHistorico_Emprestimos.Location = new System.Drawing.Point(15, 18);
+            this.dataGridViewHistorico_Emprestimos.Location = new System.Drawing.Point(12, 6);
             this.dataGridViewHistorico_Emprestimos.Name = "dataGridViewHistorico_Emprestimos";
             this.dataGridViewHistorico_Emprestimos.RowHeadersVisible = false;
-            this.dataGridViewHistorico_Emprestimos.Size = new System.Drawing.Size(1041, 392);
+            this.dataGridViewHistorico_Emprestimos.Size = new System.Drawing.Size(1044, 404);
             this.dataGridViewHistorico_Emprestimos.TabIndex = 0;
             this.dataGridViewHistorico_Emprestimos.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.dataGridViewHistorico_Emprestimos.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataGridViewHistorico_Emprestimos.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewHistorico_Emprestimos.ThemeStyle.HeaderStyle.Height = 4;
             this.dataGridViewHistorico_Emprestimos.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataGridViewHistorico_Emprestimos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewHistorico_Emprestimos_CellContentClick_1);
+            this.dataGridViewHistorico_Emprestimos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewHistorico_Emprestimos_CellContentClick_2);
             // 
             // Historico_de_Emprestimos
             // 
@@ -231,7 +220,6 @@
         private System.Windows.Forms.Label labelTitulo;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Label labelTotal;
-        private Guna.UI2.WinForms.Guna2Button guna2Button1;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
         private Guna.UI2.WinForms.Guna2Button guna2Button3;
         private System.Windows.Forms.Panel panelContent;

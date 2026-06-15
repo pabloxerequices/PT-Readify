@@ -20,7 +20,7 @@ namespace PT_Readify
 
         private void Historico_de_Emprestimos_Load(object sender, EventArgs e)
         {
-           dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmp();
+            dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmpPorUtilizador(1);
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
         }
@@ -41,7 +41,7 @@ namespace PT_Readify
         private void guna2Button4_Click(object sender, EventArgs e)
         {
             // Obtém o DataTable do histórico
-            var historico = BLL.Historicos.LoadHistoricoEmp();
+            var historico = BLL.Historicos.LoadHistoricoEmpPorUtilizador(1);
 
             // CORRIGIDO: Valida se é nulo, vazio ou se NÃO (!) contém a coluna correta
             if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Emprestimo"))
@@ -65,7 +65,7 @@ namespace PT_Readify
         private void guna2Button5_Click(object sender, EventArgs e)
         {
             // Obtém o DataTable do histórico
-            var historico = BLL.Historicos.LoadHistoricoEmp();
+            var historico = BLL.Historicos.LoadHistoricoEmpPorUtilizador(1);
 
             // CORRIGIDO: Valida se é nulo, vazio ou se NÃO (!) contém a coluna correta
             if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Emprestimo"))
@@ -94,7 +94,12 @@ namespace PT_Readify
 
         private void dataGridViewHistorico_Emprestimos_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmp();
+            dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmpPorUtilizador(1);
+        }
+
+        private void dataGridViewHistorico_Emprestimos_CellContentClick_2(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
