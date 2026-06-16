@@ -88,14 +88,12 @@
             // 
             // button6
             // 
-            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button6.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button6.Location = new System.Drawing.Point(209, 12);
+            this.button6.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Location = new System.Drawing.Point(26, 690);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(51, 20);
+            this.button6.Size = new System.Drawing.Size(216, 54);
             this.button6.TabIndex = 21;
-            this.button6.Text = "Ajuda";
+            this.button6.Text = "Assistente";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click_1);
             // 
