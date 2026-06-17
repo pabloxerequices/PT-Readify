@@ -74,38 +74,51 @@ namespace PT_Readify
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // GUARDAR OS VALORES ATUAIS (Antes de permitir a edição)
-            // Isto serve para compararmos no botão de Guardar se algo realmente mudou
-            nomeOriginal = textBox1.Text;
-            emailOriginal = textBox2.Text;
-            passOriginal = textBox3.Text;
-            telefoneOriginal = textBox4.Text;
-            prefixoOriginal = comboBox1.Text;
-
-            // 1. Entrar no modo de edição
-            modoEdicao = true;
-
-            // 2. Gestão de Visibilidade (image_85e15b.jpg)
-            // Esconde o botão de Editar e mostra o botão de Guardar (button3)
-            button3.Visible = true;
-            button1.Visible = false;
-
-            // 3. Desbloquear os campos para escrita
-            textBox1.ReadOnly = false; // Campo Nome
-            textBox2.ReadOnly = false; // Campo Email
-            textBox3.ReadOnly = false; // Campo Palavra-Passe
-            textBox4.ReadOnly = false; // Campo Telefone
-            comboBox1.Enabled = true; // Campo Prefixo de Telefone
-
-            // 4. Feedback visual (Opcional: mudar a cor de fundo para indicar que é editável)
-            textBox1.BackColor = Color.White;
-            textBox2.BackColor = Color.White;
-            textBox3.BackColor = Color.White;
-            textBox4.BackColor = Color.White;
-            comboBox1.BackColor = Color.White;
+            
+            if (globais.confirmacao == false)
+            {
+                MessageBox.Show("É necessário confirmar a sua identidade para ativar o modo de edição.", "Confirmação Necessária", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                new confirmar_perfil().ShowDialog(); // Mostrar a janela de confirmação novamente
+                // Resetar a confirmação para evitar que o modo de edição seja ativado sem querer
+            }
+            else
+            {
 
 
-            MessageBox.Show("Modo de edição ativado. Agora pode alterar os seus dados e clicar na foto de perfil.");
+                // GUARDAR OS VALORES ATUAIS (Antes de permitir a edição)
+                // Isto serve para compararmos no botão de Guardar se algo realmente mudou
+                nomeOriginal = textBox1.Text;
+                emailOriginal = textBox2.Text;
+                passOriginal = textBox3.Text;
+                telefoneOriginal = textBox4.Text;
+                prefixoOriginal = comboBox1.Text;
+
+                // 1. Entrar no modo de edição
+                modoEdicao = true;
+
+                // 2. Gestão de Visibilidade (image_85e15b.jpg)
+                // Esconde o botão de Editar e mostra o botão de Guardar (button3)
+                button3.Visible = true;
+                button1.Visible = false;
+
+                // 3. Desbloquear os campos para escrita
+                textBox1.ReadOnly = false; // Campo Nome
+                textBox2.ReadOnly = false; // Campo Email
+                textBox3.ReadOnly = false; // Campo Palavra-Passe
+                textBox4.ReadOnly = false; // Campo Telefone
+                comboBox1.Enabled = true; // Campo Prefixo de Telefone
+
+                // 4. Feedback visual (Opcional: mudar a cor de fundo para indicar que é editável)
+                textBox1.BackColor = Color.White;
+                textBox2.BackColor = Color.White;
+                textBox3.BackColor = Color.White;
+                textBox4.BackColor = Color.White;
+                comboBox1.BackColor = Color.White;
+
+
+                MessageBox.Show("Modo de edição ativado. Agora pode alterar os seus dados e clicar na foto de perfil.");
+                globais.confirmacao = false; // Resetar a confirmação para evitar que o modo de edição seja ativado sem querer no futuro
+            }
         }
 
         private void pictureBox6_Click(object sender, EventArgs e)

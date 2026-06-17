@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 namespace PT_Readify
 {
     internal class globais
-    {
+    {//perfil
+        static public bool confirmacao = false;
+        static public string profilepassword = "";
         static public string profileEmail = "";
         static public bool iisAdmin = false;
         static public int id_utilizador = 0;
+        
 
         // Lista completa de prefixos da Europa
         static public string[] prefixosEuropa = {

@@ -50,6 +50,7 @@ namespace PT_Readify
                             globais.iisAdmin = true;
 
                             globais.profileEmail = textBox1.Text;
+                            globais.profilepassword = textBox2.Text;
 
                             globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
 
@@ -62,6 +63,7 @@ namespace PT_Readify
                             MessageBox.Show("Bem Vindo " + dt.Rows[0][3].ToString());
 
                             globais.profileEmail = textBox1.Text;
+                            globais.profilepassword = textBox2.Text;
 
                             globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
 
