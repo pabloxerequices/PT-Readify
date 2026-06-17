@@ -25,7 +25,14 @@ namespace PT_Readify
 
         private void Hstórico_de_compras_Load(object sender, EventArgs e)
         {
-            guna2DataGridView1Historico_Compras.DataSource = BLL.Historicos.LoadHistoricoEmpPorUtilizador(1);
+            if (globais.id_utilizador <= 0)
+            {
+                MessageBox.Show("Inicie sessão para ver o histórico de compras.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Close();
+                return;
+            }
+
+            guna2DataGridView1Historico_Compras.DataSource = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
         }
@@ -50,7 +57,7 @@ namespace PT_Readify
         private void guna2Button4_Click(object sender, EventArgs e)
         {
             // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(1);
+            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
 
             // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
             if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))
@@ -79,7 +86,7 @@ namespace PT_Readify
         private void guna2Button5_Click(object sender, EventArgs e)
         {
             // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(1);
+            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
 
             // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
             if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))

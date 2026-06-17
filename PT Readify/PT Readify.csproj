@@ -71,6 +71,13 @@
     <Compile Include="Carrinho.Designer.cs">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChatConversationEngine.cs" />
+    <Compile Include="Chat_Bot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Chat_Bot.Designer.cs">
+      <DependentUpon>Chat_Bot.cs</DependentUpon>
+    </Compile>
     <Compile Include="DAL.cs" />
     <Compile Include="Detalhes_Livro.cs">
       <SubType>Form</SubType>
@@ -189,6 +196,9 @@
     </Compile>
     <EmbeddedResource Include="Carrinho.resx">
       <DependentUpon>Carrinho.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Chat_Bot.resx">
+      <DependentUpon>Chat_Bot.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configurações.resx">
       <DependentUpon>Configurações.cs</DependentUpon>

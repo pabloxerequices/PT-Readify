@@ -27,7 +27,12 @@ namespace PT_Readify
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            globais.id_utilizador = 0;
+        }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new Chat_Bot().Show();
         }
 
         private void button2_Click(object sender, EventArgs e)

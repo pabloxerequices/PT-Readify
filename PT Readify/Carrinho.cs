@@ -263,8 +263,20 @@ namespace PT_Readify
             {
                 try
                 {
-                    // Aqui você pode adicionar a lógica de salvar a compra na BD
-                    MessageBox.Show("Compra finalizada com sucesso!", "Sucesso");
+                    if (globais.id_utilizador <= 0)
+                    {
+                        MessageBox.Show("Inicie sessão para finalizar a compra.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    foreach (DataRow row in carrinhoTable.Rows)
+                    {
+                        int idLivro = Convert.ToInt32(row["Id_Livro"]);
+                        int quantidade = Convert.ToInt32(row["Quantidade"]);
+                        BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
+                    }
+
+                    MessageBox.Show("Compra finalizada com sucesso! Os livros foram adicionados ao histórico de compras.", "Sucesso");
                     carrinhoTable.Clear();
                     AtualizarTotalGeral();
                 }

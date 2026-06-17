@@ -61,8 +61,7 @@ namespace PT_Readify
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
-
+            new Requesitar_livros().Show();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -93,7 +92,7 @@ namespace PT_Readify
 
         private void button6_Click_1(object sender, EventArgs e)
         {
-            OpenUrl("https://siteptreadify.vercel.app/");
+            new Chat_Bot().Show();
         }
 
         private void OpenUrl(string url)

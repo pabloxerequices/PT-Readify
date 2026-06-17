@@ -269,7 +269,7 @@ namespace BusinessLogicLayer
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[] {
                     new SqlParameter("@Estado_Emprestimo", Estado_Emprestimo),
-                    new SqlParameter("@Date_Entrega", Data_Entrega),
+                    new SqlParameter("@Data_Entrega", Data_Entrega),
                     new SqlParameter("@Data_Prevista", Data_Prevista),
                     new SqlParameter("@Data_Levantamento", Data_Levantamento),
                     new SqlParameter("@Id_Livro", Id_Livro),
@@ -280,24 +280,63 @@ namespace BusinessLogicLayer
                     sqlParams);
             }
 
-            // Renomeado para evitar duplicidade
+            public static void RegistrarCompra(int idUtilizador, int idLivro, int quantidade)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("É necessário iniciar sessão para comprar.");
+
+                if (quantidade <= 0)
+                    return;
+
+                DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
+                if (dtLivro == null || dtLivro.Rows.Count == 0)
+                    throw new Exception("Livro não encontrado.");
+
+                DataRow livro = dtLivro.Rows[0];
+                string titulo = livro["Titulo"]?.ToString() ?? "";
+                string autor = livro["Autor"]?.ToString() ?? "";
+                int preco = Convert.ToInt32(livro["Preço"]);
+                string estado = livro["Estado_Livro"]?.ToString() ?? "";
+                DateTime dataCompra = DateTime.Now;
+
+                for (int i = 0; i < quantidade; i++)
+                {
+                    Compra.insertCompra(idUtilizador, idLivro, dataCompra);
+                    insertHistorico_de_compras(dataCompra, titulo, autor, preco, estado, idLivro, idUtilizador);
+                }
+            }
+
+            public static void RegistrarEmprestimo(int idUtilizador, int idLivro)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("É necessário iniciar sessão para requisitar livros.");
+
+                DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
+                if (dtLivro == null || dtLivro.Rows.Count == 0)
+                    throw new Exception("Livro não encontrado.");
+
+                DateTime levantamento = DateTime.Now;
+                DateTime prevista = levantamento.AddDays(14);
+                DateTime entregaPendente = new DateTime(1900, 1, 1);
+
+                insertHistoricoEmp("Ativo", entregaPendente, prevista, levantamento, idLivro, idUtilizador);
+            }
+
             public static DataTable LoadHistoricoEmpPorUtilizador(int idUtilizador)
             {
                 DAL dal = new DAL();
 
-                // Criamos o parâmetro corretamente
                 SqlParameter[] sqlParams = new SqlParameter[] {
                 new SqlParameter("@Id_Utilizador", idUtilizador)
                 };
 
-                // Montamos a query SQL com o filtro WHERE
-                string query = "SELECT Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador " +
-                               "FROM HistoricoEmp WHERE Id_Utilizador = @Id_Utilizador";
+                string query = "SELECT h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, h.Data_Levantamento, " +
+                               "h.Id_Livro, h.Id_Utilizador, l.Titulo, l.Autor " +
+                               "FROM HistoricoEmp h " +
+                               "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                               "WHERE h.Id_Utilizador = @Id_Utilizador";
 
-                // CORREÇÃO: Chamamos o método correto da tua DAL -> executarConsultasSelect
-                DataTable dt = dal.executarReader(query, sqlParams);
-
-                return dt;
+                return dal.executarReader(query, sqlParams);
             }
         }
     
