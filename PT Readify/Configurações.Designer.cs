@@ -1,403 +1,211 @@
 ﻿namespace PT_Readify
 {
-    partial class Configurações
+    partial class Configuracoes
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Panel pnlContent;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        private Guna.UI2.WinForms.Guna2ComboBox cfgComboTheme;
+        private Guna.UI2.WinForms.Guna2ToggleSwitch cfgToggleFullscreen;
+        private System.Windows.Forms.Label lblFullscreen;
+        private System.Windows.Forms.Label lblTheme;
+
+        private System.Windows.Forms.Label lblFont;
+        private Guna.UI2.WinForms.Guna2ComboBox cfgComboFont;
+        private System.Windows.Forms.Label lblFontSize;
+        private Guna.UI2.WinForms.Guna2NumericUpDown cfgNumFontSize;
+
+        private System.Windows.Forms.Label lblAutoLogout;
+        private Guna.UI2.WinForms.Guna2NumericUpDown cfgNumAutoLogout;
+
+        private System.Windows.Forms.Label lblLanguage;
+        private Guna.UI2.WinForms.Guna2ComboBox cfgComboLanguage;
+
+        private Guna.UI2.WinForms.Guna2Button btnSalvar;
+        private Guna.UI2.WinForms.Guna2Button btnCancelar;
+        private Guna.UI2.WinForms.Guna2Button btnRestaurar;
+        private Guna.UI2.WinForms.Guna2Button btnVoltarLingua;
+
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            this.headerPanel = new Guna.UI2.WinForms.Guna2Panel();
-            this.headerLabel = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.containerPanel = new Guna.UI2.WinForms.Guna2Panel();
-            this.groupTema = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTema = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.toggleTemaEscuro = new Guna.UI2.WinForms.Guna2ToggleSwitch();
-            this.lblFullscreen = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.chkFullscreen = new Guna.UI2.WinForms.Guna2ToggleSwitch();
-            this.groupVisual = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblFonte = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.comboFont = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.lblTextoTam = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.trackTextSize = new Guna.UI2.WinForms.Guna2TrackBar();
-            this.groupAcess = new Guna.UI2.WinForms.Guna2Panel();
-            this.lblTTSRate = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.trackTTSRate = new Guna.UI2.WinForms.Guna2TrackBar();
-            this.lbTDD = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.comboTTSVoices = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.groupAvancadas = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnLimparHistorico = new Guna.UI2.WinForms.Guna2Button();
-            this.btnRestaurarPadrao = new Guna.UI2.WinForms.Guna2Button();
-            this.actionsPanel = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnSalvarConfig = new Guna.UI2.WinForms.Guna2Button();
+            this.components = new System.ComponentModel.Container();
+
+            // instantiate
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.pnlContent = new System.Windows.Forms.Panel();
+
+            this.lblTheme = new System.Windows.Forms.Label();
+            this.cfgComboTheme = new Guna.UI2.WinForms.Guna2ComboBox();
+
+            this.lblFullscreen = new System.Windows.Forms.Label();
+            this.cfgToggleFullscreen = new Guna.UI2.WinForms.Guna2ToggleSwitch();
+
+            this.lblFont = new System.Windows.Forms.Label();
+            this.cfgComboFont = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.lblFontSize = new System.Windows.Forms.Label();
+            this.cfgNumFontSize = new Guna.UI2.WinForms.Guna2NumericUpDown();
+
+            this.lblAutoLogout = new System.Windows.Forms.Label();
+            this.cfgNumAutoLogout = new Guna.UI2.WinForms.Guna2NumericUpDown();
+
+            this.lblLanguage = new System.Windows.Forms.Label();
+            this.cfgComboLanguage = new Guna.UI2.WinForms.Guna2ComboBox();
+
+            this.btnSalvar = new Guna.UI2.WinForms.Guna2Button();
             this.btnCancelar = new Guna.UI2.WinForms.Guna2Button();
-            this.headerPanel.SuspendLayout();
-            this.containerPanel.SuspendLayout();
-            this.groupTema.SuspendLayout();
-            this.groupVisual.SuspendLayout();
-            this.groupAcess.SuspendLayout();
-            this.groupAvancadas.SuspendLayout();
-            this.actionsPanel.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // headerPanel
-            // 
-            this.headerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.headerPanel.Controls.Add(this.headerLabel);
-            this.headerPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.headerPanel.Location = new System.Drawing.Point(0, 0);
-            this.headerPanel.Name = "headerPanel";
-            this.headerPanel.Size = new System.Drawing.Size(720, 72);
-            this.headerPanel.TabIndex = 0;
-            // 
-            // headerLabel
-            // 
-            this.headerLabel.BackColor = System.Drawing.Color.Transparent;
-            this.headerLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 16F, System.Drawing.FontStyle.Bold);
-            this.headerLabel.ForeColor = System.Drawing.Color.White;
-            this.headerLabel.Location = new System.Drawing.Point(18, 18);
-            this.headerLabel.Name = "headerLabel";
-            this.headerLabel.Size = new System.Drawing.Size(140, 32);
-            this.headerLabel.TabIndex = 0;
-            this.headerLabel.Text = "Configurações";
-            // 
-            // containerPanel
-            // 
-            this.containerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(245)))), ((int)(((byte)(245)))));
-            this.containerPanel.Controls.Add(this.groupTema);
-            this.containerPanel.Controls.Add(this.groupVisual);
-            this.containerPanel.Controls.Add(this.groupAcess);
-            this.containerPanel.Controls.Add(this.groupAvancadas);
-            this.containerPanel.Controls.Add(this.actionsPanel);
-            this.containerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.containerPanel.Location = new System.Drawing.Point(0, 72);
-            this.containerPanel.Name = "containerPanel";
-            this.containerPanel.Padding = new System.Windows.Forms.Padding(18);
-            this.containerPanel.Size = new System.Drawing.Size(720, 649);
-            this.containerPanel.TabIndex = 1;
-            // 
-            // groupTema
-            // 
-            this.groupTema.BackColor = System.Drawing.Color.White;
-            this.groupTema.BorderRadius = 8;
-            this.groupTema.Controls.Add(this.lblTema);
-            this.groupTema.Controls.Add(this.toggleTemaEscuro);
-            this.groupTema.Controls.Add(this.lblFullscreen);
-            this.groupTema.Controls.Add(this.chkFullscreen);
-            this.groupTema.Location = new System.Drawing.Point(18, 18);
-            this.groupTema.Name = "groupTema";
-            this.groupTema.Size = new System.Drawing.Size(684, 80);
-            this.groupTema.TabIndex = 0;
-            // 
-            // lblTema
-            // 
-            this.lblTema.BackColor = System.Drawing.Color.Transparent;
-            this.lblTema.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTema.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lblTema.Location = new System.Drawing.Point(16, 20);
-            this.lblTema.Name = "lblTema";
-            this.lblTema.Size = new System.Drawing.Size(90, 22);
-            this.lblTema.TabIndex = 0;
-            this.lblTema.Text = "Tema Escuro:";
-            // 
-            // toggleTemaEscuro
-            // 
-            this.toggleTemaEscuro.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.toggleTemaEscuro.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
-            this.toggleTemaEscuro.CheckedState.InnerBorderColor = System.Drawing.Color.White;
-            this.toggleTemaEscuro.CheckedState.InnerColor = System.Drawing.Color.White;
-            this.toggleTemaEscuro.Location = new System.Drawing.Point(580, 20);
-            this.toggleTemaEscuro.Name = "toggleTemaEscuro";
-            this.toggleTemaEscuro.Size = new System.Drawing.Size(42, 20);
-            this.toggleTemaEscuro.TabIndex = 1;
-            this.toggleTemaEscuro.CheckedChanged += new System.EventHandler(this.toggleTemaEscuro_CheckedChanged);
-            // 
-            // lblFullscreen
-            // 
-            this.lblFullscreen.BackColor = System.Drawing.Color.Transparent;
-            this.lblFullscreen.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblFullscreen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lblFullscreen.Location = new System.Drawing.Point(16, 44);
-            this.lblFullscreen.Name = "lblFullscreen";
-            this.lblFullscreen.Size = new System.Drawing.Size(164, 22);
-            this.lblFullscreen.TabIndex = 2;
-            this.lblFullscreen.Text = "Modo Leitura Fullscreen:";
-            // 
-            // chkFullscreen
-            // 
-            this.chkFullscreen.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.chkFullscreen.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
-            this.chkFullscreen.CheckedState.InnerBorderColor = System.Drawing.Color.White;
-            this.chkFullscreen.CheckedState.InnerColor = System.Drawing.Color.White;
-            this.chkFullscreen.Location = new System.Drawing.Point(580, 46);
-            this.chkFullscreen.Name = "chkFullscreen";
-            this.chkFullscreen.Size = new System.Drawing.Size(42, 20);
-            this.chkFullscreen.TabIndex = 3;
-            // 
-            // groupVisual
-            // 
-            this.groupVisual.BackColor = System.Drawing.Color.White;
-            this.groupVisual.BorderRadius = 8;
-            this.groupVisual.Controls.Add(this.lblFonte);
-            this.groupVisual.Controls.Add(this.comboFont);
-            this.groupVisual.Controls.Add(this.lblTextoTam);
-            this.groupVisual.Controls.Add(this.trackTextSize);
-            this.groupVisual.Location = new System.Drawing.Point(18, 110);
-            this.groupVisual.Name = "groupVisual";
-            this.groupVisual.Size = new System.Drawing.Size(684, 120);
-            this.groupVisual.TabIndex = 2;
-            // 
-            // lblFonte
-            // 
-            this.lblFonte.BackColor = System.Drawing.Color.Transparent;
-            this.lblFonte.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblFonte.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lblFonte.Location = new System.Drawing.Point(16, 16);
-            this.lblFonte.Name = "lblFonte";
-            this.lblFonte.Size = new System.Drawing.Size(43, 22);
-            this.lblFonte.TabIndex = 0;
-            this.lblFonte.Text = "Fonte:";
-            // 
-            // comboFont
-            // 
-            this.comboFont.BackColor = System.Drawing.Color.Transparent;
-            this.comboFont.BorderRadius = 6;
-            this.comboFont.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboFont.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.comboFont.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.comboFont.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.comboFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.comboFont.ItemHeight = 30;
-            this.comboFont.Location = new System.Drawing.Point(240, 12);
-            this.comboFont.Name = "comboFont";
-            this.comboFont.Size = new System.Drawing.Size(300, 36);
-            this.comboFont.TabIndex = 1;
-            // 
-            // lblTextoTam
-            // 
-            this.lblTextoTam.BackColor = System.Drawing.Color.Transparent;
-            this.lblTextoTam.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTextoTam.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lblTextoTam.Location = new System.Drawing.Point(16, 64);
-            this.lblTextoTam.Name = "lblTextoTam";
-            this.lblTextoTam.Size = new System.Drawing.Size(131, 22);
-            this.lblTextoTam.TabIndex = 2;
-            this.lblTextoTam.Text = "Tamanho do Texto:";
-            // 
-            // trackTextSize
-            // 
-            this.trackTextSize.BackColor = System.Drawing.Color.Transparent;
-            this.trackTextSize.Location = new System.Drawing.Point(240, 64);
-            this.trackTextSize.Name = "trackTextSize";
-            this.trackTextSize.Size = new System.Drawing.Size(300, 23);
-            this.trackTextSize.TabIndex = 3;
-            this.trackTextSize.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
-            this.trackTextSize.Value = 14;
-            // 
-            // groupAcess
-            // 
-            this.groupAcess.BackColor = System.Drawing.Color.White;
-            this.groupAcess.BorderRadius = 8;
-            this.groupAcess.Controls.Add(this.lblTTSRate);
-            this.groupAcess.Controls.Add(this.trackTTSRate);
-            this.groupAcess.Controls.Add(this.lbTDD);
-            this.groupAcess.Controls.Add(this.comboTTSVoices);
-            this.groupAcess.Location = new System.Drawing.Point(18, 242);
-            this.groupAcess.Name = "groupAcess";
-            this.groupAcess.Size = new System.Drawing.Size(684, 120);
-            this.groupAcess.TabIndex = 3;
-            // 
-            // lblTTSRate
-            // 
-            this.lblTTSRate.BackColor = System.Drawing.Color.Transparent;
-            this.lblTTSRate.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblTTSRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lblTTSRate.Location = new System.Drawing.Point(16, 64);
-            this.lblTTSRate.Name = "lblTTSRate";
-            this.lblTTSRate.Size = new System.Drawing.Size(151, 22);
-            this.lblTTSRate.TabIndex = 2;
-            this.lblTTSRate.Text = "Velocidade da Leitura:";
-            // 
-            // trackTTSRate
-            // 
-            this.trackTTSRate.BackColor = System.Drawing.Color.Transparent;
-            this.trackTTSRate.Location = new System.Drawing.Point(240, 64);
-            this.trackTTSRate.Name = "trackTTSRate";
-            this.trackTTSRate.Size = new System.Drawing.Size(300, 23);
-            this.trackTTSRate.TabIndex = 3;
-            this.trackTTSRate.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
-            this.trackTTSRate.Value = 0;
-            // 
-            // lbTDD
-            // 
-            this.lbTDD.BackColor = System.Drawing.Color.Transparent;
-            this.lbTDD.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lbTDD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(135)))), ((int)(((byte)(140)))));
-            this.lbTDD.Location = new System.Drawing.Point(16, 16);
-            this.lbTDD.Name = "lbTDD";
-            this.lbTDD.Size = new System.Drawing.Size(206, 22);
-            this.lbTDD.TabIndex = 0;
-            this.lbTDD.Text = "Temporizador de Desconexão:";
-            // 
-            // comboTTSVoices
-            // 
-            this.comboTTSVoices.BackColor = System.Drawing.Color.Transparent;
-            this.comboTTSVoices.BorderRadius = 6;
-            this.comboTTSVoices.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboTTSVoices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTTSVoices.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.comboTTSVoices.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.comboTTSVoices.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.comboTTSVoices.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
-            this.comboTTSVoices.ItemHeight = 30;
-            this.comboTTSVoices.Location = new System.Drawing.Point(240, 12);
-            this.comboTTSVoices.Name = "comboTTSVoices";
-            this.comboTTSVoices.Size = new System.Drawing.Size(300, 36);
-            this.comboTTSVoices.TabIndex = 1;
-            // 
-            // groupAvancadas
-            // 
-            this.groupAvancadas.BackColor = System.Drawing.Color.White;
-            this.groupAvancadas.BorderRadius = 8;
-            this.groupAvancadas.Controls.Add(this.btnLimparHistorico);
-            this.groupAvancadas.Controls.Add(this.btnRestaurarPadrao);
-            this.groupAvancadas.Location = new System.Drawing.Point(18, 374);
-            this.groupAvancadas.Name = "groupAvancadas";
-            this.groupAvancadas.Size = new System.Drawing.Size(684, 120);
-            this.groupAvancadas.TabIndex = 4;
-            // 
-            // btnLimparHistorico
-            // 
-            this.btnLimparHistorico.BorderRadius = 8;
-            this.btnLimparHistorico.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(195)))), ((int)(((byte)(85)))));
-            this.btnLimparHistorico.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnLimparHistorico.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(70)))), ((int)(((byte)(50)))));
-            this.btnLimparHistorico.Location = new System.Drawing.Point(18, 20);
-            this.btnLimparHistorico.Name = "btnLimparHistorico";
-            this.btnLimparHistorico.Size = new System.Drawing.Size(300, 40);
-            this.btnLimparHistorico.TabIndex = 0;
-            this.btnLimparHistorico.Text = "Limpar Histórico de Leitura";
-            // 
-            // btnRestaurarPadrao
-            // 
-            this.btnRestaurarPadrao.BorderRadius = 8;
-            this.btnRestaurarPadrao.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.btnRestaurarPadrao.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnRestaurarPadrao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.btnRestaurarPadrao.Location = new System.Drawing.Point(18, 70);
-            this.btnRestaurarPadrao.Name = "btnRestaurarPadrao";
-            this.btnRestaurarPadrao.Size = new System.Drawing.Size(300, 36);
-            this.btnRestaurarPadrao.TabIndex = 1;
-            this.btnRestaurarPadrao.Text = "Restaurar Padrões";
-            // 
-            // actionsPanel
-            // 
-            this.actionsPanel.BackColor = System.Drawing.Color.Transparent;
-            this.actionsPanel.Controls.Add(this.btnSalvarConfig);
-            this.actionsPanel.Controls.Add(this.btnCancelar);
-            this.actionsPanel.Location = new System.Drawing.Point(18, 510);
-            this.actionsPanel.Name = "actionsPanel";
-            this.actionsPanel.Size = new System.Drawing.Size(684, 64);
-            this.actionsPanel.TabIndex = 5;
-            // 
-            // btnSalvarConfig
-            // 
-            this.btnSalvarConfig.BorderRadius = 8;
-            this.btnSalvarConfig.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(139)))), ((int)(((byte)(147)))));
-            this.btnSalvarConfig.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSalvarConfig.ForeColor = System.Drawing.Color.White;
-            this.btnSalvarConfig.Location = new System.Drawing.Point(366, 12);
-            this.btnSalvarConfig.Name = "btnSalvarConfig";
-            this.btnSalvarConfig.Size = new System.Drawing.Size(168, 40);
-            this.btnSalvarConfig.TabIndex = 0;
-            this.btnSalvarConfig.Text = "Guardar";
-            // 
-            // btnCancelar
-            // 
-            this.btnCancelar.BorderRadius = 8;
-            this.btnCancelar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnCancelar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.btnCancelar.Location = new System.Drawing.Point(540, 12);
-            this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(162, 40);
-            this.btnCancelar.TabIndex = 1;
+            this.btnRestaurar = new Guna.UI2.WinForms.Guna2Button();
+            this.btnVoltarLingua = new Guna.UI2.WinForms.Guna2Button();
+
+            // pnlTop
+            this.pnlTop.BackColor = System.Drawing.Color.FromArgb(33, 41, 52);
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Height = 64;
+            this.pnlTop.Controls.Add(this.lblTitle);
+
+            // lblTitle
+            this.lblTitle.Text = "⚙️ Configurações";
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(16, 14);
+            this.lblTitle.AutoSize = true;
+
+            // pnlContent
+            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContent.BackColor = System.Drawing.Color.FromArgb(240, 242, 245);
+            this.pnlContent.Padding = new System.Windows.Forms.Padding(24);
+
+            // NOTE: Use valores literais; estas posições são estáticas e compatíveis com o Designer.
+            // Theme
+            this.lblTheme.Location = new System.Drawing.Point(24, 20);
+            this.lblTheme.AutoSize = true;
+            this.lblTheme.Text = "Tema:";
+            this.lblTheme.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgComboTheme.Location = new System.Drawing.Point(220, 16);
+            this.cfgComboTheme.Size = new System.Drawing.Size(240, 36);
+            this.cfgComboTheme.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cfgComboTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cfgComboTheme.Font = new System.Drawing.Font("Segoe UI", 9F);
+
+            // Fullscreen
+            this.lblFullscreen.Location = new System.Drawing.Point(24, 68);
+            this.lblFullscreen.AutoSize = true;
+            this.lblFullscreen.Text = "Modo de leitura fullscreen:";
+            this.lblFullscreen.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgToggleFullscreen.Location = new System.Drawing.Point(220, 64);
+            this.cfgToggleFullscreen.Size = new System.Drawing.Size(60, 22);
+            this.cfgToggleFullscreen.CheckedState.BorderColor = System.Drawing.Color.FromArgb(46, 204, 113);
+            this.cfgToggleFullscreen.UncheckedState.BorderColor = System.Drawing.Color.Gray;
+
+            // Font
+            this.lblFont.Location = new System.Drawing.Point(24, 116);
+            this.lblFont.AutoSize = true;
+            this.lblFont.Text = "Fonte:";
+            this.lblFont.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgComboFont.Location = new System.Drawing.Point(220, 112);
+            this.cfgComboFont.Size = new System.Drawing.Size(240, 36);
+            this.cfgComboFont.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cfgComboFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
+            // Font size
+            this.lblFontSize.Location = new System.Drawing.Point(24, 164);
+            this.lblFontSize.AutoSize = true;
+            this.lblFontSize.Text = "Tamanho (pt):";
+            this.lblFontSize.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgNumFontSize.Location = new System.Drawing.Point(220, 160);
+            this.cfgNumFontSize.Size = new System.Drawing.Size(120, 36);
+            this.cfgNumFontSize.Minimum = 8;
+            this.cfgNumFontSize.Maximum = 72;
+            this.cfgNumFontSize.Value = 12;
+
+            // AutoLogout
+            this.lblAutoLogout.Location = new System.Drawing.Point(24, 212);
+            this.lblAutoLogout.AutoSize = true;
+            this.lblAutoLogout.Text = "Temporizador de desconexão (min):";
+            this.lblAutoLogout.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgNumAutoLogout.Location = new System.Drawing.Point(420, 208);
+            this.cfgNumAutoLogout.Size = new System.Drawing.Size(120, 36);
+            this.cfgNumAutoLogout.Minimum = 0;
+            this.cfgNumAutoLogout.Maximum = 1440;
+            this.cfgNumAutoLogout.Value = 15;
+
+            // Language
+            this.lblLanguage.Location = new System.Drawing.Point(24, 260);
+            this.lblLanguage.AutoSize = true;
+            this.lblLanguage.Text = "Linguagem:";
+            this.lblLanguage.Font = new System.Drawing.Font("Segoe UI", 10F);
+
+            this.cfgComboLanguage.Location = new System.Drawing.Point(220, 256);
+            this.cfgComboLanguage.Size = new System.Drawing.Size(240, 36);
+            this.cfgComboLanguage.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cfgComboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
+            // Buttons
+            this.btnSalvar.Location = new System.Drawing.Point(220, 320);
+            this.btnSalvar.Size = new System.Drawing.Size(120, 38);
+            this.btnSalvar.Text = "Salvar";
+            this.btnSalvar.FillColor = System.Drawing.Color.FromArgb(46, 204, 113);
+            this.btnSalvar.ForeColor = System.Drawing.Color.White;
+            this.btnSalvar.Click += new System.EventHandler(this.buttonSalvar_Click);
+
+            this.btnCancelar.Location = new System.Drawing.Point(350, 320);
+            this.btnCancelar.Size = new System.Drawing.Size(120, 38);
             this.btnCancelar.Text = "Cancelar";
-            // 
-            // Configurações
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(720, 721);
-            this.Controls.Add(this.containerPanel);
-            this.Controls.Add(this.headerPanel);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "Configurações";
+            this.btnCancelar.FillColor = System.Drawing.Color.FromArgb(169, 169, 169);
+            this.btnCancelar.ForeColor = System.Drawing.Color.White;
+            this.btnCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
+
+            this.btnRestaurar.Location = new System.Drawing.Point(480, 320);
+            this.btnRestaurar.Size = new System.Drawing.Size(150, 38);
+            this.btnRestaurar.Text = "Restaurar Padrões";
+            this.btnRestaurar.FillColor = System.Drawing.Color.FromArgb(241, 196, 15);
+            this.btnRestaurar.ForeColor = System.Drawing.Color.White;
+            this.btnRestaurar.Click += new System.EventHandler(this.buttonRestaurar_Click);
+
+            this.btnVoltarLingua.Location = new System.Drawing.Point(620, 256);
+            this.btnVoltarLingua.Size = new System.Drawing.Size(180, 28);
+            this.btnVoltarLingua.Text = "Voltar à linguagem original";
+            this.btnVoltarLingua.FillColor = System.Drawing.Color.FromArgb(52, 152, 219);
+            this.btnVoltarLingua.ForeColor = System.Drawing.Color.White;
+            this.btnVoltarLingua.Click += new System.EventHandler(this.buttonVoltarLingua_Click);
+
+            // Assemble controls
+            this.pnlContent.Controls.Add(this.lblTheme);
+            this.pnlContent.Controls.Add(this.cfgComboTheme);
+            this.pnlContent.Controls.Add(this.lblFullscreen);
+            this.pnlContent.Controls.Add(this.cfgToggleFullscreen);
+            this.pnlContent.Controls.Add(this.lblFont);
+            this.pnlContent.Controls.Add(this.cfgComboFont);
+            this.pnlContent.Controls.Add(this.lblFontSize);
+            this.pnlContent.Controls.Add(this.cfgNumFontSize);
+            this.pnlContent.Controls.Add(this.lblAutoLogout);
+            this.pnlContent.Controls.Add(this.cfgNumAutoLogout);
+            this.pnlContent.Controls.Add(this.lblLanguage);
+            this.pnlContent.Controls.Add(this.cfgComboLanguage);
+            this.pnlContent.Controls.Add(this.btnSalvar);
+            this.pnlContent.Controls.Add(this.btnCancelar);
+            this.pnlContent.Controls.Add(this.btnRestaurar);
+            this.pnlContent.Controls.Add(this.btnVoltarLingua);
+
+            // Form
+            this.ClientSize = new System.Drawing.Size(980, 520);
+            this.Controls.Add(this.pnlContent);
+            this.Controls.Add(this.pnlTop);
             this.Text = "Configurações";
-            this.headerPanel.ResumeLayout(false);
-            this.headerPanel.PerformLayout();
-            this.containerPanel.ResumeLayout(false);
-            this.groupTema.ResumeLayout(false);
-            this.groupTema.PerformLayout();
-            this.groupVisual.ResumeLayout(false);
-            this.groupVisual.PerformLayout();
-            this.groupAcess.ResumeLayout(false);
-            this.groupAcess.PerformLayout();
-            this.groupAvancadas.ResumeLayout(false);
-            this.actionsPanel.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         }
-
-        #endregion
-
-        private Guna.UI2.WinForms.Guna2Panel headerPanel;
-        private Guna.UI2.WinForms.Guna2HtmlLabel headerLabel;
-        private Guna.UI2.WinForms.Guna2Panel containerPanel;
-        private Guna.UI2.WinForms.Guna2Panel groupTema;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblTema;
-        private Guna.UI2.WinForms.Guna2ToggleSwitch toggleTemaEscuro;
-        private Guna.UI2.WinForms.Guna2Panel groupVisual;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblFonte;
-        private Guna.UI2.WinForms.Guna2ComboBox comboFont;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblTextoTam;
-        private Guna.UI2.WinForms.Guna2TrackBar trackTextSize;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblFullscreen;
-        private Guna.UI2.WinForms.Guna2ToggleSwitch chkFullscreen;
-        private Guna.UI2.WinForms.Guna2Panel groupAcess;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lbTDD;
-        private Guna.UI2.WinForms.Guna2ComboBox comboTTSVoices;
-        private Guna.UI2.WinForms.Guna2HtmlLabel lblTTSRate;
-        private Guna.UI2.WinForms.Guna2TrackBar trackTTSRate;
-        private Guna.UI2.WinForms.Guna2Panel groupAvancadas;
-        private Guna.UI2.WinForms.Guna2Button btnLimparHistorico;
-        private Guna.UI2.WinForms.Guna2Button btnRestaurarPadrao;
-        private Guna.UI2.WinForms.Guna2Panel actionsPanel;
-        private Guna.UI2.WinForms.Guna2Button btnSalvarConfig;
-        private Guna.UI2.WinForms.Guna2Button btnCancelar;
     }
 }
