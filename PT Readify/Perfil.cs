@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PT_Readify; // Certifique-se de que este using está presente e correto
 
 namespace PT_Readify
 {

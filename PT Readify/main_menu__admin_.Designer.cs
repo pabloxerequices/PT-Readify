@@ -200,6 +200,7 @@
             this.button8.Size = new System.Drawing.Size(228, 58);
             this.button8.TabIndex = 9;
             this.button8.Text = "Relatório de Multas";
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button10
             // 
@@ -235,6 +236,7 @@
             this.button6.Size = new System.Drawing.Size(228, 58);
             this.button6.TabIndex = 11;
             this.button6.Text = "Todos os tipos de Estatísticas";
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // pictureBox1
             // 
