@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DataAccessLayer;
 
 namespace PT_Readify
 {
@@ -16,6 +17,16 @@ namespace PT_Readify
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            try
+            {
+                new DAL().GarantirEsquema();
+            }
+            catch
+            {
+                // Se a BD ainda não existir, o esquema será aplicado na próxima execução.
+            }
+
             Application.Run(new Form1());
         }
     }

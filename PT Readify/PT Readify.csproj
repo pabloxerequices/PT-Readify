@@ -79,6 +79,21 @@
     </Compile>
     <Compile Include="CarrinhoService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
+    <Compile Include="EstatisticasAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HistoricoEmprestimosAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NotificacoesUtilizador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RelatorioMultasAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReservasUtilizador.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Chat_Bot.cs">
       <SubType>Form</SubType>
     </Compile>

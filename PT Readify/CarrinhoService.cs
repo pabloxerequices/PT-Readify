@@ -67,6 +67,18 @@ namespace PT_Readify
             _inicializado = true;
         }
 
+        private static void ValidarStockParaCompra(int idLivro, string titulo, int quantidadeDesejada)
+        {
+            int stock = BLL.Livros.ObterStock(idLivro);
+            if (stock <= 0)
+                throw new InvalidOperationException(
+                    $"\"{titulo}\" está esgotado. Para reservar ou emprestar, vá a Requisições/Empréstimos.");
+
+            if (quantidadeDesejada > stock)
+                throw new InvalidOperationException(
+                    $"Stock insuficiente para \"{titulo}\". Disponível: {stock}.");
+        }
+
         public static void AdicionarLivro(int idLivro)
         {
             DataTable dtLivro = BLL.Livros.ObterLivroPorId(idLivro);
@@ -85,15 +97,14 @@ namespace PT_Readify
         {
             GarantirInicializado();
 
-            decimal preco = precoEuros;
-            if (precoEuros >= 100)
-                preco = precoEuros / 100m;
-
             DataRow[] existentes = _itens.Select("Id_Livro = " + idLivro);
+            int novaQtd = existentes.Length > 0 ? Convert.ToInt32(existentes[0]["Quantidade"]) + 1 : 1;
+
+            ValidarStockParaCompra(idLivro, titulo, novaQtd);
+
             if (existentes.Length > 0)
             {
-                int qtd = Convert.ToInt32(existentes[0]["Quantidade"]);
-                existentes[0]["Quantidade"] = qtd + 1;
+                existentes[0]["Quantidade"] = novaQtd;
                 AtualizarSubtotal(existentes[0]);
             }
             else
@@ -102,7 +113,7 @@ namespace PT_Readify
                 novaLinha["Id_Livro"] = idLivro;
                 novaLinha["Titulo"] = titulo;
                 novaLinha["Autor"] = autor;
-                novaLinha["Preco"] = preco;
+                novaLinha["Preco"] = precoEuros;
                 novaLinha["Quantidade"] = 1;
                 novaLinha["Acao"] = "Comprar";
                 AtualizarSubtotal(novaLinha);
@@ -144,6 +155,11 @@ namespace PT_Readify
                 return;
 
             DataRow row = _itens.Rows[indice];
+            int idLivro = Convert.ToInt32(row["Id_Livro"]);
+            string titulo = row["Titulo"]?.ToString() ?? "";
+
+            ValidarStockParaCompra(idLivro, titulo, quantidade);
+
             row["Quantidade"] = quantidade;
             AtualizarSubtotal(row);
             CarrinhoAlterado?.Invoke();
@@ -166,22 +182,10 @@ namespace PT_Readify
 
                 int idLivro = Convert.ToInt32(row["Id_Livro"]);
                 int quantidade = Convert.ToInt32(row["Quantidade"]);
-                string acao = row["Acao"]?.ToString() ?? "Comprar";
+                string titulo = row["Titulo"]?.ToString() ?? "";
 
-                switch (acao)
-                {
-                    case "Comprar":
-                        BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
-                        break;
-                    case "Reservar":
-                        for (int i = 0; i < quantidade; i++)
-                            BLL.Historicos.RegistrarReserva(globais.id_utilizador, idLivro);
-                        break;
-                    case "Emprestar":
-                        for (int i = 0; i < quantidade; i++)
-                            BLL.Historicos.RegistrarEmprestimo(globais.id_utilizador, idLivro);
-                        break;
-                }
+                ValidarStockParaCompra(idLivro, titulo, quantidade);
+                BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
             }
 
             Limpar();

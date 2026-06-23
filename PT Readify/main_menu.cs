@@ -8,15 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using BusinessLogicLayer;
 
 namespace PT_Readify
 {
     public partial class main_menu : Form
     {
+        private pesquisar_livros_rodrigo formPesquisa;
+
         public main_menu()
         {
             InitializeComponent();
         }
+
         private void panel_livros(Form form)
         {
             panel2.Controls.Clear();
@@ -26,6 +30,31 @@ namespace PT_Readify
 
             panel2.Controls.Add(form);
             form.Show();
+
+            formPesquisa = form as pesquisar_livros_rodrigo;
+        }
+
+        public void AbrirEmprestimos()
+        {
+            new Requesitar_livros().Show();
+        }
+
+        public void AbrirCarrinhoIntegrado()
+        {
+            using (var carrinho = new Carrinho())
+            {
+                carrinho.StartPosition = FormStartPosition.CenterParent;
+                carrinho.ShowDialog(this);
+            }
+
+            formPesquisa?.RecarregarLivros();
+            AtualizarTituloCarrinhoMenu();
+        }
+
+        public void AtualizarTituloCarrinhoMenu()
+        {
+            int total = CarrinhoService.TotalItens;
+            button3.Text = total > 0 ? $"Livros ({total} no carrinho)" : "Livros";
         }
 
         private void pesquisarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -35,8 +64,8 @@ namespace PT_Readify
 
         private void button3_Click(object sender, EventArgs e)
         {
-            panel_livros (new pesquisar_livros_rodrigo());
-
+            if (formPesquisa == null || !formPesquisa.Visible)
+                panel_livros(new pesquisar_livros_rodrigo());
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,6 +109,33 @@ namespace PT_Readify
                 }
             }
             catch { }
+
+            MostrarNotificacoesPendentes();
+            panel_livros(new pesquisar_livros_rodrigo());
+            AtualizarTituloCarrinhoMenu();
+        }
+
+        private void MostrarNotificacoesPendentes()
+        {
+            if (globais.id_utilizador <= 0)
+                return;
+
+            try
+            {
+                int total = BLL.Notificacoes.ContarNaoLidas(globais.id_utilizador);
+                if (total > 0)
+                {
+                    var resultado = MessageBox.Show(
+                        $"Tem {total} notificação(ões) nova(s) (ex.: livros reservados disponíveis).\n\nDeseja ver agora?",
+                        "Notificações",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information);
+
+                    if (resultado == DialogResult.Yes)
+                        new NotificacoesUtilizador().Show();
+                }
+            }
+            catch { }
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -89,7 +145,7 @@ namespace PT_Readify
 
         private void button4_Click(object sender, EventArgs e)
         {
-            new Requesitar_livros().Show();
+            AbrirEmprestimos();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -99,7 +155,11 @@ namespace PT_Readify
 
         private void button7_Click(object sender, EventArgs e)
         {
-            
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            new ReservasUtilizador().Show();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)

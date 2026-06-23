@@ -90,7 +90,8 @@ namespace DataAccessLayer
             associarComando(sqlCmd);
 
             _SqlCommand.CommandType = CommandType.StoredProcedure;
-            _SqlCommand.Parameters.AddRange(sqlParams);
+            if (sqlParams != null)
+                _SqlCommand.Parameters.AddRange(sqlParams);
 
             abrirLigacao();
 
@@ -109,7 +110,8 @@ namespace DataAccessLayer
             object resultado = null;
             associarComando(sqlCmd);
             _SqlCommand.CommandType = CommandType.StoredProcedure;
-            _SqlCommand.Parameters.AddRange(sqlParams);
+            if (sqlParams != null)
+                _SqlCommand.Parameters.AddRange(sqlParams);
 
             abrirLigacao();
 
@@ -121,6 +123,127 @@ namespace DataAccessLayer
             fecharLigacao();
             _SqlCommand.Parameters.Clear();
             return resultado;
+        }
+
+        public bool ColunaExiste(string tabela, string coluna)
+        {
+            object resultado = executarScalar(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=@tabela AND COLUMN_NAME=@coluna",
+                new SqlParameter[] {
+                    new SqlParameter("@tabela", tabela),
+                    new SqlParameter("@coluna", coluna)
+                });
+            return Convert.ToInt32(resultado) > 0;
+        }
+
+        public void GarantirEsquema()
+        {
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Historico_Compra' AND COLUMN_NAME = 'Id_Utilizador')
+                BEGIN
+                    ALTER TABLE Historico_Compra ADD Id_Utilizador int NOT NULL
+                        CONSTRAINT DF_Historico_Compra_Id_Utilizador DEFAULT 0;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Compra' AND COLUMN_NAME = 'Id_Utilizador')
+                BEGIN
+                    ALTER TABLE Compra ADD Id_Utilizador int NOT NULL
+                        CONSTRAINT DF_Compra_Id_Utilizador DEFAULT 0;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Livro' AND COLUMN_NAME = 'Stock')
+                BEGIN
+                    ALTER TABLE Livro ADD Stock int NOT NULL
+                        CONSTRAINT DF_Livro_Stock DEFAULT 1;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'HistoricoEmp' AND COLUMN_NAME = 'Duracao_Dias')
+                BEGIN
+                    ALTER TABLE HistoricoEmp ADD Duracao_Dias int NOT NULL
+                        CONSTRAINT DF_HistoricoEmp_Duracao_Dias DEFAULT 14;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'HistoricoEmp' AND COLUMN_NAME = 'Valor_Multa')
+                BEGIN
+                    ALTER TABLE HistoricoEmp ADD Valor_Multa int NOT NULL
+                        CONSTRAINT DF_HistoricoEmp_Valor_Multa DEFAULT 0;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'HistoricoEmp' AND COLUMN_NAME = 'Multa_Paga')
+                BEGIN
+                    ALTER TABLE HistoricoEmp ADD Multa_Paga bit NOT NULL
+                        CONSTRAINT DF_HistoricoEmp_Multa_Paga DEFAULT 0;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+                    WHERE TABLE_NAME = 'Notificacao')
+                BEGIN
+                    CREATE TABLE Notificacao (
+                        Id int NOT NULL PRIMARY KEY,
+                        Id_Utilizador int NOT NULL,
+                        Id_Livro int NULL,
+                        Mensagem nvarchar(500) NOT NULL,
+                        Lida bit NOT NULL DEFAULT 0,
+                        Data_Criacao datetime NOT NULL DEFAULT GETDATE()
+                    );
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+                    WHERE TABLE_NAME = 'DevoluçãoEmp')
+                BEGIN
+                    CREATE TABLE [DevoluçãoEmp] (
+                        Id int IDENTITY(1,1) PRIMARY KEY,
+                        Id_Utilizador int NOT NULL,
+                        Id_Livro int NOT NULL,
+                        Data_Devolução datetime NOT NULL
+                    );
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+                    WHERE TABLE_NAME = 'DevoluçãoCompra')
+                BEGIN
+                    CREATE TABLE [DevoluçãoCompra] (
+                        Id int IDENTITY(1,1) PRIMARY KEY,
+                        Id_Utilizador int NOT NULL,
+                        Id_Livro int NOT NULL,
+                        Data_Devolução datetime NOT NULL
+                    );
+                END");
+        }
+
+        private void ExecutarMigracao(string sql)
+        {
+            try
+            {
+                executarNonQuery(sql, null);
+            }
+            catch
+            {
+                // Ignora migrações individuais que já foram aplicadas.
+            }
         }
 
         public DataTable executarReader(String sqlCmd, SqlParameter[] sqlParams)
@@ -157,7 +280,8 @@ namespace DataAccessLayer
             associarComando(sqlCmd);
 
             _SqlCommand.CommandType = CommandType.Text;
-            _SqlCommand.Parameters.AddRange(sqlParams);
+            if (sqlParams != null)
+                _SqlCommand.Parameters.AddRange(sqlParams);
 
             abrirLigacao();
 
@@ -176,7 +300,8 @@ namespace DataAccessLayer
             object resultado = null;
             associarComando(sqlCmd);
             _SqlCommand.CommandType = CommandType.Text;
-            _SqlCommand.Parameters.AddRange(sqlParams);
+            if (sqlParams != null)
+                _SqlCommand.Parameters.AddRange(sqlParams);
 
             abrirLigacao();
 
