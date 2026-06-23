@@ -322,6 +322,22 @@ namespace BusinessLogicLayer
                 insertHistoricoEmp("Ativo", entregaPendente, prevista, levantamento, idLivro, idUtilizador);
             }
 
+            public static void RegistrarReserva(int idUtilizador, int idLivro)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("É necessário iniciar sessão para reservar livros.");
+
+                DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
+                if (dtLivro == null || dtLivro.Rows.Count == 0)
+                    throw new Exception("Livro não encontrado.");
+
+                DateTime reserva = DateTime.Now;
+                DateTime limiteLevantamento = reserva.AddDays(7);
+                DateTime entregaPendente = new DateTime(1900, 1, 1);
+
+                insertHistoricoEmp("Reservado", entregaPendente, limiteLevantamento, reserva, idLivro, idUtilizador);
+            }
+
             public static DataTable LoadHistoricoEmpPorUtilizador(int idUtilizador)
             {
                 DAL dal = new DAL();

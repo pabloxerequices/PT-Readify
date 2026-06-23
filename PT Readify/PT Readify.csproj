@@ -71,6 +71,13 @@
     <Compile Include="Criar ultilizadores%28admin%29.Designer.cs">
       <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>
     </Compile>
+    <Compile Include="Carrinho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Carrinho.Designer.cs">
+      <DependentUpon>Carrinho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CarrinhoService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
     <Compile Include="Chat_Bot.cs">
       <SubType>Form</SubType>
@@ -188,6 +195,9 @@
     <Compile Include="Requesitar livros.Designer.cs">
       <DependentUpon>Requesitar livros.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Carrinho.resx">
+      <DependentUpon>Carrinho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Chat_Bot.resx">
       <DependentUpon>Chat_Bot.cs</DependentUpon>
     </EmbeddedResource>

@@ -21,7 +21,9 @@
             this.dataGridViewCarrinho = new System.Windows.Forms.DataGridView();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.labelTotal = new System.Windows.Forms.Label();
-            this.btnAdicionarLivro = new Guna.UI2.WinForms.Guna2Button();
+            this.btnComprar = new Guna.UI2.WinForms.Guna2Button();
+            this.btnReservar = new Guna.UI2.WinForms.Guna2Button();
+            this.btnEmprestar = new Guna.UI2.WinForms.Guna2Button();
             this.btnFinalizarCompra = new Guna.UI2.WinForms.Guna2Button();
             this.btnLimparCarrinho = new Guna.UI2.WinForms.Guna2Button();
             this.panelTop.SuspendLayout();
@@ -81,7 +83,9 @@
             // 
             this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(41)))), ((int)(((byte)(52)))));
             this.panelBottom.Controls.Add(this.labelTotal);
-            this.panelBottom.Controls.Add(this.btnAdicionarLivro);
+            this.panelBottom.Controls.Add(this.btnComprar);
+            this.panelBottom.Controls.Add(this.btnReservar);
+            this.panelBottom.Controls.Add(this.btnEmprestar);
             this.panelBottom.Controls.Add(this.btnFinalizarCompra);
             this.panelBottom.Controls.Add(this.btnLimparCarrinho);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -101,43 +105,69 @@
             this.labelTotal.TabIndex = 0;
             this.labelTotal.Text = "Total: €0,00";
             // 
-            // btnAdicionarLivro
+            // btnComprar
             // 
-            this.btnAdicionarLivro.BorderRadius = 6;
-            this.btnAdicionarLivro.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
-            this.btnAdicionarLivro.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAdicionarLivro.ForeColor = System.Drawing.Color.White;
-            this.btnAdicionarLivro.Location = new System.Drawing.Point(600, 20);
-            this.btnAdicionarLivro.Name = "btnAdicionarLivro";
-            this.btnAdicionarLivro.Size = new System.Drawing.Size(110, 40);
-            this.btnAdicionarLivro.TabIndex = 1;
-            this.btnAdicionarLivro.Text = "+ Adicionar";
-            this.btnAdicionarLivro.Click += new System.EventHandler(this.btnAdicionarLivro_Click);
+            this.btnComprar.BorderRadius = 6;
+            this.btnComprar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.btnComprar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnComprar.ForeColor = System.Drawing.Color.White;
+            this.btnComprar.Location = new System.Drawing.Point(380, 20);
+            this.btnComprar.Name = "btnComprar";
+            this.btnComprar.Size = new System.Drawing.Size(110, 40);
+            this.btnComprar.TabIndex = 1;
+            this.btnComprar.Text = "Comprar";
+            this.btnComprar.Click += new System.EventHandler(this.btnComprar_Click);
+            // 
+            // btnReservar
+            // 
+            this.btnReservar.BorderRadius = 6;
+            this.btnReservar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.btnReservar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnReservar.ForeColor = System.Drawing.Color.White;
+            this.btnReservar.Location = new System.Drawing.Point(500, 20);
+            this.btnReservar.Name = "btnReservar";
+            this.btnReservar.Size = new System.Drawing.Size(110, 40);
+            this.btnReservar.TabIndex = 2;
+            this.btnReservar.Text = "Reservar";
+            this.btnReservar.Click += new System.EventHandler(this.btnReservar_Click);
+            // 
+            // btnEmprestar
+            // 
+            this.btnEmprestar.BorderRadius = 6;
+            this.btnEmprestar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(89)))), ((int)(((byte)(182)))));
+            this.btnEmprestar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnEmprestar.ForeColor = System.Drawing.Color.White;
+            this.btnEmprestar.Location = new System.Drawing.Point(620, 20);
+            this.btnEmprestar.Name = "btnEmprestar";
+            this.btnEmprestar.Size = new System.Drawing.Size(110, 40);
+            this.btnEmprestar.TabIndex = 3;
+            this.btnEmprestar.Text = "Emprestar";
+            this.btnEmprestar.Click += new System.EventHandler(this.btnEmprestar_Click);
             // 
             // btnFinalizarCompra
             // 
             this.btnFinalizarCompra.BorderRadius = 6;
-            this.btnFinalizarCompra.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
-            this.btnFinalizarCompra.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFinalizarCompra.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(196)))), ((int)(((byte)(15)))));
+            this.btnFinalizarCompra.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnFinalizarCompra.ForeColor = System.Drawing.Color.White;
-            this.btnFinalizarCompra.Location = new System.Drawing.Point(720, 20);
+            this.btnFinalizarCompra.Location = new System.Drawing.Point(740, 20);
             this.btnFinalizarCompra.Name = "btnFinalizarCompra";
-            this.btnFinalizarCompra.Size = new System.Drawing.Size(130, 40);
-            this.btnFinalizarCompra.TabIndex = 2;
-            this.btnFinalizarCompra.Text = "✓ Finalizar";
+            this.btnFinalizarCompra.Size = new System.Drawing.Size(110, 40);
+            this.btnFinalizarCompra.TabIndex = 4;
+            this.btnFinalizarCompra.Text = "Confirmar";
             this.btnFinalizarCompra.Click += new System.EventHandler(this.btnFinalizarCompra_Click);
             // 
             // btnLimparCarrinho
             // 
             this.btnLimparCarrinho.BorderRadius = 6;
             this.btnLimparCarrinho.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
-            this.btnLimparCarrinho.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnLimparCarrinho.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnLimparCarrinho.ForeColor = System.Drawing.Color.White;
             this.btnLimparCarrinho.Location = new System.Drawing.Point(860, 20);
             this.btnLimparCarrinho.Name = "btnLimparCarrinho";
             this.btnLimparCarrinho.Size = new System.Drawing.Size(120, 40);
-            this.btnLimparCarrinho.TabIndex = 3;
-            this.btnLimparCarrinho.Text = "🗑 Limpar";
+            this.btnLimparCarrinho.TabIndex = 5;
+            this.btnLimparCarrinho.Text = "Limpar";
             this.btnLimparCarrinho.Click += new System.EventHandler(this.btnLimparCarrinho_Click);
             // 
             // Carrinho
@@ -170,7 +200,9 @@
         private System.Windows.Forms.DataGridView dataGridViewCarrinho;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Label labelTotal;
-        private Guna.UI2.WinForms.Guna2Button btnAdicionarLivro;
+        private Guna.UI2.WinForms.Guna2Button btnComprar;
+        private Guna.UI2.WinForms.Guna2Button btnReservar;
+        private Guna.UI2.WinForms.Guna2Button btnEmprestar;
         private Guna.UI2.WinForms.Guna2Button btnFinalizarCompra;
         private Guna.UI2.WinForms.Guna2Button btnLimparCarrinho;
     }
