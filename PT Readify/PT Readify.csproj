@@ -59,6 +59,12 @@
     <Compile Include="Configurações.Designer.cs">
       <DependentUpon>Configurações.cs</DependentUpon>
     </Compile>
+    <Compile Include="confirmar_perfil.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="confirmar_perfil.Designer.cs">
+      <DependentUpon>confirmar_perfil.cs</DependentUpon>
+    </Compile>
     <Compile Include="Criar ultilizadores%28admin%29.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configurações.resx">
       <DependentUpon>Configurações.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="confirmar_perfil.resx">
+      <DependentUpon>confirmar_perfil.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Criar ultilizadores%28admin%29.resx">
       <DependentUpon>Criar ultilizadores%28admin%29.cs</DependentUpon>

@@ -1,5 +1,4 @@
-﻿using BusinessLogicLayer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,20 +17,7 @@ namespace PT_Readify
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if(textBox1.Text == globais.profileEmail && textBox2.Text == globais.profilepassword)
-            {
-                globais.confirmacao = true;
-                this.Hide();
-            }
-            else
-            {
-                MessageBox.Show("Email ou senha incorretos");
-            }
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void confirmar_perfil_Load(object sender, EventArgs e)
         {
 
         }
