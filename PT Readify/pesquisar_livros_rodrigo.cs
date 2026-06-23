@@ -24,6 +24,8 @@ namespace PT_Readify
         {
             CarregarTodosLivros();
             ConfigurarEventos();
+            CarrinhoService.CarrinhoAlterado += AtualizarContadorCarrinho;
+            AtualizarContadorCarrinho();
         }
 
         private void CarregarTodosLivros()
@@ -92,7 +94,6 @@ namespace PT_Readify
 
             button1.Click += (s, e) => LimparFiltros();
             button2.Click += (s, e) => AplicarFiltros();
-            button3.Click += (s, e) => AbrirCarrinho();
         }
 
         private void AplicarFiltros()
@@ -119,7 +120,7 @@ namespace PT_Readify
                 string rowEditora = row["Editora"]?.ToString().ToLower() ?? "";
                 string rowAutor = row["Autor"]?.ToString().ToLower() ?? "";
                 string rowIdioma = row["Idioma"]?.ToString() ?? "";
-                decimal rowPreco = Convert.ToDecimal(row["Preço"] ?? 0);
+                decimal rowPreco = Convert.ToDecimal(row["Preço"] ?? 0) / 100m;
                 int idLivro = Convert.ToInt32(row["Id_Livro"]);
 
                 bool cumpreTitulo = string.IsNullOrEmpty(titulo) || rowTitulo.Contains(titulo);
@@ -195,7 +196,7 @@ namespace PT_Readify
             int idLivro = Convert.ToInt32(livro["Id_Livro"]);
             string titulo = livro["Titulo"]?.ToString() ?? "Sem título";
             string autor = livro["Autor"]?.ToString() ?? "Autor desconhecido";
-            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0);
+            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
             object capaObj = livro["Capa"];
 
             Panel card = new Panel
@@ -299,7 +300,7 @@ namespace PT_Readify
             string idioma = livro["Idioma"]?.ToString() ?? "";
             string estado = livro["Estado_Livro"]?.ToString() ?? "";
             string bio = livro["Bio"]?.ToString() ?? "";
-            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0);
+            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
             
             List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
             string generos = generosLivro.Count > 0 ? string.Join(", ", generosLivro) : "Sem gênero";
@@ -322,7 +323,12 @@ namespace PT_Readify
         {
             try
             {
-                MessageBox.Show($"'{titulo}' adicionado ao carrinho!\nPreço: €{preco:F2}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CarrinhoService.AdicionarLivro(idLivro, titulo, autor, preco);
+                MessageBox.Show(
+                    $"'{titulo}' adicionado ao carrinho!\nPreço: {preco:C2}",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -330,17 +336,19 @@ namespace PT_Readify
             }
         }
 
+        private void AtualizarContadorCarrinho()
+        {
+            int total = CarrinhoService.TotalItens;
+            button3.Text = total > 0 ? $"🛒 Carrinho ({total})" : "🛒 Carrinho";
+        }
+
         private void AbrirCarrinho()
         {
-            try
+            using (var carrinho = new Carrinho())
             {
-                Carrinho carrinho = new Carrinho();
-                carrinho.Show();
+                carrinho.ShowDialog(this);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao abrir carrinho: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            AtualizarContadorCarrinho();
         }
 
         private void textbox2_TextChanged(object sender, EventArgs e)
@@ -350,7 +358,7 @@ namespace PT_Readify
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+            AbrirCarrinho();
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
