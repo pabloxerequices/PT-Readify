@@ -41,7 +41,7 @@ namespace PT_Readify
         public string GetOpeningMessage()
         {
             var name = string.IsNullOrEmpty(_userName) ? "" : $" {_userName}";
-            return $"Olá{name}! Sou o assistente da PT Readify. Podemos conversar à vontade — pergunte sobre livros, empréstimos, compras, ou diga o que precisa.\n\nComo posso ajudar hoje?";
+            return $"Olá{name}! Sou o assistente da PT Readify. Podemos conversar à vontade — pergunte sobre livros, empréstimos, compras, devoluções, ou diga o que precisa.\n\nComo posso ajudar hoje?";
         }
 
         public string Reply(string input)
@@ -63,6 +63,7 @@ namespace PT_Readify
         {
             var s = input.ToLowerInvariant().Trim();
 
+            // 1. Despedidas e Encerramento
             if (IsGoodbye(s) || ContainsAny(s, "terminar conversa", "fechar chat", "sair do chat"))
             {
                 _state = ChatState.Idle;
@@ -73,11 +74,13 @@ namespace PT_Readify
                     "Até logo! Boa leitura.");
             }
 
+            // 2. Agradecimentos
             if (IsThanks(s))
                 return Pick(
                     "De nada! Quer continuar a conversar ou precisa de mais alguma coisa?",
                     "Por nada! Diga-me se precisar de mais informação.");
 
+            // 3. Gestão de Estados Existentes (Máquina de Estados)
             if (_state == ChatState.WaitingBookQuery)
                 return HandleBookQuery(input);
 
@@ -90,12 +93,9 @@ namespace PT_Readify
                     _state = ChatState.Idle;
                     return "Sem problema. Quer pesquisar outro livro ou falar sobre outro assunto?";
                 }
-                if (ContainsAny(s, "primeiro", "1", "um"))
-                    return DescribeBookAtIndex(0);
-                if (ContainsAny(s, "segundo", "2", "dois"))
-                    return DescribeBookAtIndex(1);
-                if (ContainsAny(s, "terceiro", "3", "três", "tres"))
-                    return DescribeBookAtIndex(2);
+                if (ContainsAny(s, "primeiro", "1", "um")) return DescribeBookAtIndex(0);
+                if (ContainsAny(s, "segundo", "2", "dois")) return DescribeBookAtIndex(1);
+                if (ContainsAny(s, "terceiro", "3", "três", "tres")) return DescribeBookAtIndex(2);
                 if (ContainsAny(s, "outro", "mais", "nova pesquisa"))
                 {
                     _state = ChatState.WaitingBookQuery;
@@ -103,6 +103,7 @@ namespace PT_Readify
                 }
             }
 
+            // Contexto com base no histórico
             if (IsAffirmative(s) && _history.Count >= 2)
             {
                 var lastBot = _history.LastOrDefault(h => h.Role == "bot").Text ?? "";
@@ -121,6 +122,7 @@ namespace PT_Readify
                 return "Está bem. Em que mais posso ajudar?";
             }
 
+            // 4. Pequenas Conversas / Chit-Chat
             if (ContainsAny(s, "olá", "ola", "oi", "hey", "bom dia", "boa tarde", "boa noite"))
                 return GetGreeting();
 
@@ -145,6 +147,49 @@ namespace PT_Readify
             if (ContainsAny(s, "género", "genero", "géneros", "generos", "categorias"))
                 return GetGenerosResponse();
 
+            // ==========================================
+            // NOVAS REGRAS INTELIGENTES (A TUAS PERGUNTAS)
+            // ==========================================
+
+            // Pergunta: Como devolvo um livro?
+            if (ContainsAny(s, "devolver", "devolvo", "devolução", "devolucao", "entregar livro"))
+            {
+                _lastTopic = "devolucao";
+                return GetDevolucaoHelp();
+            }
+
+            // Pergunta: Quanto tempo/prazo são os empréstimos?
+            if (ContainsAny(s, "quanto tempo", "de quanto tempo", "prazo", "dias posso ficar", "duracao", "duração"))
+            {
+                return "O prazo padrão para qualquer empréstimo na PT Readify é de **15 dias**. " +
+                       "Pode solicitar uma renovação antes do prazo terminar, desde que o livro não esteja reservado por outro leitor.";
+            }
+
+            // Pergunta: Como funcionam os empréstimos? (Geral)
+            if (ContainsAny(s, "como funcionam os emprestimos", "como funciona o emprestimo", "como funcionam os emppstimos", "regras do emprestimo"))
+            {
+                _lastTopic = "emprestimo";
+                return "Os empréstimos funcionam assim:\n" +
+                       "1. Cada leitor pode requisitar livros que estejam disponíveis.\n" +
+                       "2. O prazo de entrega é de **15 dias**.\n" +
+                       "3. Pode levantar o livro fisicamente ou consultar o estado no seu menu de perfil.\n" +
+                       "4. Se atrasar a entrega, a sua conta poderá ficar suspensa temporariamente para novas requisições.\n\n" +
+                       "Quer que eu explique como requisitar passo a passo?";
+            }
+
+            // Pergunta: Como posso efetuar uma compra?
+            if (ContainsAny(s, "como posso efetuar uma compra", "como compro", "como fazer compra", "efetuar compra", "passos para comprar"))
+            {
+                _lastTopic = "compras";
+                return "Para efetuar uma compra na PT Readify, siga estes passos simples:\n" +
+                       "1. Vá ao menu **\"Livros\"** no ecrã principal.\n" +
+                       "2. Clique no livro que deseja e selecione **\"Adicionar ao Carrinho\"**.\n" +
+                       "3. Aceda ao seu **Carrinho de Compras**, valide os itens e clique em **\"Concluir Compra\"**.\n" +
+                       "4. Escolha o método de pagamento e confirme.\n\n" +
+                       "Ficou com alguma dúvida sobre o processo?";
+            }
+
+            // Suporte aos termos antigos de Empréstimo/Compra
             if (ContainsAny(s, "emprest", "requis", "reserva", "levantar livro"))
             {
                 _lastTopic = "emprestimo";
@@ -166,6 +211,7 @@ namespace PT_Readify
             if (ContainsAny(s, "logout", "sair", "terminar sessão", "terminar sessao"))
                 return "Use o botão \"Logout\" no menu para terminar sessão.";
 
+            // 5. Pesquisa de Livros por Contexto Natural
             if (WantsBookSearch(s) || (ContainsAny(s, "livro", "livros", "autor", "título", "titulo", "pesquisar", "procurar") && HasSearchableContent(input)))
             {
                 if (HasSearchableContent(input))
@@ -174,6 +220,7 @@ namespace PT_Readify
                 return "Com prazer! Diga-me o título ou autor do livro.";
             }
 
+            // Se o utilizador apenas digitou algo solto, tenta adivinhar se é um livro
             if (!IsAffirmative(s) && _state == ChatState.Idle && input.Length >= 2 &&
                 !ContainsAny(s, "como", "quem", "onde", "quando", "porquê", "porque"))
             {
@@ -185,10 +232,13 @@ namespace PT_Readify
             return GetContextualFallback();
         }
 
+        // ==========================================
+        // MÉTODOS AUXILIARES E RESPOSTAS FORMATADAS
+        // ==========================================
+
         private string HandleBookQuery(string input)
         {
             _state = ChatState.AfterBookResults;
-
             try
             {
                 string titulo = ExtractSearchTerm(input, "livro", "livros", "título", "titulo", "pesquisar", "procurar", "quero", "preciso");
@@ -197,8 +247,7 @@ namespace PT_Readify
                 if (string.IsNullOrWhiteSpace(titulo) && string.IsNullOrWhiteSpace(autor))
                 {
                     var cleaned = input.Trim(' ', '?', '!', '.', ',');
-                    if (cleaned.Length >= 2)
-                        titulo = cleaned;
+                    if (cleaned.Length >= 2) titulo = cleaned;
                 }
 
                 if (string.IsNullOrWhiteSpace(titulo) && string.IsNullOrWhiteSpace(autor))
@@ -265,14 +314,11 @@ namespace PT_Readify
 
         private string TrySearchAsBook(string input)
         {
-            if (input.Split(' ').Length > 6)
-                return null;
-
+            if (input.Split(' ').Length > 6) return null;
             try
             {
                 var results = BLL.Livros.pesquisarLivro(input, null, null, null);
-                if (results == null || results.Rows.Count == 0)
-                    return null;
+                if (results == null || results.Rows.Count == 0) return null;
 
                 _lastSearchResults = results;
                 _state = ChatState.AfterBookResults;
@@ -282,49 +328,54 @@ namespace PT_Readify
 
                 return $"Encontrei {results.Rows.Count} livros relacionados com \"{input}\". Quer que mostre a lista completa?";
             }
-            catch
-            {
-                return null;
-            }
+            catch { return null; }
+        }
+
+        private string GetDevolucaoHelp()
+        {
+            return "Para devolver um livro emprestado:\n" +
+                   "1. Dirija-se ao menu **\"Histórico de Empréstimos\"** ou **\"Perfil\"**.\n" +
+                   "2. Identifique o livro que está atualmente consigo.\n" +
+                   "3. Se a entrega for feita via balcão físico, o funcionário fará a leitura do código do livro e dará a baixa no sistema.\n" +
+                   "4. Certifique-se de que o estado do livro passa para 'Devolvido' na sua aplicação.";
         }
 
         private string GetContextualFallback()
         {
-            if (_lastTopic == "emprestimo")
-                return GetEmprestimoHelp();
-            if (_lastTopic == "compras")
-                return GetComprasHelp();
+            if (_lastTopic == "emprestimo") return "Ainda sobre empréstimos: lembre-se que o prazo máximo é de 15 dias. Quer saber como pedir um?";
+            if (_lastTopic == "compras") return "Deseja que o guie até ao ecrã de 'Livros' para adicionar um produto ao carrinho?";
+            if (_lastTopic == "devolucao") return "Ficou claro como efetuar a devolução? Lembre-se de não ultrapassar os 15 dias regulamentares.";
 
             return Pick(
                 "Interessante. Pode explicar um pouco mais? Ou diga \"Ajuda\".",
-                "Não percebi bem. Quer falar de livros, empréstimos ou compras?",
-                "Experimente \"Quero um livro\" ou \"Como empresto?\"");
+                "Não percebi bem. Quer falar de livros, empréstimos, devoluções ou compras?",
+                "Experimente perguntar: \"Como funcionam os empréstimos?\" ou \"Como posso comprar?\"");
         }
 
         private string GetGreeting()
         {
             var name = string.IsNullOrEmpty(_userName) ? "" : $", {_userName}";
             if (globais.id_utilizador > 0)
-                return $"Olá{name}! Sobre o que quer conversar — livros, empréstimos, compras?";
-            return $"Olá{name}! Bem-vindo(a) à PT Readify. Por onde começamos?";
+                return $"Olá{name}! Sobre o que quer conversar hoje — livros, prazos de empréstimos, devoluções ou compras?";
+            return $"Olá{name}! Bem-vindo(a) à PT Readify. Como lhe posso ser útil?";
         }
 
         private string GetHelpText()
         {
-            return "Podemos conversar naturalmente. Exemplos:\n" +
-                   "• \"Quero um livro de fantasia\"\n" +
-                   "• \"Como empresto um livro?\"\n" +
-                   "• \"sim\" / \"não\" — respondo ao que acabámos de falar\n" +
-                   "• \"obrigado\" / \"adeus\" — encerra a conversa\n\nExperimente — estou à escuta!";
+            return "Podemos conversar naturalmente. Exemplos do que me pode perguntar:\n" +
+                   "• \"Como posso efetuar uma compra?\"\n" +
+                   "• \"De quanto tempo são os empréstimos?\"\n" +
+                   "• \"Como funcionam os empréstimos?\"\n" +
+                   "• \"Como devolvo um livro?\"\n" +
+                   "• \"Quero o livro [Nome do Livro]\"\n\nEstou pronto, pergunte o que quiser!";
         }
 
         private string GetEmprestimoHelp()
         {
             return "Para requisitar um livro:\n" +
-                   "1. Menu \"Requisições/Empréstimos\"\n" +
-                   "2. Escolha o livro\n" +
-                   "3. Confirme a requisição\n\n" +
-                   "O histórico fica em \"Histórico de Empréstimos\".";
+                   "1. Vá ao Menu \"Requisições/Empréstimos\"\n" +
+                   "2. Escolha o livro que pretende (Prazo: 15 dias)\n" +
+                   "3. Confirme a requisição.";
         }
 
         private string GetComprasHelp()
@@ -332,15 +383,14 @@ namespace PT_Readify
             return "Para comprar:\n" +
                    "1. Menu \"Livros\" → escolha o livro\n" +
                    "2. Adicione ao carrinho\n" +
-                   "3. Conclua no carrinho\n\n" +
-                   "Histórico em \"Histórico de Compras\".";
+                   "3. Conclua no carrinho de compras.";
         }
 
         private string GetHistoricoHelp()
         {
             if (globais.id_utilizador <= 0)
-                return "Para ver histórico precisa de login. Depois use \"Histórico de Compras\" ou \"Histórico de Empréstimos\".";
-            return "No menu tem \"Histórico de Compras\" e \"Histórico de Empréstimos\".";
+                return "Para ver o seu histórico precisa de iniciar sessão primeiro. Depois use as opções de histórico no menu.";
+            return "No menu principal tem acesso direto ao \"Histórico de Compras\" e \"Histórico de Empréstimos\".";
         }
 
         private string GetGenerosResponse()
