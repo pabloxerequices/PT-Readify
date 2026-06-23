@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BusinessLogicLayer;
 
 namespace PT_Readify
 {
@@ -15,6 +16,17 @@ namespace PT_Readify
         public main_menu__admin_()
         {
             InitializeComponent();
+            Load += Main_menu__admin__Load;
+        }
+
+        private void Main_menu__admin__Load(object sender, EventArgs e)
+        {
+            try
+            {
+                lblEstatisticas.Text = $"Estatísticas: {BLL.Estatisticas.EmprestimosAtivos()} ativos, {BLL.Estatisticas.ReservasPendentes()} reservas";
+                lblFinanceiro.Text = $"Gestão Financeira: {(BLL.Estatisticas.MultasPendentesCentimos() / 100m):C2} em multas";
+            }
+            catch { }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -45,19 +57,19 @@ namespace PT_Readify
 
         }
 
-        private void button7_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void button6_Click(object sender, EventArgs e)
         {
+            new EstatisticasAdmin().Show();
+        }
 
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            new HistoricoEmprestimosAdmin().Show();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-
+            new RelatorioMultasAdmin().Show();
         }
     }
 }

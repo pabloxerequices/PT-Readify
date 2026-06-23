@@ -12,6 +12,8 @@ namespace PT_Readify
     public partial class inserir_livros_rodrigo_admin_ : Form
     {
         byte[] fotoBytes = null;
+        private NumericUpDown numStock;
+        private Label lblStock;
 
         public inserir_livros_rodrigo_admin_()
         {
@@ -22,6 +24,27 @@ namespace PT_Readify
         {
             CarregarEstados();
             CarregarGeneros();
+            ConfigurarCampoStock();
+        }
+
+        private void ConfigurarCampoStock()
+        {
+            lblStock = new Label
+            {
+                Text = "Stock (exemplares):",
+                Location = new Point(50, 505),
+                AutoSize = true
+            };
+            numStock = new NumericUpDown
+            {
+                Location = new Point(240, 503),
+                Size = new Size(80, 23),
+                Minimum = 0,
+                Maximum = 9999,
+                Value = 1
+            };
+            Controls.Add(lblStock);
+            Controls.Add(numStock);
         }
 
         private void CarregarEstados()
@@ -139,6 +162,7 @@ namespace PT_Readify
             // 4. Execução da BLL
             try
             {
+                int stock = (int)numStock.Value;
                 BLL.Livros.InserirLivro(
                     paginas,
                     titulo,
@@ -150,7 +174,8 @@ namespace PT_Readify
                     editora,
                     idioma,
                     fotoBytes,
-                    generos
+                    generos,
+                    stock
                 );
 
                 MessageBox.Show("Livro inserido com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -177,6 +202,8 @@ namespace PT_Readify
             guna2ComboBox2.SelectedIndex = 0;
             pictureBox1.Image = null;
             fotoBytes = null;
+            if (numStock != null)
+                numStock.Value = 1;
         }
 
         public Image byteArrayToImage(byte[] byteArrayIn)

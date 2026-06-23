@@ -206,27 +206,89 @@ namespace BusinessLogicLayer
                 DAL dal = new DAL();
                 return dal.executarReader("select * from Compra", null);
             }
-            static public int insertCompra(int id_cliente, int id_livro, DateTime data_compra)
+            static public int insertCompra(int id, int idUtilizador, DateTime dataCompra, string titulo, string autor, decimal preco, string estadoLivro, int idLivro)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                new SqlParameter("@id_cliente", id_cliente),
-                new SqlParameter("@id_livro", id_livro),
-                new SqlParameter("@data_compra", data_compra)
+                new SqlParameter("@Id", id),
+                new SqlParameter("@Id_Utilizador", idUtilizador),
+                new SqlParameter("@data_compra", dataCompra),
+                new SqlParameter("@titulo", titulo),
+                new SqlParameter("@autor", autor),
+                new SqlParameter("@preco", preco),
+                new SqlParameter("@estado_livro", estadoLivro),
+                new SqlParameter("@id_livro", idLivro)
              };
-                return dal.executarNonQuery("INSERT into Compra (Id_Cliente, Id_Livro, Data_Compra) VALUES(@id_cliente,@id_livro,@data_compra)", sqlParams);
+                return dal.executarNonQuery(
+                    "INSERT INTO Compra (Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro, Id_Utilizador) " +
+                    "VALUES (@Id, @data_compra, @titulo, @autor, @preco, @estado_livro, @id_livro, @Id_Utilizador)",
+                    sqlParams);
             }
 
         }
         //---------------------------------------------------------------------------------------------------------------
         public class Historicos
         {
-            static public int insertHistorico_de_compras(DateTime data_compra, string titulo, string autor, int preco, string estado_livro, int id_livro, int Id_Utilizador)
+            public const int MaxDiasEmprestimo = 21;
+            public const int MultaSemanalCentimos = 200;
+            private static readonly DateTime DataEntregaPendente = new DateTime(1900, 1, 1);
+
+            private static int ObterProximoId(DAL dal, string tabela)
+            {
+                object resultado = dal.executarScalar($"SELECT ISNULL(MAX(Id), 0) + 1 FROM [{tabela}]", null);
+                return Convert.ToInt32(resultado);
+            }
+
+            public static bool TemEmprestimoAtivo(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(
+                    "SELECT COUNT(*) FROM HistoricoEmp WHERE Id_Utilizador=@id AND Estado_Emprestimo='Ativo' AND Data_Entrega=@pendente",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idUtilizador),
+                        new SqlParameter("@pendente", DataEntregaPendente)
+                    });
+                return Convert.ToInt32(resultado) > 0;
+            }
+
+            public static int CalcularMultaCentimos(DateTime dataPrevista, DateTime? dataReferencia = null)
+            {
+                DateTime referencia = dataReferencia ?? DateTime.Now;
+                if (referencia.Date <= dataPrevista.Date)
+                    return 0;
+
+                int diasAtraso = (referencia.Date - dataPrevista.Date).Days;
+                int semanas = (int)Math.Ceiling(diasAtraso / 7.0);
+                return semanas * MultaSemanalCentimos;
+            }
+
+            public static void AtualizarMultasEmAtraso()
+            {
+                DAL dal = new DAL();
+                DataTable emAtraso = dal.executarReader(
+                    "SELECT Id, Data_Prevista FROM HistoricoEmp WHERE Estado_Emprestimo='Ativo' AND Data_Entrega=@pendente AND Data_Prevista < GETDATE()",
+                    new SqlParameter[] { new SqlParameter("@pendente", DataEntregaPendente) });
+
+                foreach (DataRow row in emAtraso.Rows)
+                {
+                    int id = Convert.ToInt32(row["Id"]);
+                    DateTime prevista = Convert.ToDateTime(row["Data_Prevista"]);
+                    int multa = CalcularMultaCentimos(prevista);
+                    dal.executarNonQuery(
+                        "UPDATE HistoricoEmp SET Valor_Multa=@multa WHERE Id=@id",
+                        new SqlParameter[] {
+                            new SqlParameter("@multa", multa),
+                            new SqlParameter("@id", id)
+                        });
+                }
+            }
+
+            static public int insertHistorico_de_compras(int id, DateTime data_compra, string titulo, string autor, decimal preco, string estado_livro, int id_livro, int Id_Utilizador)
             {
                 DAL dal = new DAL();
 
-                // Criamos os parâmetros com todos os campos da tabela
                 SqlParameter[] sqlParams = new SqlParameter[] {
+                 new SqlParameter("@Id", id),
                  new SqlParameter("@data_compra", data_compra),
                  new SqlParameter("@titulo", titulo),
                  new SqlParameter("@autor", autor),
@@ -236,10 +298,9 @@ namespace BusinessLogicLayer
                  new SqlParameter("@Id_Utilizador", Id_Utilizador),
                 };
 
-                // Executamos o INSERT mapeando cada coluna ao seu respetivo parâmetro
                 return dal.executarNonQuery(
-                    "INSERT into Historico_Compra ( Data_Compra, Titulo, Autor, Preço, Estado_Livro,Id_Livro,Id_Utilizador) " +
-                    "VALUES (@data_compra, @titulo, @autor, @preco, @estado_livro, @id_livro, @Id_Utilizador)",
+                    "INSERT INTO Historico_Compra (Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro, Id_Utilizador) " +
+                    "VALUES (@Id, @data_compra, @titulo, @autor, @preco, @estado_livro, @id_livro, @Id_Utilizador)",
                     sqlParams);
             }
 
@@ -264,20 +325,37 @@ namespace BusinessLogicLayer
                 return dt;
             }
 
-            static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Data_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador)
+            static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Data_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador, int duracaoDias = 14)
             {
                 DAL dal = new DAL();
-                SqlParameter[] sqlParams = new SqlParameter[] {
-                    new SqlParameter("@Estado_Emprestimo", Estado_Emprestimo),
-                    new SqlParameter("@Data_Entrega", Data_Entrega),
-                    new SqlParameter("@Data_Prevista", Data_Prevista),
-                    new SqlParameter("@Data_Levantamento", Data_Levantamento),
-                    new SqlParameter("@Id_Livro", Id_Livro),
-                    new SqlParameter("@Id_Utilizador", Id_Utilizador)
+                int novoId = ObterProximoId(dal, "HistoricoEmp");
+
+                SqlParameter[] sqlParamsBase = new SqlParameter[] {
+                    new SqlParameter("@Id", SqlDbType.Int) { Value = novoId },
+                    new SqlParameter("@Estado_Emprestimo", SqlDbType.NVarChar, 20) { Value = Estado_Emprestimo ?? "" },
+                    new SqlParameter("@Data_Entrega", SqlDbType.DateTime) { Value = Data_Entrega },
+                    new SqlParameter("@Data_Prevista", SqlDbType.DateTime) { Value = Data_Prevista },
+                    new SqlParameter("@Data_Levantamento", SqlDbType.DateTime) { Value = Data_Levantamento },
+                    new SqlParameter("@Id_Livro", SqlDbType.Int) { Value = Id_Livro },
+                    new SqlParameter("@Id_Utilizador", SqlDbType.Int) { Value = Id_Utilizador }
                 };
+
+                if (dal.ColunaExiste("HistoricoEmp", "Duracao_Dias"))
+                {
+                    var parametros = new SqlParameter[sqlParamsBase.Length + 1];
+                    sqlParamsBase.CopyTo(parametros, 0);
+                    parametros[parametros.Length - 1] = new SqlParameter("@Duracao_Dias", SqlDbType.Int) { Value = duracaoDias };
+
+                    return dal.executarNonQuery(
+                        "INSERT INTO HistoricoEmp (Id, Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador, Duracao_Dias) " +
+                        "VALUES (@Id, @Estado_Emprestimo, @Data_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador, @Duracao_Dias)",
+                        parametros);
+                }
+
                 return dal.executarNonQuery(
-                    "INSERT into HistoricoEmp (Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador) VALUES(@Estado_Emprestimo, @Data_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador)",
-                    sqlParams);
+                    "INSERT INTO HistoricoEmp (Id, Estado_Emprestimo, Data_Entrega, Data_Prevista, Data_Levantamento, Id_Livro, Id_Utilizador) " +
+                    "VALUES (@Id, @Estado_Emprestimo, @Data_Entrega, @Data_Prevista, @Data_Levantamento, @Id_Livro, @Id_Utilizador)",
+                    sqlParamsBase);
             }
 
             public static void RegistrarCompra(int idUtilizador, int idLivro, int quantidade)
@@ -295,31 +373,54 @@ namespace BusinessLogicLayer
                 DataRow livro = dtLivro.Rows[0];
                 string titulo = livro["Titulo"]?.ToString() ?? "";
                 string autor = livro["Autor"]?.ToString() ?? "";
-                int preco = Convert.ToInt32(livro["Preço"]);
+                decimal preco = Convert.ToDecimal(livro["Preço"]);
                 string estado = livro["Estado_Livro"]?.ToString() ?? "";
-                DateTime dataCompra = DateTime.Now;
+                int stock = Livros.ObterStock(idLivro);
 
+                if (stock <= 0)
+                    throw new InvalidOperationException($"\"{titulo}\" está esgotado. Para reservar ou emprestar, use Requisições/Empréstimos.");
+
+                if (quantidade > stock)
+                    throw new InvalidOperationException($"Stock insuficiente para \"{titulo}\". Disponível: {stock}.");
+
+                DateTime dataCompra = DateTime.Now;
+                DAL dal = new DAL();
                 for (int i = 0; i < quantidade; i++)
                 {
-                    Compra.insertCompra(idUtilizador, idLivro, dataCompra);
-                    insertHistorico_de_compras(dataCompra, titulo, autor, preco, estado, idLivro, idUtilizador);
+                    int idCompra = ObterProximoId(dal, "Compra");
+                    int idHistorico = ObterProximoId(dal, "Historico_Compra");
+                    Compra.insertCompra(idCompra, idUtilizador, dataCompra, titulo, autor, preco, estado, idLivro);
+                    insertHistorico_de_compras(idHistorico, dataCompra, titulo, autor, preco, estado, idLivro, idUtilizador);
+                    Livros.DecrementarStock(idLivro);
                 }
             }
 
-            public static void RegistrarEmprestimo(int idUtilizador, int idLivro)
+            public static void RegistrarEmprestimo(int idUtilizador, int idLivro, int diasDevolucao = 14)
             {
                 if (idUtilizador <= 0)
                     throw new InvalidOperationException("É necessário iniciar sessão para requisitar livros.");
+
+                if (diasDevolucao < 0 || diasDevolucao > MaxDiasEmprestimo)
+                    throw new InvalidOperationException($"O prazo de devolução deve ser entre 0 e {MaxDiasEmprestimo} dias.");
+
+                if (TemEmprestimoAtivo(idUtilizador))
+                    throw new InvalidOperationException("Só pode ter um empréstimo ativo. Devolva o livro atual antes de requisitar outro.");
 
                 DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
                 if (dtLivro == null || dtLivro.Rows.Count == 0)
                     throw new Exception("Livro não encontrado.");
 
-                DateTime levantamento = DateTime.Now;
-                DateTime prevista = levantamento.AddDays(14);
-                DateTime entregaPendente = new DateTime(1900, 1, 1);
+                int stock = Livros.ObterStock(idLivro);
+                if (stock <= 0)
+                    throw new InvalidOperationException("Este livro está esgotado. Pode reservá-lo e será notificado quando estiver disponível.");
 
-                insertHistoricoEmp("Ativo", entregaPendente, prevista, levantamento, idLivro, idUtilizador);
+                new DAL().GarantirEsquema();
+
+                DateTime levantamento = DateTime.Now;
+                DateTime prevista = levantamento.AddDays(diasDevolucao);
+
+                insertHistoricoEmp("Ativo", DataEntregaPendente, prevista, levantamento, idLivro, idUtilizador, diasDevolucao);
+                Livros.DecrementarStock(idLivro);
             }
 
             public static void RegistrarReserva(int idUtilizador, int idLivro)
@@ -331,28 +432,308 @@ namespace BusinessLogicLayer
                 if (dtLivro == null || dtLivro.Rows.Count == 0)
                     throw new Exception("Livro não encontrado.");
 
+                int stock = Livros.ObterStock(idLivro);
+                if (stock > 0)
+                    throw new InvalidOperationException("Este livro está disponível em stock. Pode requisitá-lo diretamente.");
+
+                if (TemReservaAtiva(idUtilizador, idLivro))
+                    throw new InvalidOperationException("Já tem uma reserva ativa para este livro.");
+
+                new DAL().GarantirEsquema();
+
                 DateTime reserva = DateTime.Now;
                 DateTime limiteLevantamento = reserva.AddDays(7);
-                DateTime entregaPendente = new DateTime(1900, 1, 1);
 
-                insertHistoricoEmp("Reservado", entregaPendente, limiteLevantamento, reserva, idLivro, idUtilizador);
+                insertHistoricoEmp("Reservado", DataEntregaPendente, limiteLevantamento, reserva, idLivro, idUtilizador, 0);
+            }
+
+            public static bool TemReservaAtiva(int idUtilizador, int idLivro)
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(
+                    "SELECT COUNT(*) FROM HistoricoEmp WHERE Id_Utilizador=@id AND Id_Livro=@livro AND Estado_Emprestimo='Reservado' AND Data_Entrega=@pendente",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idUtilizador),
+                        new SqlParameter("@livro", idLivro),
+                        new SqlParameter("@pendente", DataEntregaPendente)
+                    });
+                return Convert.ToInt32(resultado) > 0;
+            }
+
+            public static DataTable LoadReservasPorUtilizador(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT h.Id, h.Data_Levantamento, h.Data_Prevista, h.Id_Livro, l.Titulo, l.Autor, l.Stock " +
+                    "FROM HistoricoEmp h INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "WHERE h.Id_Utilizador=@id AND h.Estado_Emprestimo='Reservado' AND h.Data_Entrega=@pendente " +
+                    "ORDER BY h.Data_Levantamento ASC",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idUtilizador),
+                        new SqlParameter("@pendente", DataEntregaPendente)
+                    });
+            }
+
+            public static void DevolverEmprestimo(int idHistorico, int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+                DataTable dt = dal.executarReader(
+                    "SELECT Id_Livro, Data_Prevista, Estado_Emprestimo, Data_Entrega FROM HistoricoEmp WHERE Id=@id AND Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idHistorico),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+
+                if (dt == null || dt.Rows.Count == 0)
+                    throw new Exception("Empréstimo não encontrado.");
+
+                DataRow row = dt.Rows[0];
+                if (row["Estado_Emprestimo"]?.ToString() != "Ativo")
+                    throw new InvalidOperationException("Apenas empréstimos ativos podem ser devolvidos.");
+
+                if (Convert.ToDateTime(row["Data_Entrega"]) != DataEntregaPendente)
+                    throw new InvalidOperationException("Este empréstimo já foi devolvido.");
+
+                int idLivro = Convert.ToInt32(row["Id_Livro"]);
+                DateTime dataPrevista = Convert.ToDateTime(row["Data_Prevista"]);
+                DateTime dataDevolucao = DateTime.Now;
+                int multa = CalcularMultaCentimos(dataPrevista, dataDevolucao);
+
+                dal.executarNonQuery(
+                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Devolvido', Data_Entrega=@entrega, Valor_Multa=@multa WHERE Id=@id",
+                    new SqlParameter[] {
+                        new SqlParameter("@entrega", dataDevolucao),
+                        new SqlParameter("@multa", multa),
+                        new SqlParameter("@id", idHistorico)
+                    });
+
+                Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
+                Livros.IncrementarStock(idLivro);
+                NotificarReservasDisponiveis(idLivro);
+            }
+
+            private static void NotificarReservasDisponiveis(int idLivro)
+            {
+                if (Livros.ObterStock(idLivro) <= 0)
+                    return;
+
+                DAL dal = new DAL();
+                DataTable reservas = dal.executarReader(
+                    "SELECT TOP 1 h.Id_Utilizador, l.Titulo FROM HistoricoEmp h " +
+                    "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "WHERE h.Id_Livro=@livro AND h.Estado_Emprestimo='Reservado' AND h.Data_Entrega=@pendente " +
+                    "ORDER BY h.Data_Levantamento ASC",
+                    new SqlParameter[] {
+                        new SqlParameter("@livro", idLivro),
+                        new SqlParameter("@pendente", DataEntregaPendente)
+                    });
+
+                if (reservas == null || reservas.Rows.Count == 0)
+                    return;
+
+                int idUtilizador = Convert.ToInt32(reservas.Rows[0]["Id_Utilizador"]);
+                string titulo = reservas.Rows[0]["Titulo"]?.ToString() ?? "Livro";
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"O livro \"{titulo}\" está novamente disponível! Pode requisitá-lo na biblioteca.");
             }
 
             public static DataTable LoadHistoricoEmpPorUtilizador(int idUtilizador)
             {
+                AtualizarMultasEmAtraso();
                 DAL dal = new DAL();
 
                 SqlParameter[] sqlParams = new SqlParameter[] {
                 new SqlParameter("@Id_Utilizador", idUtilizador)
                 };
 
-                string query = "SELECT h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, h.Data_Levantamento, " +
-                               "h.Id_Livro, h.Id_Utilizador, l.Titulo, l.Autor " +
+                string query = "SELECT h.Id, h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, h.Data_Levantamento, " +
+                               "h.Id_Livro, h.Id_Utilizador, h.Duracao_Dias, h.Valor_Multa, h.Multa_Paga, l.Titulo, l.Autor " +
                                "FROM HistoricoEmp h " +
                                "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
                                "WHERE h.Id_Utilizador = @Id_Utilizador";
 
                 return dal.executarReader(query, sqlParams);
+            }
+
+            public static DataTable LoadHistoricoEmpTodos()
+            {
+                AtualizarMultasEmAtraso();
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT h.Id, h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, h.Data_Levantamento, " +
+                    "h.Duracao_Dias, h.Valor_Multa, h.Multa_Paga, h.Id_Livro, u.Nome AS Utilizador, l.Titulo, l.Autor " +
+                    "FROM HistoricoEmp h " +
+                    "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "INNER JOIN utilizador u ON h.Id_Utilizador = u.Id_Utilizador " +
+                    "WHERE h.Estado_Emprestimo IN ('Ativo','Devolvido') " +
+                    "ORDER BY h.Data_Levantamento DESC",
+                    null);
+            }
+
+            public static DataTable LoadRelatorioMultas()
+            {
+                AtualizarMultasEmAtraso();
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT h.Id, u.Nome AS Utilizador, l.Titulo, h.Data_Prevista, h.Data_Entrega, " +
+                    "h.Valor_Multa, h.Multa_Paga, h.Estado_Emprestimo " +
+                    "FROM HistoricoEmp h " +
+                    "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "INNER JOIN utilizador u ON h.Id_Utilizador = u.Id_Utilizador " +
+                    "WHERE h.Valor_Multa > 0 " +
+                    "ORDER BY h.Valor_Multa DESC, h.Data_Prevista ASC",
+                    null);
+            }
+
+            public static void MarcarMultaComoPaga(int idHistorico)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE HistoricoEmp SET Multa_Paga=1 WHERE Id=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+            }
+        }
+
+        public class Notificacoes
+        {
+            private static int ObterProximoId(DAL dal)
+            {
+                object resultado = dal.executarScalar("SELECT ISNULL(MAX(Id), 0) + 1 FROM Notificacao", null);
+                return Convert.ToInt32(resultado);
+            }
+
+            public static void Criar(int idUtilizador, int? idLivro, string mensagem)
+            {
+                DAL dal = new DAL();
+                int id = ObterProximoId(dal);
+                dal.executarNonQuery(
+                    "INSERT INTO Notificacao (Id, Id_Utilizador, Id_Livro, Mensagem, Lida, Data_Criacao) " +
+                    "VALUES (@id, @user, @livro, @msg, 0, GETDATE())",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", id),
+                        new SqlParameter("@user", idUtilizador),
+                        new SqlParameter("@livro", (object)idLivro ?? DBNull.Value),
+                        new SqlParameter("@msg", mensagem)
+                    });
+            }
+
+            public static DataTable LoadNaoLidas(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT Id, Mensagem, Data_Criacao, Id_Livro FROM Notificacao " +
+                    "WHERE Id_Utilizador=@id AND Lida=0 ORDER BY Data_Criacao DESC",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+            }
+
+            public static int ContarNaoLidas(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(
+                    "SELECT COUNT(*) FROM Notificacao WHERE Id_Utilizador=@id AND Lida=0",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+                return Convert.ToInt32(resultado);
+            }
+
+            public static void MarcarComoLida(int idNotificacao, int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE Notificacao SET Lida=1 WHERE Id=@id AND Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idNotificacao),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+            }
+
+            public static void MarcarTodasComoLidas(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE Notificacao SET Lida=1 WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+            }
+        }
+
+        public class Estatisticas
+        {
+            private static int ExecutarContagem(string sql, SqlParameter[] parametros = null)
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(sql, parametros);
+                return Convert.ToInt32(resultado);
+            }
+
+            public static int TotalUtilizadores() =>
+                ExecutarContagem("SELECT COUNT(*) FROM utilizador");
+
+            public static int TotalLivros() =>
+                ExecutarContagem("SELECT COUNT(*) FROM Livro");
+
+            public static int TotalStock() =>
+                ExecutarContagem("SELECT ISNULL(SUM(Stock), 0) FROM Livro");
+
+            public static int EmprestimosAtivos() =>
+                ExecutarContagem("SELECT COUNT(*) FROM HistoricoEmp WHERE Estado_Emprestimo='Ativo' AND Data_Entrega='1900-01-01'");
+
+            public static int EmprestimosEmAtraso()
+            {
+                BLL.Historicos.AtualizarMultasEmAtraso();
+                return ExecutarContagem("SELECT COUNT(*) FROM HistoricoEmp WHERE Estado_Emprestimo='Ativo' AND Data_Entrega='1900-01-01' AND Data_Prevista < GETDATE()");
+            }
+
+            public static int ReservasPendentes() =>
+                ExecutarContagem("SELECT COUNT(*) FROM HistoricoEmp WHERE Estado_Emprestimo='Reservado' AND Data_Entrega='1900-01-01'");
+
+            public static int ComprasEsteMes() =>
+                ExecutarContagem("SELECT COUNT(*) FROM Historico_Compra WHERE MONTH(Data_Compra)=MONTH(GETDATE()) AND YEAR(Data_Compra)=YEAR(GETDATE())");
+
+            public static decimal ReceitaTotalCentimos()
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar("SELECT ISNULL(SUM(Preço), 0) FROM Historico_Compra", null);
+                return Convert.ToDecimal(resultado);
+            }
+
+            public static decimal MultasPendentesCentimos()
+            {
+                BLL.Historicos.AtualizarMultasEmAtraso();
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(
+                    "SELECT ISNULL(SUM(Valor_Multa), 0) FROM HistoricoEmp WHERE Valor_Multa > 0 AND Multa_Paga=0",
+                    null);
+                return Convert.ToDecimal(resultado);
+            }
+
+            public static DataTable TopLivrosEmprestados(int top = 5)
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    $"SELECT TOP {top} l.Titulo, COUNT(*) AS TotalEmprestimos " +
+                    "FROM HistoricoEmp h INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "WHERE h.Estado_Emprestimo IN ('Ativo','Devolvido') " +
+                    "GROUP BY l.Titulo ORDER BY TotalEmprestimos DESC",
+                    null);
+            }
+
+            public static DataTable ResumoGeral()
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Indicador", typeof(string));
+                dt.Columns.Add("Valor", typeof(string));
+
+                dt.Rows.Add("Total de utilizadores", TotalUtilizadores().ToString());
+                dt.Rows.Add("Total de livros", TotalLivros().ToString());
+                dt.Rows.Add("Stock total disponível", TotalStock().ToString());
+                dt.Rows.Add("Empréstimos ativos", EmprestimosAtivos().ToString());
+                dt.Rows.Add("Empréstimos em atraso", EmprestimosEmAtraso().ToString());
+                dt.Rows.Add("Reservas pendentes", ReservasPendentes().ToString());
+                dt.Rows.Add("Compras este mês", ComprasEsteMes().ToString());
+                dt.Rows.Add("Receita total", (ReceitaTotalCentimos() / 100m).ToString("C2"));
+                dt.Rows.Add("Multas pendentes", (MultasPendentesCentimos() / 100m).ToString("C2"));
+
+                return dt;
             }
         }
     
@@ -361,15 +742,16 @@ namespace BusinessLogicLayer
         //---------------------------------------------------------------------------------------------------------------
         public class  Devolução
         {
-            static public int insertDevoluçãoCompra (int id_cliente, int id_livro, DateTime data_devolução)
+            static public int insertDevoluçãoCompra (int id_utilizador, int id_livro, DateTime data_devolução)
             {
                 DAL dal = new DAL();
+                dal.GarantirEsquema();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                new SqlParameter("@id_cliente", id_cliente),
+                new SqlParameter("@id_utilizador", id_utilizador),
                 new SqlParameter("@id_livro", id_livro),
                 new SqlParameter("@data_devolução", data_devolução)
              };
-                return dal.executarNonQuery("INSERT into DevoluçãoCompra (Id_Cliente, Id_Livro, Data_Devolução) VALUES(@id_cliente,@id_livro,@data_devolução)", sqlParams);
+                return dal.executarNonQuery("INSERT INTO [DevoluçãoCompra] (Id_Utilizador, Id_Livro, Data_Devolução) VALUES(@id_utilizador,@id_livro,@data_devolução)", sqlParams);
             }
              public static DataTable Load()
             {
@@ -378,15 +760,16 @@ namespace BusinessLogicLayer
             }
 
 
-            static public int insertDevoluçãoEmp(int id_cliente, int id_livro, DateTime data_devolução)
+            static public int insertDevoluçãoEmp(int id_utilizador, int id_livro, DateTime data_devolução)
             {
                 DAL dal = new DAL();
+                dal.GarantirEsquema();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                new SqlParameter("@id_cliente", id_cliente),
+                new SqlParameter("@id_utilizador", id_utilizador),
                 new SqlParameter("@id_livro", id_livro),
                 new SqlParameter("@data_devolução", data_devolução)
              };
-                return dal.executarNonQuery("INSERT into DevoluçãoEmp (Id_Cliente, Id_Livro, Data_Devolução) VALUES(@id_cliente,@id_livro,@data_devolução)", sqlParams);
+                return dal.executarNonQuery("INSERT INTO [DevoluçãoEmp] (Id_Utilizador, Id_Livro, Data_Devolução) VALUES(@id_utilizador,@id_livro,@data_devolução)", sqlParams);
             }
              public static DataTable LoadEmp()
             {
@@ -452,12 +835,15 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
-            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos)
+            static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos, int stock = 1)
             {
                 DAL dal = new DAL();
 
                 try
                 {
+                    if (stock < 0)
+                        throw new Exception("O stock não pode ser negativo.");
+
                     // 1. Parâmetros para a tabela Livro
                     SqlParameter[] sqlParams = new SqlParameter[]{
             new SqlParameter("@Quantas_Paginas", paginas),
@@ -469,14 +855,15 @@ namespace BusinessLogicLayer
             new SqlParameter("@Estado_Livro", estado_livro),
             new SqlParameter("@Editora", editora),
             new SqlParameter("@Idioma", idioma),
-            new SqlParameter("@Capa", capa != null ? (object)capa : DBNull.Value)
+            new SqlParameter("@Capa", capa != null ? (object)capa : DBNull.Value),
+            new SqlParameter("@Stock", stock)
         };
 
                     // 2. Insere na tabela Livro e obtém o ID gerado
                     object resultado = dal.executarScalar(
-                        "INSERT INTO Livro (Quantas_Paginas, Titulo, Bio, Preço, Ano, Autor, Estado_Livro, Editora, Idioma, Capa) " +
+                        "INSERT INTO Livro (Quantas_Paginas, Titulo, Bio, Preço, Ano, Autor, Estado_Livro, Editora, Idioma, Capa, Stock) " +
                         "OUTPUT INSERTED.Id_Livro " +
-                        "VALUES (@Quantas_Paginas, @Titulo, @Bio, @Preço, @Ano, @Autor, @Estado_Livro, @Editora, @Idioma, @Capa)",
+                        "VALUES (@Quantas_Paginas, @Titulo, @Bio, @Preço, @Ano, @Autor, @Estado_Livro, @Editora, @Idioma, @Capa, @Stock)",
                         sqlParams);
 
                     if (resultado == null || resultado == DBNull.Value)
@@ -604,13 +991,38 @@ namespace BusinessLogicLayer
                 try
                 {
                     return dal.executarReader(
-                        "SELECT Id_Livro, Titulo, Autor, Preço, Estado_Livro FROM Livro WHERE Id_Livro = @idLivro",
+                        "SELECT Id_Livro, Titulo, Autor, Preço, Estado_Livro, Stock FROM Livro WHERE Id_Livro = @idLivro",
                         new SqlParameter[] { new SqlParameter("@idLivro", idLivro) });
                 }
                 catch (Exception ex)
                 {
                     throw new Exception("Erro ao obter livro: " + ex.Message, ex);
                 }
+            }
+
+            public static int ObterStock(int idLivro)
+            {
+                DAL dal = new DAL();
+                object resultado = dal.executarScalar(
+                    "SELECT ISNULL(Stock, 0) FROM Livro WHERE Id_Livro=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idLivro) });
+                return Convert.ToInt32(resultado);
+            }
+
+            public static void DecrementarStock(int idLivro)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE Livro SET Stock = Stock - 1 WHERE Id_Livro=@id AND Stock > 0",
+                    new SqlParameter[] { new SqlParameter("@id", idLivro) });
+            }
+
+            public static void IncrementarStock(int idLivro)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE Livro SET Stock = Stock + 1 WHERE Id_Livro=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idLivro) });
             }
 
             static public List<string> ObterGenerosLivro(int idLivro)

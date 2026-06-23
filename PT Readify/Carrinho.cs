@@ -14,7 +14,27 @@ namespace PT_Readify
             InitializeComponent();
             carrinhoTable = CarrinhoService.Itens;
             ConfigurarDataGrid();
+            ConfigurarBotoes();
             AtualizarTotalGeral();
+        }
+
+        private void ConfigurarBotoes()
+        {
+            btnReservar.Visible = false;
+            btnEmprestar.Text = "Empréstimos";
+            btnEmprestar.FillColor = Color.FromArgb(155, 89, 182);
+            btnComprar.Visible = false;
+
+            var lblInfo = new Label
+            {
+                Text = "O carrinho é apenas para compras. Para emprestar ou reservar, use Empréstimos.",
+                ForeColor = Color.FromArgb(200, 200, 200),
+                AutoSize = false,
+                Size = new Size(340, 40),
+                Location = new Point(140, 20),
+                Font = new Font("Segoe UI", 8.5f)
+            };
+            panelBottom.Controls.Add(lblInfo);
         }
 
         private void ConfigurarDataGrid()
@@ -69,17 +89,6 @@ namespace PT_Readify
                 ReadOnly = false
             });
 
-            dataGridViewCarrinho.Columns.Add(new DataGridViewComboBoxColumn
-            {
-                Name = "colAcao",
-                HeaderText = "Ação",
-                DataPropertyName = "Acao",
-                Width = 110,
-                FlatStyle = FlatStyle.Flat
-            });
-            var colAcao = (DataGridViewComboBoxColumn)dataGridViewCarrinho.Columns["colAcao"];
-            colAcao.Items.AddRange("Comprar", "Reservar", "Emprestar");
-
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colSubtotal",
@@ -93,7 +102,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewButtonColumn
             {
                 Name = "colRemover",
-                HeaderText = "Ação",
+                HeaderText = "",
                 Text = "Remover",
                 UseColumnTextForButtonValue = true,
                 Width = 80
@@ -166,7 +175,9 @@ namespace PT_Readify
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Erro ao atualizar quantidade: " + ex.Message);
+                    MessageBox.Show(ex.Message, "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dataGridViewCarrinho.Refresh();
+                    AtualizarTotalGeral();
                 }
             }
         }
@@ -181,14 +192,13 @@ namespace PT_Readify
 
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para finalizar o pedido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Inicie sessão para finalizar a compra.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             DialogResult resultado = MessageBox.Show(
-                $"Confirmar pedido de {CarrinhoService.TotalItens} item(ns)?\n\n" +
-                "Cada livro será processado conforme a ação selecionada (Comprar, Reservar ou Emprestar).",
-                "Confirmar pedido",
+                $"Confirmar compra de {CarrinhoService.TotalItens} item(ns) por {CarrinhoService.TotalPreco:C2}?",
+                "Confirmar compra",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -200,48 +210,34 @@ namespace PT_Readify
                 CarrinhoService.ProcessarCarrinho();
                 AtualizarTotalGeral();
                 MessageBox.Show(
-                    "Pedido finalizado com sucesso!\n\n" +
-                    "Compras → Histórico de Compras\n" +
-                    "Reservas e Empréstimos → Histórico de Empréstimos",
+                    "Compra finalizada com sucesso!\n\nConsulte o Histórico de Compras.",
                     "Sucesso",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao finalizar pedido: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void MarcarTodosAcao(string acao)
+        private void IrParaEmprestimos()
         {
-            foreach (DataRow row in carrinhoTable.Rows)
-            {
-                if (row.RowState != DataRowState.Deleted)
-                    row["Acao"] = acao;
-            }
-            dataGridViewCarrinho.Refresh();
+            var menu = Owner as main_menu ?? FindForm() as main_menu;
+            Close();
+            if (menu != null)
+                menu.AbrirEmprestimos();
+            else
+                new Requesitar_livros().Show();
         }
 
         private void btnFinalizarCompra_Click(object sender, EventArgs e) => ConfirmarPedido();
 
-        private void btnReservar_Click(object sender, EventArgs e)
-        {
-            MarcarTodosAcao("Reservar");
-            ConfirmarPedido();
-        }
+        private void btnEmprestar_Click(object sender, EventArgs e) => IrParaEmprestimos();
 
-        private void btnEmprestar_Click(object sender, EventArgs e)
-        {
-            MarcarTodosAcao("Emprestar");
-            ConfirmarPedido();
-        }
+        private void btnComprar_Click(object sender, EventArgs e) => ConfirmarPedido();
 
-        private void btnComprar_Click(object sender, EventArgs e)
-        {
-            MarcarTodosAcao("Comprar");
-            ConfirmarPedido();
-        }
+        private void btnReservar_Click(object sender, EventArgs e) => IrParaEmprestimos();
 
         private void btnLimparCarrinho_Click(object sender, EventArgs e)
         {

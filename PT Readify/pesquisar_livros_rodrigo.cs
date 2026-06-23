@@ -24,7 +24,28 @@ namespace PT_Readify
         {
             CarregarTodosLivros();
             ConfigurarEventos();
-            CarrinhoService.CarrinhoAlterado += AtualizarContadorCarrinho;
+            CarrinhoService.CarrinhoAlterado += OnCarrinhoAlterado;
+            AtualizarContadorCarrinho();
+        }
+
+        private void OnCarrinhoAlterado()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(OnCarrinhoAlterado));
+                return;
+            }
+            AtualizarContadorCarrinho();
+        }
+
+        public void RecarregarLivros()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(RecarregarLivros));
+                return;
+            }
+            CarregarTodosLivros();
             AtualizarContadorCarrinho();
         }
 
@@ -197,11 +218,12 @@ namespace PT_Readify
             string titulo = livro["Titulo"]?.ToString() ?? "Sem título";
             string autor = livro["Autor"]?.ToString() ?? "Autor desconhecido";
             decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
+            int stock = livro.Table.Columns.Contains("Stock") ? Convert.ToInt32(livro["Stock"] ?? 0) : BLL.Livros.ObterStock(idLivro);
             object capaObj = livro["Capa"];
 
             Panel card = new Panel
             {
-                Size = new Size(200, 350),
+                Size = new Size(200, stock > 0 ? 410 : 420),
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 Margin = new Padding(10)
@@ -264,28 +286,80 @@ namespace PT_Readify
             Label lblPreco = new Label
             {
                 Location = new Point(10, 300),
-                Size = new Size(180, 25),
+                Size = new Size(180, 20),
                 Text = $"€ {preco:F2}",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = Color.FromArgb(52, 168, 83)
             };
             card.Controls.Add(lblPreco);
 
-            // Botão Adicionar ao Carrinho
-            Button btnAdicionar = new Button
+            Label lblStock = new Label
             {
-                Location = new Point(10, 320),
-                Size = new Size(180, 30),
-                Text = "+ Carrinho",
-                Font = new Font("Segoe UI", 9, FontStyle.Regular),
-                BackColor = Color.FromArgb(52, 168, 83),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Tag = idLivro
+                Location = new Point(10, 322),
+                Size = new Size(180, 18),
+                Text = stock > 0 ? $"Stock: {stock}" : "Esgotado — reservar",
+                Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                ForeColor = stock > 0 ? Color.FromArgb(52, 168, 83) : Color.FromArgb(231, 76, 60)
             };
-            btnAdicionar.Click += (s, e) => AdicionarAoCarrinho(idLivro, titulo, autor, preco);
-            card.Controls.Add(btnAdicionar);
+            card.Controls.Add(lblStock);
+
+            if (stock > 0)
+            {
+                Button btnAdicionar = new Button
+                {
+                    Location = new Point(10, 345),
+                    Size = new Size(180, 28),
+                    Text = "+ Carrinho (comprar)",
+                    Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                    BackColor = Color.FromArgb(52, 168, 83),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand,
+                    Tag = idLivro
+                };
+                btnAdicionar.Click += (s, e) => AdicionarAoCarrinho(idLivro, titulo, autor, preco);
+                card.Controls.Add(btnAdicionar);
+
+                Button btnEmprestimo = new Button
+                {
+                    Location = new Point(10, 375),
+                    Size = new Size(180, 28),
+                    Text = "Emprestar",
+                    Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                    BackColor = Color.FromArgb(155, 89, 182),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand
+                };
+                btnEmprestimo.Click += (s, e) => IrParaEmprestimos();
+                card.Controls.Add(btnEmprestimo);
+            }
+            else
+            {
+                Label lblEsgotado = new Label
+                {
+                    Location = new Point(10, 345),
+                    Size = new Size(180, 36),
+                    Text = "Sem stock para compra.\nUse Empréstimos para reservar.",
+                    Font = new Font("Segoe UI", 8, FontStyle.Italic),
+                    ForeColor = Color.FromArgb(231, 76, 60)
+                };
+                card.Controls.Add(lblEsgotado);
+
+                Button btnEmprestimo = new Button
+                {
+                    Location = new Point(10, 385),
+                    Size = new Size(180, 28),
+                    Text = "Empréstimos / Reservar",
+                    Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                    BackColor = Color.FromArgb(155, 89, 182),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand
+                };
+                btnEmprestimo.Click += (s, e) => IrParaEmprestimos();
+                card.Controls.Add(btnEmprestimo);
+            }
 
             return card;
         }
@@ -301,6 +375,7 @@ namespace PT_Readify
             string estado = livro["Estado_Livro"]?.ToString() ?? "";
             string bio = livro["Bio"]?.ToString() ?? "";
             decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
+            int stock = livro.Table.Columns.Contains("Stock") ? Convert.ToInt32(livro["Stock"] ?? 0) : BLL.Livros.ObterStock(idLivro);
             
             List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
             string generos = generosLivro.Count > 0 ? string.Join(", ", generosLivro) : "Sem gênero";
@@ -313,6 +388,7 @@ namespace PT_Readify
                               $"Idioma: {idioma}\n" +
                               $"Gêneros: {generos}\n" +
                               $"Estado: {estado}\n" +
+                              $"Stock: {stock}\n" +
                               $"Preço: €{preco:F2}\n\n" +
                               $"Descrição:\n{bio}";
 
@@ -321,19 +397,46 @@ namespace PT_Readify
 
         private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, decimal preco)
         {
+            if (globais.id_utilizador <= 0)
+            {
+                MessageBox.Show("Inicie sessão para adicionar livros ao carrinho.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 CarrinhoService.AdicionarLivro(idLivro, titulo, autor, preco);
+                AtualizarContadorCarrinho();
+                NotificarMenuPrincipal();
+
                 MessageBox.Show(
-                    $"'{titulo}' adicionado ao carrinho!\nPreço: {preco:C2}",
+                    $"'{titulo}' adicionado ao carrinho!\nPreço: {preco:C2}\n\nO carrinho é apenas para compras.",
                     "Sucesso",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao adicionar ao carrinho: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Não foi possível adicionar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void NotificarMenuPrincipal()
+        {
+            Form menu = FindForm();
+            if (menu is main_menu mainMenu)
+                mainMenu.AtualizarTituloCarrinhoMenu();
+        }
+
+        private void IrParaEmprestimos()
+        {
+            Form menu = FindForm();
+            if (menu is main_menu mainMenu)
+            {
+                mainMenu.AbrirEmprestimos();
+                return;
+            }
+            new Requesitar_livros().Show();
         }
 
         private void AtualizarContadorCarrinho()
@@ -344,11 +447,18 @@ namespace PT_Readify
 
         private void AbrirCarrinho()
         {
+            Form menu = FindForm();
+            if (menu is main_menu mainMenu)
+            {
+                mainMenu.AbrirCarrinhoIntegrado();
+                return;
+            }
+
             using (var carrinho = new Carrinho())
             {
-                carrinho.ShowDialog(this);
+                carrinho.ShowDialog(FindForm() ?? this);
             }
-            AtualizarContadorCarrinho();
+            RecarregarLivros();
         }
 
         private void textbox2_TextChanged(object sender, EventArgs e)
@@ -379,12 +489,18 @@ namespace PT_Readify
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            LimparFiltros();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            AplicarFiltros();
+        }
 
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            CarrinhoService.CarrinhoAlterado -= OnCarrinhoAlterado;
+            base.OnFormClosed(e);
         }
     }
 }

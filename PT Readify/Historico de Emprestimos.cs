@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer;
 using System;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PT_Readify
@@ -10,6 +11,16 @@ namespace PT_Readify
         public Historico_de_Emprestimos()
         {
             InitializeComponent();
+            dataGridViewHistorico_Emprestimos.CellFormatting += DataGridViewHistorico_Emprestimos_CellFormatting;
+        }
+
+        private void DataGridViewHistorico_Emprestimos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dataGridViewHistorico_Emprestimos.Columns[e.ColumnIndex].Name == "Valor_Multa" && e.Value != null)
+            {
+                if (int.TryParse(e.Value.ToString(), out int centimos))
+                    e.Value = (centimos / 100m).ToString("C2");
+            }
         }
 
         private void Historico_de_Emprestimos_Load(object sender, EventArgs e)
@@ -24,16 +35,12 @@ namespace PT_Readify
             CarregarHistorico();
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
+            guna2Button3.Text = "Devolver livro";
         }
 
         private void CarregarHistorico()
         {
             dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
-        }
-
-        private void dataGridViewHistorico_Emprestimos_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)
@@ -78,8 +85,56 @@ namespace PT_Readify
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
-            Devolução_da_Compra devolucaoForm = new Devolução_da_Compra();
-            devolucaoForm.Show();
+            if (dataGridViewHistorico_Emprestimos.CurrentRow == null)
+            {
+                MessageBox.Show("Selecione um empréstimo para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                string estado = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Estado_Emprestimo"]?.Value?.ToString();
+                if (estado != "Ativo")
+                {
+                    MessageBox.Show("Selecione um empréstimo ativo para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int idHistorico = Convert.ToInt32(dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Id"].Value);
+                string titulo = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Titulo"]?.Value?.ToString() ?? "livro";
+
+                DialogResult confirmar = MessageBox.Show(
+                    $"Confirmar devolução de \"{titulo}\"?",
+                    "Devolução",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmar != DialogResult.Yes)
+                    return;
+
+                BLL.Historicos.DevolverEmprestimo(idHistorico, globais.id_utilizador);
+
+                var historicoAtualizado = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+                DataRow[] linha = historicoAtualizado.Select($"Id = {idHistorico}");
+                string msgMulta = "";
+                if (linha.Length > 0)
+                {
+                    int multa = Convert.ToInt32(linha[0]["Valor_Multa"]);
+                    if (multa > 0)
+                        msgMulta = $"\n\nMulta aplicada: {(multa / 100m):C2} (2€ por semana de atraso).";
+                }
+
+                CarregarHistorico();
+                MessageBox.Show("Livro devolvido com sucesso!" + msgMulta, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao devolver: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridViewHistorico_Emprestimos_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
         }
 
         private void dataGridViewHistorico_Emprestimos_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
@@ -89,7 +144,6 @@ namespace PT_Readify
 
         private void dataGridViewHistorico_Emprestimos_CellContentClick_2(object sender, DataGridViewCellEventArgs e)
         {
-
         }
     }
 }
