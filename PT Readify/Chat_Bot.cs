@@ -146,5 +146,10 @@ namespace PT_Readify
             richTextBox1.SelectionColor = richTextBox1.ForeColor;
             richTextBox1.ScrollToCaret();
         }
+
+        private void Chat_Bot_Load_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
