@@ -1113,9 +1113,6 @@ namespace BusinessLogicLayer
                         new SqlParameter("@id", idLivro),
                         new SqlParameter("@qty", quantidade)
                     });
-
-                if (rows <= 0)
-                    throw new Exception("Livro não encontrado ou stock não atualizado.");
             }
 
             public static DataTable LoadStockResumo()
