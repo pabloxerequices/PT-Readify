@@ -75,5 +75,12 @@ namespace PT_Readify
         {
             new RelatorioMultasAdmin().Show();
         }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            globais.id_utilizador = 0;
+            new Form1().Show();
+            this.Close();
+        }
     }
 }
