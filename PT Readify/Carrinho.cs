@@ -207,13 +207,33 @@ namespace PT_Readify
 
             try
             {
-                CarrinhoService.ProcessarCarrinho();
+                ResultadoEnvioRecibo resultadoRecibo = CarrinhoService.ProcessarCarrinho();
                 AtualizarTotalGeral();
+
                 MessageBox.Show(
                     "Compra finalizada com sucesso!\n\nConsulte o Histórico de Compras.",
                     "Sucesso",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+
+                if (resultadoRecibo.Sucesso)
+                {
+                    MessageBox.Show(
+                        resultadoRecibo.Mensagem,
+                        "Recibo enviado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "A compra foi registada, mas o recibo por email não foi enviado.\n\n" +
+                        resultadoRecibo.Mensagem + "\n\n" +
+                        "Configure o ficheiro smtp.config na pasta da aplicação (veja smtp.config.example).",
+                        "Aviso - Email",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {

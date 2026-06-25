@@ -14,6 +14,8 @@ namespace PT_Readify
         public Historico_de_Emprestimos()
         {
             InitializeComponent();
+            dataGridViewHistorico_Emprestimos.DataError += (s, e) => e.ThrowException = false;
+            dataGridViewHistorico_Emprestimos.CellFormatting += DataGridViewHistorico_Emprestimos_CellFormatting;
             DevolucaoUiHelper.ConfigurarGrid(dataGridViewHistorico_Emprestimos);
             dataGridViewHistorico_Emprestimos.CellFormatting += Grid_CellFormatting;
             dataGridViewHistorico_Emprestimos.RowPrePaint += Grid_RowPrePaint;
@@ -28,6 +30,12 @@ namespace PT_Readify
 
         private void Grid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (dataGridViewHistorico_Emprestimos.Columns[e.ColumnIndex].Name == "Estado Multa" && e.Value != null && e.Value.ToString() != "—")
+            {
+                e.CellStyle.ForeColor = e.Value.ToString() == "Paga"
+                    ? Color.FromArgb(46, 204, 113)
+                    : Color.FromArgb(231, 76, 60);
+            }
             DevolucaoUiHelper.FormatarCelula(dataGridViewHistorico_Emprestimos, e);
         }
 
@@ -49,8 +57,26 @@ namespace PT_Readify
             guna2Button3.Text = "Devolver livro";
         }
 
+        private DataTable dadosEmprestimosOriginais;
+
         private void CarregarHistorico()
         {
+            dadosEmprestimosOriginais = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+            dataGridViewHistorico_Emprestimos.DataSource =
+                GridDisplayHelper.FormatEmprestimosParaExibicao(dadosEmprestimosOriginais);
+        }
+
+        private void guna2Button2_Click(object sender, EventArgs e)
+        {
+            guna2Button2.Visible = false;
+            guna2Button5.Visible = true;
+            guna2Button4.Visible = true;
+        }
+
+        private void guna2Button4_Click(object sender, EventArgs e)
+        {
+            OrdenarHistorico("Data_Levantamento DESC");
+        }
             var historico = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
             _sortHelper.DefinirDados(historico);
 
@@ -61,6 +87,12 @@ namespace PT_Readify
                             r["Data_Prevista"] != DBNull.Value &&
                             Convert.ToDateTime(r["Data_Prevista"]).Date < DateTime.Now.Date) ?? 0;
 
+        private void OrdenarHistorico(string sortExpression)
+        {
+            if (dadosEmprestimosOriginais == null)
+                dadosEmprestimosOriginais = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+
+            if (dadosEmprestimosOriginais == null || dadosEmprestimosOriginais.Columns.Count == 0 || !dadosEmprestimosOriginais.Columns.Contains("Data_Levantamento"))
             guna2Button3.Enabled = ativos > 0;
 
             if (ativos == 0)
@@ -80,6 +112,10 @@ namespace PT_Readify
             }
         }
 
+            DataView view = dadosEmprestimosOriginais.DefaultView;
+            view.Sort = sortExpression;
+            dataGridViewHistorico_Emprestimos.DataSource =
+                GridDisplayHelper.FormatEmprestimosParaExibicao(dadosEmprestimosOriginais.DefaultView.ToTable());
         private void guna2Button2_Click(object sender, EventArgs e) => _sortHelper.MostrarOpcoesOrdenacao();
 
         private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();

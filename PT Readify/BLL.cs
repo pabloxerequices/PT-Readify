@@ -753,7 +753,7 @@ namespace BusinessLogicLayer
                 DAL dal = new DAL();
                 return dal.executarReader(
                     "SELECT h.Id, h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, h.Data_Levantamento, " +
-                    "h.Duracao_Dias, h.Valor_Multa, h.Multa_Paga, h.Id_Livro, u.Nome AS Utilizador, l.Titulo, l.Autor " +
+                    "h.Duracao_Dias, h.Valor_Multa, h.Multa_Paga, h.Id_Livro, h.Id_Utilizador, u.Nome AS Utilizador, l.Titulo, l.Autor " +
                     "FROM HistoricoEmp h " +
                     "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
                     "INNER JOIN utilizador u ON h.Id_Utilizador = u.Id_Utilizador " +
@@ -767,7 +767,7 @@ namespace BusinessLogicLayer
                 AtualizarMultasEmAtraso();
                 DAL dal = new DAL();
                 return dal.executarReader(
-                    "SELECT h.Id, u.Nome AS Utilizador, l.Titulo, h.Data_Prevista, h.Data_Entrega, " +
+                    "SELECT h.Id, h.Id_Utilizador, u.Nome AS Utilizador, l.Titulo, h.Data_Prevista, h.Data_Entrega, " +
                     "h.Valor_Multa, h.Multa_Paga, h.Estado_Emprestimo " +
                     "FROM HistoricoEmp h " +
                     "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
