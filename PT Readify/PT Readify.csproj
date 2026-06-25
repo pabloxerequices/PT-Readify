@@ -77,6 +77,10 @@
     <Compile Include="Carrinho.Designer.cs">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
+    <Compile Include="GestaoStockLivros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaunchHelper.cs" />
     <Compile Include="AutoLogoutManager.cs" />
     <Compile Include="CarrinhoService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
@@ -241,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GestaoStockLivros.resx">
+      <DependentUpon>GestaoStockLivros.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Historico de Emprestimos.resx">
       <DependentUpon>Historico de Emprestimos.cs</DependentUpon>

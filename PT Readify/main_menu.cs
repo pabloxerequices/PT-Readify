@@ -36,7 +36,7 @@ namespace PT_Readify
 
         public void AbrirEmprestimos()
         {
-            new Requesitar_livros().Show();
+            FormLaunchHelper.Show(new Requesitar_livros(), this);
         }
 
         public void AbrirCarrinhoIntegrado()
@@ -44,7 +44,7 @@ namespace PT_Readify
             using (var carrinho = new Carrinho())
             {
                 carrinho.StartPosition = FormStartPosition.CenterParent;
-                carrinho.ShowDialog(this);
+                FormLaunchHelper.ShowDialog(carrinho, this);
             }
 
             formPesquisa?.RecarregarLivros();
@@ -128,7 +128,7 @@ namespace PT_Readify
                         MessageBoxIcon.Information);
 
                     if (resultado == DialogResult.Yes)
-                        new NotificacoesUtilizador().Show();
+                        FormLaunchHelper.Show(new NotificacoesUtilizador(), this);
                 }
             }
             catch { }
@@ -136,7 +136,7 @@ namespace PT_Readify
 
         private void button6_Click(object sender, EventArgs e)
         {
-            new Pesquisar_Livros().Show();
+            FormLaunchHelper.Show(new Pesquisar_Livros(), this);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -155,7 +155,7 @@ namespace PT_Readify
 
         private void button5_Click(object sender, EventArgs e)
         {
-            new ReservasUtilizador().Show();
+            FormLaunchHelper.Show(new ReservasUtilizador(), this);
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -170,12 +170,13 @@ namespace PT_Readify
 
         private void button2_Click(object sender, EventArgs e)
         {
-            new Perfil ().Show();
+            FormLaunchHelper.Show(new Perfil(), this);
             this.Close();
         }
 
         private void button6_Click_1(object sender, EventArgs e)
         {
+            // Chat mantém tamanho normal — sem fullscreen
             new Chat_Bot().Show();
         }
 
@@ -198,14 +199,12 @@ namespace PT_Readify
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Historico_de_Emprestimos historico = new Historico_de_Emprestimos();
-            historico.Show();
+            FormLaunchHelper.Show(new Historico_de_Emprestimos(), this);
         }
 
         private void button7_Click_1(object sender, EventArgs e)
         {
-            Hstórico_de_compras historico = new Hstórico_de_compras();
-            historico.Show();
+            FormLaunchHelper.Show(new Hstórico_de_compras(), this);
         }
 
         private void button9_Click(object sender, EventArgs e)
