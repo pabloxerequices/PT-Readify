@@ -15,11 +15,23 @@ namespace PT_Readify
             InitializeComponent();
             ApplyStyleToControls();
             LoadSettingsToControls();
+            this.FormClosed += Configuracoes_FormClosed;
+        }
+
+        private void Configuracoes_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            foreach (Form open in Application.OpenForms)
+            {
+                if (open is main_menu mn)
+                {
+                    mn.ShowBooksPanel();
+                    break;
+                }
+            }
         }
 
         private void ApplyStyleToControls()
         {
-            // Fonte padrão consistente
             var f = new Font("Segoe UI", 10F);
             this.Font = f;
             foreach (Control c in this.pnlContent.Controls.OfType<Control>())
@@ -32,45 +44,125 @@ namespace PT_Readify
         {
             _config = ConfigManager.Current ?? Config.Default();
 
-            cfgComboTheme.Items.Clear();
-            cfgComboTheme.Items.Add("Claro");
-            cfgComboTheme.Items.Add("Escuro");
-            cfgComboTheme.SelectedItem = _config.Theme ?? "Claro";
+                ApplyFormLanguage();
+                ApplyFormTheme();
 
-            cfgToggleFullscreen.Checked = _config.FullscreenReading;
+                cfgComboTheme.Items.Clear();
+                cfgComboTheme.Items.Add(LanguageHelper.T("ThemeLight", _config));
+                cfgComboTheme.Items.Add(LanguageHelper.T("ThemeDark", _config));
+                cfgComboTheme.SelectedItem = ConfigApplier.IsDarkTheme(_config)
+                    ? LanguageHelper.T("ThemeDark", _config)
+                    : LanguageHelper.T("ThemeLight", _config);
 
-            cfgComboFont.Items.Clear();
-            cfgComboFont.Items.AddRange(new object[] { "Segoe UI", "Arial", "Times New Roman", "Calibri" });
-            cfgComboFont.SelectedItem = string.IsNullOrWhiteSpace(_config.FontName) ? "Segoe UI" : _config.FontName;
+                cfgToggleFullscreen.Checked = _config.FullscreenReading;
 
-            cfgNumFontSize.Value = Math.Max(8, Math.Min(72, _config.FontSize));
-            cfgNumAutoLogout.Value = Math.Max(0, _config.AutoLogoutMinutes);
+                cfgComboFont.Items.Clear();
+                cfgComboFont.Items.AddRange(new object[] { "Segoe UI", "Arial", "Times New Roman", "Calibri" });
+                cfgComboFont.SelectedItem = string.IsNullOrWhiteSpace(_config.FontName) ? "Segoe UI" : _config.FontName;
 
-            cfgComboLanguage.Items.Clear();
-            cfgComboLanguage.Items.Add("Português");
-            cfgComboLanguage.Items.Add("English");
-            cfgComboLanguage.SelectedItem = _config.Language == "en" ? "English" : "Português";
+                cfgNumFontSize.Value = Math.Max(15, Math.Min(100, _config.FontSize));
+
+                cfgComboAutoLogout.Items.Clear();
+                foreach (var minutes in AutoLogoutManager.AllowedMinutes)
+                {
+                    cfgComboAutoLogout.Items.Add(new LogoutOptionItem(minutes, LanguageHelper.LogoutOptionLabel(minutes, _config)));
+                }
+                SelectLogoutOption(_config.AutoLogoutMinutes);
+
+                cfgComboLanguage.Items.Clear();
+                cfgComboLanguage.Items.Add("Português");
+                cfgComboLanguage.Items.Add("English");
+                cfgComboLanguage.SelectedItem = _config.Language == "en" ? "English" : "Português";
+        }
+
+        private void SelectLogoutOption(int minutes)
+        {
+            minutes = AutoLogoutManager.NormalizeMinutes(minutes);
+            for (int i = 0; i < cfgComboAutoLogout.Items.Count; i++)
+            {
+                if (cfgComboAutoLogout.Items[i] is LogoutOptionItem item && item.Minutes == minutes)
+                {
+                    cfgComboAutoLogout.SelectedIndex = i;
+                    return;
+                }
+            }
+            cfgComboAutoLogout.SelectedIndex = 0;
+        }
+
+        private int GetSelectedLogoutMinutes()
+        {
+            if (cfgComboAutoLogout.SelectedItem is LogoutOptionItem item)
+                return item.Minutes;
+            return 1;
+        }
+
+        private string GetSelectedTheme()
+        {
+            var selected = cfgComboTheme.SelectedItem?.ToString() ?? "";
+            if (selected.Equals(LanguageHelper.T("ThemeDark", _config), StringComparison.OrdinalIgnoreCase)
+                || selected.Equals("Dark", StringComparison.OrdinalIgnoreCase)
+                || selected.Equals("Escuro", StringComparison.OrdinalIgnoreCase))
+                return "Escuro";
+            return "Claro";
+        }
+
+        private void ApplyFormLanguage()
+        {
+            this.Text = LanguageHelper.T("SettingsTitle", _config);
+            lblTitle.Text = "⚙️ " + LanguageHelper.T("SettingsTitle", _config);
+            lblTheme.Text = LanguageHelper.T("Theme", _config);
+            lblFullscreen.Text = LanguageHelper.T("Fullscreen", _config);
+            lblFont.Text = LanguageHelper.T("Font", _config);
+            lblFontSize.Text = LanguageHelper.T("FontSize", _config);
+            lblAutoLogout.Text = LanguageHelper.T("AutoLogout", _config);
+            lblLanguage.Text = LanguageHelper.T("Language", _config);
+            btnSalvar.Text = LanguageHelper.T("Save", _config);
+            btnCancelar.Text = LanguageHelper.T("Cancel", _config);
+            btnRestaurar.Text = LanguageHelper.T("Reset", _config);
+            btnVoltarLingua.Text = LanguageHelper.T("RestoreLanguage", _config);
+        }
+
+        private void ApplyFormTheme()
+        {
+            ConfigApplier.ApplyThemeToHeader(pnlTop, _config);
+            ConfigApplier.ApplyThemeToPanel(pnlContent, _config);
+
+            var isDark = ConfigApplier.IsDarkTheme(_config);
+            var labelColor = isDark ? Color.WhiteSmoke : Color.FromArgb(50, 50, 50);
+            foreach (var lbl in pnlContent.Controls.OfType<Label>())
+            {
+                lbl.ForeColor = labelColor;
+            }
+            lblTitle.ForeColor = Color.White;
         }
 
         private void buttonSalvar_Click(object sender, EventArgs e)
         {
             if (_config == null) _config = Config.Default();
 
-            _config.Theme = cfgComboTheme.SelectedItem?.ToString() ?? "Claro";
+            var previousLanguage = _config.Language;
+
+            _config.Theme = GetSelectedTheme();
             _config.FullscreenReading = cfgToggleFullscreen.Checked;
             _config.FontName = cfgComboFont.SelectedItem?.ToString() ?? "Segoe UI";
             _config.FontSize = (int)cfgNumFontSize.Value;
-            _config.AutoLogoutMinutes = (int)cfgNumAutoLogout.Value;
+            _config.AutoLogoutMinutes = GetSelectedLogoutMinutes();
             _config.Language = cfgComboLanguage.SelectedItem?.ToString() == "English" ? "en" : "pt";
 
             if (string.IsNullOrWhiteSpace(_config.OriginalLanguage))
-                _config.OriginalLanguage = _config.Language;
+                _config.OriginalLanguage = previousLanguage ?? "pt";
 
             ConfigManager.Save(_config);
 
-            MessageBox.Show("Configurações guardadas.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            // Aplicar imediatamente (aplica apenas elementos da janela principal; outros forms podem recarregar)
+            MessageBox.Show(
+                LanguageHelper.T("Saved", _config),
+                LanguageHelper.T("Success", _config),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
             TryApplyRuntimeSettings();
+            LoadSettingsToControls();
+            Close();
         }
 
         private void TryApplyRuntimeSettings()
@@ -80,14 +172,10 @@ namespace PT_Readify
                 var cfg = ConfigManager.Current;
                 if (cfg == null) return;
 
-                // Em vez de acessar membros privados do main_menu, delegue a aplicação ao próprio form
                 foreach (Form open in Application.OpenForms)
                 {
                     if (open is main_menu mn)
-                    {
-                        // pede ao main_menu para aplicar as configurações
                         mn.ApplyConfig(cfg);
-                    }
                 }
             }
             catch { }
@@ -100,11 +188,18 @@ namespace PT_Readify
 
         private void buttonRestaurar_Click(object sender, EventArgs e)
         {
-            var confirm = MessageBox.Show("Restaurar padrões irá repor todas as preferências. Continuar?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var confirm = MessageBox.Show(
+                LanguageHelper.T("ResetConfirm", _config),
+                LanguageHelper.T("Confirm", _config),
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
             if (confirm != DialogResult.Yes) return;
 
             ConfigManager.RestoreDefaults();
+            _config = ConfigManager.Current;
             LoadSettingsToControls();
+            TryApplyRuntimeSettings();
         }
 
         private void buttonVoltarLingua_Click(object sender, EventArgs e)
@@ -112,14 +207,39 @@ namespace PT_Readify
             var cfg = ConfigManager.Current;
             if (cfg == null || string.IsNullOrWhiteSpace(cfg.OriginalLanguage))
             {
-                MessageBox.Show("Linguagem original não definida.", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageHelper.T("NoOriginalLanguage", _config),
+                    LanguageHelper.T("Info", _config),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
             cfg.Language = cfg.OriginalLanguage;
             ConfigManager.Save(cfg);
+            _config = cfg;
             LoadSettingsToControls();
-            MessageBox.Show("Linguagem restaurada para o original.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            TryApplyRuntimeSettings();
+
+            MessageBox.Show(
+                LanguageHelper.T("LanguageRestored", _config),
+                LanguageHelper.T("Success", _config),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        private sealed class LogoutOptionItem
+        {
+            public int Minutes { get; }
+            public string Label { get; }
+
+            public LogoutOptionItem(int minutes, string label)
+            {
+                Minutes = minutes;
+                Label = label;
+            }
+
+            public override string ToString() => Label;
         }
     }
 }

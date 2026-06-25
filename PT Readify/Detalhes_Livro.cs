@@ -20,6 +20,29 @@ namespace PT_Readify
 
         private void Detalhes_Livro_Load(object sender, EventArgs e)
         {
+            ApplyUserSettings();
+        }
+
+        private void ApplyUserSettings()
+        {
+            var cfg = ConfigManager.Current;
+            if (cfg == null) return;
+
+            var readingFont = ConfigApplier.GetReadingFont(cfg);
+            this.Font = readingFont;
+            table.Font = readingFont;
+
+            if (ConfigApplier.IsDarkTheme(cfg))
+            {
+                this.BackColor = Color.FromArgb(45, 45, 48);
+                table.BackColor = Color.FromArgb(45, 45, 48);
+                bottomPanel.BackColor = Color.FromArgb(37, 37, 38);
+                btnFechar.BackColor = Color.FromArgb(52, 152, 219);
+                btnFechar.ForeColor = Color.White;
+            }
+
+            btnFechar.Text = LanguageHelper.T("Close", cfg);
+            ConfigApplier.ApplyReadingMode(this, cfg);
         }
         public Detalhes_Livro(DataRow dados)
         {
@@ -107,7 +130,7 @@ namespace PT_Readify
                 {
                     Text = nomeCol,
                     AutoSize = true,
-                    Font = new Font(FontFamily.GenericSansSerif, 9.0f, FontStyle.Bold),
+                    Font = new Font(ConfigApplier.GetReadingFont(ConfigManager.Current), FontStyle.Bold),
                     Margin = new Padding(6),
                     Anchor = AnchorStyles.Left | AnchorStyles.Top
                 };
@@ -136,6 +159,7 @@ namespace PT_Readify
                     {
                         Text = valorTexto,
                         AutoSize = true,
+                        Font = ConfigApplier.GetReadingFont(ConfigManager.Current),
                         Margin = new Padding(6),
                         Anchor = AnchorStyles.Left | AnchorStyles.Top
                     };

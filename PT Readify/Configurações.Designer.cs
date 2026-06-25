@@ -18,7 +18,7 @@
         private Guna.UI2.WinForms.Guna2NumericUpDown cfgNumFontSize;
 
         private System.Windows.Forms.Label lblAutoLogout;
-        private Guna.UI2.WinForms.Guna2NumericUpDown cfgNumAutoLogout;
+        private Guna.UI2.WinForms.Guna2ComboBox cfgComboAutoLogout;
 
         private System.Windows.Forms.Label lblLanguage;
         private Guna.UI2.WinForms.Guna2ComboBox cfgComboLanguage;
@@ -55,7 +55,7 @@
             this.cfgNumFontSize = new Guna.UI2.WinForms.Guna2NumericUpDown();
 
             this.lblAutoLogout = new System.Windows.Forms.Label();
-            this.cfgNumAutoLogout = new Guna.UI2.WinForms.Guna2NumericUpDown();
+            this.cfgComboAutoLogout = new Guna.UI2.WinForms.Guna2ComboBox();
 
             this.lblLanguage = new System.Windows.Forms.Label();
             this.cfgComboLanguage = new Guna.UI2.WinForms.Guna2ComboBox();
@@ -126,21 +126,20 @@
 
             this.cfgNumFontSize.Location = new System.Drawing.Point(220, 160);
             this.cfgNumFontSize.Size = new System.Drawing.Size(120, 36);
-            this.cfgNumFontSize.Minimum = 8;
-            this.cfgNumFontSize.Maximum = 72;
-            this.cfgNumFontSize.Value = 12;
+            this.cfgNumFontSize.Minimum = 15;
+            this.cfgNumFontSize.Maximum = 100;
+            this.cfgNumFontSize.Value = 15;
 
             // AutoLogout
             this.lblAutoLogout.Location = new System.Drawing.Point(24, 212);
             this.lblAutoLogout.AutoSize = true;
-            this.lblAutoLogout.Text = "Temporizador de desconexão (min):";
+            this.lblAutoLogout.Text = "Temporizador de desconexão:";
             this.lblAutoLogout.Font = new System.Drawing.Font("Segoe UI", 10F);
 
-            this.cfgNumAutoLogout.Location = new System.Drawing.Point(420, 208);
-            this.cfgNumAutoLogout.Size = new System.Drawing.Size(120, 36);
-            this.cfgNumAutoLogout.Minimum = 0;
-            this.cfgNumAutoLogout.Maximum = 1440;
-            this.cfgNumAutoLogout.Value = 15;
+            this.cfgComboAutoLogout.Location = new System.Drawing.Point(220, 208);
+            this.cfgComboAutoLogout.Size = new System.Drawing.Size(240, 36);
+            this.cfgComboAutoLogout.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cfgComboAutoLogout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             // Language
             this.lblLanguage.Location = new System.Drawing.Point(24, 260);
@@ -192,7 +191,7 @@
             this.pnlContent.Controls.Add(this.lblFontSize);
             this.pnlContent.Controls.Add(this.cfgNumFontSize);
             this.pnlContent.Controls.Add(this.lblAutoLogout);
-            this.pnlContent.Controls.Add(this.cfgNumAutoLogout);
+            this.pnlContent.Controls.Add(this.cfgComboAutoLogout);
             this.pnlContent.Controls.Add(this.lblLanguage);
             this.pnlContent.Controls.Add(this.cfgComboLanguage);
             this.pnlContent.Controls.Add(this.btnSalvar);

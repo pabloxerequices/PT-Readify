@@ -18,6 +18,8 @@ namespace PT_Readify
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            _ = ConfigManager.Current;
+
             try
             {
                 new DAL().GarantirEsquema();

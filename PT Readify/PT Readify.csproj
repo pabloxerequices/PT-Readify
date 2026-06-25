@@ -77,8 +77,11 @@
     <Compile Include="Carrinho.Designer.cs">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
+    <Compile Include="AutoLogoutManager.cs" />
     <Compile Include="CarrinhoService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
+    <Compile Include="ConfigApplier.cs" />
+    <Compile Include="LanguageHelper.cs" />
     <Compile Include="EstatisticasAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
