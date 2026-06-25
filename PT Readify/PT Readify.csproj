@@ -37,6 +37,7 @@
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.8\lib\net472\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
@@ -77,12 +78,17 @@
     <Compile Include="Carrinho.Designer.cs">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
+    <Compile Include="GridDisplayHelper.cs" />
     <Compile Include="AutoLogoutManager.cs" />
     <Compile Include="CarrinhoService.cs" />
+    <Compile Include="ReciboCompraEmailService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
     <Compile Include="ConfigApplier.cs" />
     <Compile Include="LanguageHelper.cs" />
     <Compile Include="EstatisticasAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HistoricoLivrosUtilizador.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HistoricoEmprestimosAdmin.cs">
@@ -243,6 +249,9 @@
     <EmbeddedResource Include="Historico de Emprestimos.resx">
       <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HistoricoEmprestimosAdmin.resx">
+      <DependentUpon>HistoricoEmprestimosAdmin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Hstórico de compras.resx">
       <DependentUpon>Hstórico de compras.cs</DependentUpon>
     </EmbeddedResource>
@@ -286,6 +295,9 @@
     <EmbeddedResource Include="registar_ultilizador.resx">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="smtp.config.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

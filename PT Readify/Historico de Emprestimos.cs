@@ -11,15 +11,17 @@ namespace PT_Readify
         public Historico_de_Emprestimos()
         {
             InitializeComponent();
+            dataGridViewHistorico_Emprestimos.DataError += (s, e) => e.ThrowException = false;
             dataGridViewHistorico_Emprestimos.CellFormatting += DataGridViewHistorico_Emprestimos_CellFormatting;
         }
 
         private void DataGridViewHistorico_Emprestimos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (dataGridViewHistorico_Emprestimos.Columns[e.ColumnIndex].Name == "Valor_Multa" && e.Value != null)
+            if (dataGridViewHistorico_Emprestimos.Columns[e.ColumnIndex].Name == "Estado Multa" && e.Value != null && e.Value.ToString() != "—")
             {
-                if (int.TryParse(e.Value.ToString(), out int centimos))
-                    e.Value = (centimos / 100m).ToString("C2");
+                e.CellStyle.ForeColor = e.Value.ToString() == "Paga"
+                    ? Color.FromArgb(46, 204, 113)
+                    : Color.FromArgb(231, 76, 60);
             }
         }
 
@@ -38,9 +40,13 @@ namespace PT_Readify
             guna2Button3.Text = "Devolver livro";
         }
 
+        private DataTable dadosEmprestimosOriginais;
+
         private void CarregarHistorico()
         {
-            dataGridViewHistorico_Emprestimos.DataSource = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+            dadosEmprestimosOriginais = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+            dataGridViewHistorico_Emprestimos.DataSource =
+                GridDisplayHelper.FormatEmprestimosParaExibicao(dadosEmprestimosOriginais);
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)
@@ -62,9 +68,10 @@ namespace PT_Readify
 
         private void OrdenarHistorico(string sortExpression)
         {
-            var historico = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+            if (dadosEmprestimosOriginais == null)
+                dadosEmprestimosOriginais = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
 
-            if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Levantamento"))
+            if (dadosEmprestimosOriginais == null || dadosEmprestimosOriginais.Columns.Count == 0 || !dadosEmprestimosOriginais.Columns.Contains("Data_Levantamento"))
             {
                 dataGridViewHistorico_Emprestimos.DataSource = null;
                 MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -74,9 +81,10 @@ namespace PT_Readify
                 return;
             }
 
-            DataView view = historico.DefaultView;
+            DataView view = dadosEmprestimosOriginais.DefaultView;
             view.Sort = sortExpression;
-            dataGridViewHistorico_Emprestimos.DataSource = view;
+            dataGridViewHistorico_Emprestimos.DataSource =
+                GridDisplayHelper.FormatEmprestimosParaExibicao(dadosEmprestimosOriginais.DefaultView.ToTable());
 
             guna2Button2.Visible = true;
             guna2Button4.Visible = false;

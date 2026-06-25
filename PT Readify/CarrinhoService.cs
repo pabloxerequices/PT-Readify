@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using BusinessLogicLayer;
 
@@ -165,7 +166,7 @@ namespace PT_Readify
             CarrinhoAlterado?.Invoke();
         }
 
-        public static void ProcessarCarrinho()
+        public static ResultadoEnvioRecibo ProcessarCarrinho()
         {
             GarantirInicializado();
 
@@ -175,6 +176,9 @@ namespace PT_Readify
             if (globais.id_utilizador <= 0)
                 throw new InvalidOperationException("Inicie sessão para finalizar o pedido.");
 
+            var itensRecibo = new List<ItemReciboCompra>();
+            DateTime dataCompra = DateTime.Now;
+
             foreach (DataRow row in _itens.Rows)
             {
                 if (row.RowState == DataRowState.Deleted)
@@ -183,12 +187,24 @@ namespace PT_Readify
                 int idLivro = Convert.ToInt32(row["Id_Livro"]);
                 int quantidade = Convert.ToInt32(row["Quantidade"]);
                 string titulo = row["Titulo"]?.ToString() ?? "";
+                string autor = row["Autor"]?.ToString() ?? "";
+                decimal preco = Convert.ToDecimal(row["Preco"]);
 
                 ValidarStockParaCompra(idLivro, titulo, quantidade);
                 BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
+
+                itensRecibo.Add(new ItemReciboCompra
+                {
+                    Titulo = titulo,
+                    Autor = autor,
+                    PrecoUnitario = preco,
+                    Quantidade = quantidade
+                });
             }
 
             Limpar();
+
+            return ReciboCompraEmailService.EnviarRecibo(globais.id_utilizador, dataCompra, itensRecibo);
         }
     }
 }

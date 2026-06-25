@@ -172,27 +172,20 @@ namespace PT_Readify
 
         private void button4_Click(object sender, EventArgs e)
         {
-            //botao de olho para esconder a password por segurança
-            if (modoEdicao) {
-                if (textBox3.UseSystemPasswordChar == true)
-                {
-                    textBox3.UseSystemPasswordChar = false;
-                    // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
-                    // pictureBox5.Image = Properties.Resources.eye_open; 
-                }
-                else
-                {
-                    textBox3.UseSystemPasswordChar = true;
-                    // pictureBox5.Image = Properties.Resources.key_icon;
-                }
+            if (modoEdicao)
+            {
+                textBox3.UseSystemPasswordChar = !textBox3.UseSystemPasswordChar;
             }
             else
             {
-                // Mensagem caso o utilizador tente ver a pass sem estar a editar
                 MessageBox.Show("Para visualizar ou alterar a palavra-passe, clique primeiro em 'Editar'.",
                                 "Acesso Restrito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
             }
+        }
+
+        private void btnHistoricoLivros_Click(object sender, EventArgs e)
+        {
+            new HistoricoLivrosUtilizador().Show();
         }
 
         private void SalvarDadosNaBaseDeDados()

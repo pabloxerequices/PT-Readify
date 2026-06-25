@@ -1,87 +1,227 @@
 using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using BusinessLogicLayer;
+using Guna.UI2.WinForms;
 
 namespace PT_Readify
 {
     public class RelatorioMultasAdmin : Form
     {
-        private DataGridView gridMultas;
+        private static readonly Color CorTop = Color.FromArgb(33, 41, 52);
+        private static readonly Color CorContent = Color.FromArgb(240, 242, 245);
+        private static readonly Color CorVerde = Color.FromArgb(46, 204, 113);
+        private static readonly Color CorAzul = Color.FromArgb(52, 152, 219);
+        private static readonly Color CorVermelho = Color.FromArgb(231, 76, 60);
+
+        private Guna2DataGridView gridMultas;
+        private Label lblResumo;
+        private DataTable dadosOriginais;
+
+        private Guna2Button btnOrdenarData;
+        private Guna2Button btnDataDesc;
+        private Guna2Button btnDataAsc;
+        private Guna2Button btnOrdenarUtilizador;
+        private Guna2Button btnUtilizadorDesc;
+        private Guna2Button btnUtilizadorAsc;
 
         public RelatorioMultasAdmin()
         {
             Text = "Relatório de Multas";
             StartPosition = FormStartPosition.CenterScreen;
-            ClientSize = new Size(1000, 550);
+            ClientSize = new Size(1100, 600);
+            BackColor = CorContent;
+
+            var panelTop = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 70,
+                BackColor = CorTop
+            };
 
             var lblTitulo = new Label
             {
-                Text = "Relatório de Multas",
-                Font = new Font("Segoe UI", 18, FontStyle.Bold),
-                Location = new Point(20, 15),
+                Text = "€ Relatório de Multas",
+                Font = new Font("Segoe UI", 22F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(15, 15),
                 AutoSize = true
             };
 
             var lblInfo = new Label
             {
                 Text = "Multa de 2,00 € por cada semana de atraso após a data prevista de devolução.",
-                Location = new Point(20, 50),
-                Size = new Size(900, 20),
-                ForeColor = Color.DimGray
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(200, 210, 220),
+                Location = new Point(18, 48),
+                AutoSize = true
             };
 
-            gridMultas = new DataGridView
+            panelTop.Controls.Add(lblTitulo);
+            panelTop.Controls.Add(lblInfo);
+
+            var panelContent = new Panel
             {
-                Location = new Point(20, 80),
-                Size = new Size(960, 390),
-                ReadOnly = true,
-                AllowUserToAddRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                BackgroundColor = Color.White
+                Dock = DockStyle.Fill,
+                BackColor = CorContent,
+                Padding = new Padding(15)
             };
+
+            gridMultas = CriarGrid();
+            gridMultas.Dock = DockStyle.Fill;
             gridMultas.CellFormatting += GridMultas_CellFormatting;
+            gridMultas.DataError += (s, e) => e.ThrowException = false;
+            panelContent.Controls.Add(gridMultas);
 
-            var btnMarcarPaga = new Button
+            var panelBottom = new Panel
             {
-                Text = "Marcar multa como paga",
-                Location = new Point(20, 485),
-                Size = new Size(180, 35)
+                Dock = DockStyle.Bottom,
+                Height = 90,
+                BackColor = CorTop
             };
+
+            lblResumo = new Label
+            {
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(15, 10),
+                AutoSize = true
+            };
+
+            btnOrdenarData = CriarBotao("Ordenar por Data", 15, 40, CorVerde);
+            btnDataDesc = CriarBotao("Data ▼", 230, 40, CorVerde);
+            btnDataAsc = CriarBotao("Data ▲", 350, 40, CorVerde);
+            btnOrdenarUtilizador = CriarBotao("Ordenar por ID Utilizador", 480, 40, CorAzul);
+            btnUtilizadorDesc = CriarBotao("ID ▼", 720, 40, CorAzul);
+            btnUtilizadorAsc = CriarBotao("ID ▲", 820, 40, CorAzul);
+
+            btnDataDesc.Visible = false;
+            btnDataAsc.Visible = false;
+            btnUtilizadorDesc.Visible = false;
+            btnUtilizadorAsc.Visible = false;
+
+            btnOrdenarData.Click += (s, e) => MostrarBotoesOrdenacao("data");
+            btnOrdenarUtilizador.Click += (s, e) => MostrarBotoesOrdenacao("utilizador");
+            btnDataDesc.Click += (s, e) => AplicarOrdenacao("Data_Prevista DESC", "data");
+            btnDataAsc.Click += (s, e) => AplicarOrdenacao("Data_Prevista ASC", "data");
+            btnUtilizadorDesc.Click += (s, e) => AplicarOrdenacao("Id_Utilizador DESC", "utilizador");
+            btnUtilizadorAsc.Click += (s, e) => AplicarOrdenacao("Id_Utilizador ASC", "utilizador");
+
+            var btnMarcarPaga = CriarBotao("Marcar como paga", 930, 40, CorVermelho);
+            btnMarcarPaga.Size = new Size(150, 40);
             btnMarcarPaga.Click += BtnMarcarPaga_Click;
 
-            var btnAtualizar = new Button
-            {
-                Text = "Atualizar",
-                Location = new Point(220, 485),
-                Size = new Size(120, 35)
-            };
+            var btnAtualizar = CriarBotao("Atualizar", 930, 10, CorVerde);
+            btnAtualizar.Size = new Size(150, 28);
             btnAtualizar.Click += (s, e) => CarregarMultas();
 
-            var btnFechar = new Button
-            {
-                Text = "Fechar",
-                Location = new Point(860, 485),
-                Size = new Size(120, 35)
-            };
-            btnFechar.Click += (s, e) => Close();
+            panelBottom.Controls.Add(lblResumo);
+            panelBottom.Controls.Add(btnOrdenarData);
+            panelBottom.Controls.Add(btnDataDesc);
+            panelBottom.Controls.Add(btnDataAsc);
+            panelBottom.Controls.Add(btnOrdenarUtilizador);
+            panelBottom.Controls.Add(btnUtilizadorDesc);
+            panelBottom.Controls.Add(btnUtilizadorAsc);
+            panelBottom.Controls.Add(btnMarcarPaga);
+            panelBottom.Controls.Add(btnAtualizar);
 
-            Controls.Add(lblTitulo);
-            Controls.Add(lblInfo);
-            Controls.Add(gridMultas);
-            Controls.Add(btnMarcarPaga);
-            Controls.Add(btnAtualizar);
-            Controls.Add(btnFechar);
+            Controls.Add(panelContent);
+            Controls.Add(panelBottom);
+            Controls.Add(panelTop);
 
             Load += (s, e) => CarregarMultas();
         }
 
+        private static Guna2DataGridView CriarGrid()
+        {
+            var grid = new Guna2DataGridView
+            {
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                RowHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                ColumnHeadersHeight = 35
+            };
+            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(100, 88, 255);
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            grid.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 250);
+            return grid;
+        }
+
+        private static Guna2Button CriarBotao(string texto, int x, int y, Color cor)
+        {
+            return new Guna2Button
+            {
+                Text = texto,
+                Location = new Point(x, y),
+                Size = new Size(200, 40),
+                BorderRadius = 6,
+                FillColor = cor,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.White
+            };
+        }
+
+        private void MostrarBotoesOrdenacao(string modo)
+        {
+            btnOrdenarData.Visible = modo != "data";
+            btnOrdenarUtilizador.Visible = modo != "utilizador";
+            btnDataDesc.Visible = modo == "data";
+            btnDataAsc.Visible = modo == "data";
+            btnUtilizadorDesc.Visible = modo == "utilizador";
+            btnUtilizadorAsc.Visible = modo == "utilizador";
+        }
+
+        private void EsconderBotoesOrdenacao()
+        {
+            btnOrdenarData.Visible = true;
+            btnOrdenarUtilizador.Visible = true;
+            btnDataDesc.Visible = false;
+            btnDataAsc.Visible = false;
+            btnUtilizadorDesc.Visible = false;
+            btnUtilizadorAsc.Visible = false;
+        }
+
+        private void AplicarOrdenacao(string sortExpression, string modo)
+        {
+            if (dadosOriginais == null || dadosOriginais.Columns.Count == 0)
+                return;
+
+            string coluna = sortExpression.Split(' ')[0];
+            if (!dadosOriginais.Columns.Contains(coluna))
+            {
+                MessageBox.Show("Não foi possível ordenar: coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EsconderBotoesOrdenacao();
+                return;
+            }
+
+            DataView view = dadosOriginais.DefaultView;
+            view.Sort = sortExpression;
+            AtualizarGrid();
+            EsconderBotoesOrdenacao();
+        }
+
+        private void AtualizarGrid()
+        {
+            if (dadosOriginais == null)
+                return;
+
+            gridMultas.DataSource = GridDisplayHelper.FormatMultasParaExibicao(dadosOriginais.DefaultView.ToTable());
+        }
+
         private void GridMultas_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (gridMultas.Columns[e.ColumnIndex].Name == "Valor_Multa" && e.Value != null)
+            if (gridMultas.Columns[e.ColumnIndex].Name == "Estado Multa" && e.Value != null)
             {
-                if (int.TryParse(e.Value.ToString(), out int centimos))
-                    e.Value = (centimos / 100m).ToString("C2");
+                e.CellStyle.ForeColor = e.Value.ToString() == "Paga"
+                    ? Color.FromArgb(46, 204, 113)
+                    : Color.FromArgb(231, 76, 60);
             }
         }
 
@@ -89,7 +229,22 @@ namespace PT_Readify
         {
             try
             {
-                gridMultas.DataSource = BLL.Historicos.LoadRelatorioMultas();
+                dadosOriginais = BLL.Historicos.LoadRelatorioMultas();
+                AtualizarGrid();
+
+                int totalPendente = 0;
+                int countPendente = 0;
+                foreach (DataRow row in dadosOriginais.Rows)
+                {
+                    if (!Convert.ToBoolean(row["Multa_Paga"]))
+                    {
+                        totalPendente += Convert.ToInt32(row["Valor_Multa"]);
+                        countPendente++;
+                    }
+                }
+
+                lblResumo.Text = $"{dadosOriginais.Rows.Count} multa(s) | {countPendente} pendente(s) | Total pendente: {(totalPendente / 100m):C2}";
+                EsconderBotoesOrdenacao();
             }
             catch (Exception ex)
             {

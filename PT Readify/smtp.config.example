@@ -1,0 +1,13 @@
+# Copie este ficheiro para "smtp.config" na pasta bin\Debug (junto ao .exe)
+# e preencha com os dados da sua conta de email.
+#
+# Gmail: use uma App Password em https://myaccount.google.com/apppasswords
+# Outlook: host=smtp-mail.outlook.com, port=587
+
+Host=smtp.gmail.com
+Port=587
+User=seu-email@gmail.com
+Password=sua-app-password
+FromEmail=seu-email@gmail.com
+FromName=PT Readify
+EnableSsl=true

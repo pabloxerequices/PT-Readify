@@ -48,6 +48,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.btnHistoricoLivros = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -283,15 +284,32 @@
             this.button4.TabIndex = 36;
             this.button4.Text = "button4";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // btnHistoricoLivros
+            // 
+            this.btnHistoricoLivros.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
+            this.btnHistoricoLivros.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHistoricoLivros.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHistoricoLivros.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnHistoricoLivros.ForeColor = System.Drawing.Color.White;
+            this.btnHistoricoLivros.Location = new System.Drawing.Point(30, 680);
+            this.btnHistoricoLivros.Name = "btnHistoricoLivros";
+            this.btnHistoricoLivros.Size = new System.Drawing.Size(557, 50);
+            this.btnHistoricoLivros.TabIndex = 37;
+            this.btnHistoricoLivros.Text = "📚 Histórico de Livros (Compras e Empréstimos)";
+            this.btnHistoricoLivros.UseVisualStyleBackColor = false;
+            this.btnHistoricoLivros.Click += new System.EventHandler(this.btnHistoricoLivros_Click);
             // 
             // Perfil
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(635, 769);
+            this.ClientSize = new System.Drawing.Size(635, 750);
             this.Controls.Add(this.button4);
+            this.Controls.Add(this.btnHistoricoLivros);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -345,5 +363,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnHistoricoLivros;
     }
 }

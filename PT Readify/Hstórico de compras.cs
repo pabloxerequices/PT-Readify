@@ -13,6 +13,8 @@ namespace PT_Readify
 {
     public partial class Hstórico_de_compras : Form
     {
+        private DataTable dadosComprasOriginais;
+
         public Hstórico_de_compras()
         {
             InitializeComponent();
@@ -32,9 +34,17 @@ namespace PT_Readify
                 return;
             }
 
-            guna2DataGridView1Historico_Compras.DataSource = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
+            guna2DataGridView1Historico_Compras.DataError += (s, ev) => ev.ThrowException = false;
+            CarregarCompras();
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
+        }
+
+        private void CarregarCompras()
+        {
+            dadosComprasOriginais = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
+            guna2DataGridView1Historico_Compras.DataSource =
+                GridDisplayHelper.FormatComprasParaExibicao(dadosComprasOriginais);
         }
 
         private void btnLimparCarrinho_Click(object sender, EventArgs e)
@@ -54,62 +64,39 @@ namespace PT_Readify
 
         }
 
-        private void guna2Button4_Click(object sender, EventArgs e)
+        private void OrdenarCompras(string sortExpression)
         {
-            // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
+            if (dadosComprasOriginais == null)
+                dadosComprasOriginais = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
 
-            // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
-            if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))
+            if (dadosComprasOriginais == null || dadosComprasOriginais.Columns.Count == 0 || !dadosComprasOriginais.Columns.Contains("Data_Compra"))
             {
                 guna2DataGridView1Historico_Compras.DataSource = null;
                 MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                // Repõe a visibilidade caso falhe
                 guna2Button2.Visible = true;
                 guna2Button4.Visible = false;
                 guna2Button5.Visible = false;
                 return;
             }
 
-            // 3. Ordena de forma Decrescente (Mais recente para o mais antigo)
-            DataView view = historico.DefaultView;
-            view.Sort = "Data_Compra DESC";
-            guna2DataGridView1Historico_Compras.DataSource = view;
+            DataView view = dadosComprasOriginais.DefaultView;
+            view.Sort = sortExpression;
+            guna2DataGridView1Historico_Compras.DataSource =
+                GridDisplayHelper.FormatComprasParaExibicao(dadosComprasOriginais.DefaultView.ToTable());
 
-            // 4. Controlo de visibilidade: Mostra o botão principal e esconde as setas
             guna2Button2.Visible = true;
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
         }
 
+        private void guna2Button4_Click(object sender, EventArgs e)
+        {
+            OrdenarCompras("Data_Compra DESC");
+        }
+
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
-
-            // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
-            if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))
-            {
-                guna2DataGridView1Historico_Compras.DataSource = null;
-                MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                // Repõe a visibilidade caso falhe
-                guna2Button2.Visible = true;
-                guna2Button4.Visible = false;
-                guna2Button5.Visible = false;
-                return;
-            }
-
-            // 3. Ordena de forma Crescente (Mais antigo para o mais recente)
-            DataView view = historico.DefaultView;
-            view.Sort = "Data_Compra ASC";
-            guna2DataGridView1Historico_Compras.DataSource = view;
-
-            // 4. Controlo de visibilidade: Mostra o botão principal e esconde as setas
-            guna2Button2.Visible = true;
-            guna2Button4.Visible = false;
-            guna2Button5.Visible = false;
+            OrdenarCompras("Data_Compra ASC");
         }
     }
 }
