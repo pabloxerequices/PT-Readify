@@ -104,6 +104,8 @@
       <DependentUpon>Chat_Bot.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL.cs" />
+    <Compile Include="DevolucaoUiHelper.cs" />
+    <Compile Include="HistoricoSortHelper.cs" />
     <Compile Include="Detalhes_Livro.cs">
       <SubType>Form</SubType>
     </Compile>

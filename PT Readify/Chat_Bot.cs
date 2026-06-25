@@ -33,17 +33,6 @@ namespace PT_Readify
 
             richTextBox1.Clear();
             AppendMessage("Assistente", _conversation.GetOpeningMessage(), BotColor);
-
-            flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
-            flowLayoutPanel1.WrapContents = true;
-            flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Padding = new Padding(6);
-
-            AddQuickReply("Olá");
-            AddQuickReply("Quero um livro");
-            AddQuickReply("Como empresto?");
-            AddQuickReply("Ajuda");
-            AddQuickReply("Adeus");
         }
 
         private void Chat_Bot_KeyDown(object sender, KeyEventArgs e)
@@ -53,26 +42,6 @@ namespace PT_Readify
                 e.Handled = true;
                 EndConversation();
             }
-        }
-
-        private void AddQuickReply(string text)
-        {
-            var btn = new Button
-            {
-                Text = text,
-                AutoSize = true,
-                FlatStyle = FlatStyle.System,
-                Margin = new Padding(4),
-                Cursor = Cursors.Hand
-            };
-            btn.Click += (s, e) =>
-            {
-                if (text.Equals("Adeus", StringComparison.OrdinalIgnoreCase))
-                    EndConversation(withGoodbye: true);
-                else
-                    SendMessage(text);
-            };
-            flowLayoutPanel1.Controls.Add(btn);
         }
 
         private void Guna2TextBox1_KeyDown(object sender, KeyEventArgs e)

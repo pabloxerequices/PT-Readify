@@ -230,8 +230,22 @@ namespace BusinessLogicLayer
         public class Historicos
         {
             public const int MaxDiasEmprestimo = 21;
+            public const int MaxDiasDevolucaoCompra = 30;
             public const int MultaSemanalCentimos = 200;
             private static readonly DateTime DataEntregaPendente = new DateTime(1900, 1, 1);
+
+            public class ResultadoDevolucao
+            {
+                public string Titulo { get; set; }
+                public string Autor { get; set; }
+                public decimal ValorReembolso { get; set; }
+                public int MultaCentimos { get; set; }
+                public DateTime DataDevolucao { get; set; }
+                public DateTime? DataReferencia { get; set; }
+                public int DiasAtraso { get; set; }
+                public int DiasRestantesPrazo { get; set; }
+                public string Tipo { get; set; }
+            }
 
             private static int ObterProximoId(DAL dal, string tabela)
             {
@@ -309,20 +323,194 @@ namespace BusinessLogicLayer
             public static DataTable LoadHistoricoComprasPorUtilizador(int Id_Utilizador)
             {
                 DAL dal = new DAL();
+                dal.GarantirEsquema();
 
-                // Criamos o parâmetro baseado no ID do cliente logado
                 SqlParameter[] sqlParams = new SqlParameter[] {
                 new SqlParameter("@Id_Utilizador", Id_Utilizador)
                 };
 
-                // CORREÇÃO: Mudado de Historico_do_compras para Historico_de_compras
+                string estadoCol = dal.ColunaExiste("Historico_Compra", "Estado_Compra")
+                    ? ", Estado_Compra"
+                    : "";
+                string dataDevCol = dal.ColunaExiste("Historico_Compra", "Data_Devolução")
+                    ? ", Data_Devolução"
+                    : "";
+
+                string query = "SELECT Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro" + estadoCol + dataDevCol +
+                               " FROM Historico_Compra WHERE Id_Utilizador = @Id_Utilizador ORDER BY Data_Compra DESC";
+
+                return dal.executarReader(query, sqlParams);
+            }
+
+            public static DataTable LoadComprasDevolviveisPorUtilizador(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+
+                SqlParameter[] sqlParams = new SqlParameter[] {
+                    new SqlParameter("@Id_Utilizador", idUtilizador)
+                };
+
+                string filtroEstado = dal.ColunaExiste("Historico_Compra", "Estado_Compra")
+                    ? " AND (Estado_Compra = 'Ativa' OR Estado_Compra IS NULL)"
+                    : "";
+
                 string query = "SELECT Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro " +
-                               "FROM Historico_Compra WHERE Id_Utilizador = @Id_Utilizador";
+                               "FROM Historico_Compra WHERE Id_Utilizador = @Id_Utilizador" + filtroEstado +
+                               $" AND Data_Compra >= DATEADD(day, -{MaxDiasDevolucaoCompra}, CAST(GETDATE() AS date)) " +
+                               "ORDER BY Data_Compra DESC";
 
-                // Chamada ao método correto da tua DAL que preenche a DataTable
-                DataTable dt = dal.executarReader(query, sqlParams);
+                return dal.executarReader(query, sqlParams);
+            }
 
-                return dt;
+            public static ResultadoDevolucao ObterResumoDevolucaoCompra(int idHistorico, int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+
+                string estadoCol = dal.ColunaExiste("Historico_Compra", "Estado_Compra") ? ", Estado_Compra" : "";
+                DataTable dt = dal.executarReader(
+                    "SELECT Titulo, Autor, Preço, Data_Compra" + estadoCol +
+                    " FROM Historico_Compra WHERE Id=@id AND Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idHistorico),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+
+                if (dt == null || dt.Rows.Count == 0)
+                    throw new Exception("Compra não encontrada.");
+
+                DataRow row = dt.Rows[0];
+                ValidarCompraDevolvivel(row, dal);
+
+                DateTime dataCompra = Convert.ToDateTime(row["Data_Compra"]);
+                int diasDesdeCompra = (DateTime.Now.Date - dataCompra.Date).Days;
+
+                return new ResultadoDevolucao
+                {
+                    Titulo = row["Titulo"]?.ToString() ?? "",
+                    Autor = row["Autor"]?.ToString() ?? "",
+                    ValorReembolso = Convert.ToDecimal(row["Preço"]),
+                    DataDevolucao = DateTime.Now,
+                    DataReferencia = dataCompra,
+                    DiasRestantesPrazo = Math.Max(0, MaxDiasDevolucaoCompra - diasDesdeCompra),
+                    Tipo = "Compra"
+                };
+            }
+
+            public static ResultadoDevolucao ObterResumoDevolucaoEmprestimo(int idHistorico, int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+                AtualizarMultasEmAtraso();
+
+                DataTable dt = dal.executarReader(
+                    "SELECT h.Estado_Emprestimo, h.Data_Entrega, h.Data_Prevista, l.Titulo, l.Autor " +
+                    "FROM HistoricoEmp h INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "WHERE h.Id=@id AND h.Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idHistorico),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+
+                if (dt == null || dt.Rows.Count == 0)
+                    throw new Exception("Empréstimo não encontrado.");
+
+                DataRow row = dt.Rows[0];
+                ValidarEmprestimoDevolvivel(row);
+
+                DateTime dataPrevista = Convert.ToDateTime(row["Data_Prevista"]);
+                DateTime agora = DateTime.Now;
+                int multa = CalcularMultaCentimos(dataPrevista, agora);
+                int diasAtraso = agora.Date > dataPrevista.Date
+                    ? (agora.Date - dataPrevista.Date).Days
+                    : 0;
+
+                return new ResultadoDevolucao
+                {
+                    Titulo = row["Titulo"]?.ToString() ?? "",
+                    Autor = row["Autor"]?.ToString() ?? "",
+                    MultaCentimos = multa,
+                    DataDevolucao = agora,
+                    DataReferencia = dataPrevista,
+                    DiasAtraso = diasAtraso,
+                    DiasRestantesPrazo = agora.Date <= dataPrevista.Date
+                        ? (dataPrevista.Date - agora.Date).Days
+                        : 0,
+                    Tipo = "Emprestimo"
+                };
+            }
+
+            public static ResultadoDevolucao DevolverCompra(int idHistorico, int idUtilizador)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("É necessário iniciar sessão para devolver compras.");
+
+                var resumo = ObterResumoDevolucaoCompra(idHistorico, idUtilizador);
+
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+
+                DataTable dt = dal.executarReader(
+                    "SELECT Id_Livro FROM Historico_Compra WHERE Id=@id AND Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idHistorico),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+
+                int idLivro = Convert.ToInt32(dt.Rows[0]["Id_Livro"]);
+                DateTime dataDevolucao = DateTime.Now;
+
+                if (dal.ColunaExiste("Historico_Compra", "Estado_Compra"))
+                {
+                    dal.executarNonQuery(
+                        "UPDATE Historico_Compra SET Estado_Compra='Devolvida' WHERE Id=@id",
+                        new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+                }
+
+                if (dal.ColunaExiste("Historico_Compra", "Data_Devolução"))
+                {
+                    dal.executarNonQuery(
+                        "UPDATE Historico_Compra SET Data_Devolução=@data WHERE Id=@id",
+                        new SqlParameter[] {
+                            new SqlParameter("@data", dataDevolucao),
+                            new SqlParameter("@id", idHistorico)
+                        });
+                }
+
+                Devolução.insertDevoluçãoCompra(idUtilizador, idLivro, dataDevolucao);
+                Livros.IncrementarStock(idLivro);
+
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"Devolução da compra \"{resumo.Titulo}\" registada. Reembolso de {resumo.ValorReembolso:C2}.");
+
+                resumo.DataDevolucao = dataDevolucao;
+                return resumo;
+            }
+
+            private static void ValidarCompraDevolvivel(DataRow row, DAL dal)
+            {
+                if (dal.ColunaExiste("Historico_Compra", "Estado_Compra"))
+                {
+                    string estado = row["Estado_Compra"]?.ToString() ?? "Ativa";
+                    if (estado == "Devolvida")
+                        throw new InvalidOperationException("Esta compra já foi devolvida.");
+                }
+
+                DateTime dataCompra = Convert.ToDateTime(row["Data_Compra"]);
+                int diasDesdeCompra = (DateTime.Now.Date - dataCompra.Date).Days;
+                if (diasDesdeCompra > MaxDiasDevolucaoCompra)
+                    throw new InvalidOperationException(
+                        $"O prazo de devolução expirou ({MaxDiasDevolucaoCompra} dias após a compra).");
+            }
+
+            private static void ValidarEmprestimoDevolvivel(DataRow row)
+            {
+                if (row["Estado_Emprestimo"]?.ToString() != "Ativo")
+                    throw new InvalidOperationException("Apenas empréstimos ativos podem ser devolvidos.");
+
+                if (Convert.ToDateTime(row["Data_Entrega"]) != DataEntregaPendente)
+                    throw new InvalidOperationException("Este empréstimo já foi devolvido.");
             }
 
             static public int insertHistoricoEmp(string Estado_Emprestimo, DateTime Data_Entrega, DateTime Data_Prevista, DateTime Data_Levantamento, int Id_Livro, int Id_Utilizador, int duracaoDias = 14)
@@ -474,29 +662,22 @@ namespace BusinessLogicLayer
                     });
             }
 
-            public static void DevolverEmprestimo(int idHistorico, int idUtilizador)
+            public static ResultadoDevolucao DevolverEmprestimo(int idHistorico, int idUtilizador)
             {
+                var resumo = ObterResumoDevolucaoEmprestimo(idHistorico, idUtilizador);
+
                 DAL dal = new DAL();
                 dal.GarantirEsquema();
+
                 DataTable dt = dal.executarReader(
-                    "SELECT Id_Livro, Data_Prevista, Estado_Emprestimo, Data_Entrega FROM HistoricoEmp WHERE Id=@id AND Id_Utilizador=@user",
+                    "SELECT Id_Livro, Data_Prevista FROM HistoricoEmp WHERE Id=@id AND Id_Utilizador=@user",
                     new SqlParameter[] {
                         new SqlParameter("@id", idHistorico),
                         new SqlParameter("@user", idUtilizador)
                     });
 
-                if (dt == null || dt.Rows.Count == 0)
-                    throw new Exception("Empréstimo não encontrado.");
-
-                DataRow row = dt.Rows[0];
-                if (row["Estado_Emprestimo"]?.ToString() != "Ativo")
-                    throw new InvalidOperationException("Apenas empréstimos ativos podem ser devolvidos.");
-
-                if (Convert.ToDateTime(row["Data_Entrega"]) != DataEntregaPendente)
-                    throw new InvalidOperationException("Este empréstimo já foi devolvido.");
-
-                int idLivro = Convert.ToInt32(row["Id_Livro"]);
-                DateTime dataPrevista = Convert.ToDateTime(row["Data_Prevista"]);
+                int idLivro = Convert.ToInt32(dt.Rows[0]["Id_Livro"]);
+                DateTime dataPrevista = Convert.ToDateTime(dt.Rows[0]["Data_Prevista"]);
                 DateTime dataDevolucao = DateTime.Now;
                 int multa = CalcularMultaCentimos(dataPrevista, dataDevolucao);
 
@@ -511,6 +692,16 @@ namespace BusinessLogicLayer
                 Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
                 Livros.IncrementarStock(idLivro);
                 NotificarReservasDisponiveis(idLivro);
+
+                string msgMulta = multa > 0
+                    ? $" Multa de {(multa / 100m):C2} aplicada por atraso."
+                    : "";
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"Devolução de \"{resumo.Titulo}\" registada com sucesso.{msgMulta}");
+
+                resumo.MultaCentimos = multa;
+                resumo.DataDevolucao = dataDevolucao;
+                return resumo;
             }
 
             private static void NotificarReservasDisponiveis(int idLivro)
@@ -835,6 +1026,7 @@ namespace BusinessLogicLayer
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
+
             static public void InserirLivro(int paginas, string nome, string bio, int preço, int ano, string autor, string estado_livro, string editora, string idioma, object capa, List<string> generos, int stock = 1)
             {
                 DAL dal = new DAL();
@@ -907,6 +1099,31 @@ namespace BusinessLogicLayer
                 {
                     throw new Exception("Erro ao inserir livro: " + ex.Message, ex);
                 }
+            }
+            public static void AdicionarStock(int idLivro, int quantidade)
+            {
+                if (quantidade <= 0)
+                    throw new ArgumentException("A quantidade deve ser maior que zero.");
+
+                DAL dal = new DAL();
+                int rows = dal.executarNonQuery(
+                    "UPDATE Livro SET Stock = ISNULL(Stock, 0) + @qty WHERE Id_Livro=@id",
+                    new SqlParameter[]
+                    {
+                        new SqlParameter("@id", idLivro),
+                        new SqlParameter("@qty", quantidade)
+                    });
+
+                if (rows <= 0)
+                    throw new Exception("Livro não encontrado ou stock não atualizado.");
+            }
+
+            public static DataTable LoadStockResumo()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT Id_Livro, Titulo, Autor, ISNULL(Stock, 0) AS Stock, Estado_Livro, Preço FROM Livro ORDER BY Titulo",
+                    null);
             }
             static public List<string> ObterGeneros()
             {

@@ -82,7 +82,8 @@
             this.guna2Button3.Name = "guna2Button3";
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
-            this.guna2Button3.Text = "🗑 Devolução Imediata";
+            this.guna2Button3.Text = "Devolver compra";
+            this.guna2Button3.Click += new System.EventHandler(this.guna2Button3_Click);
             // 
             // panel1
             // 
@@ -119,7 +120,7 @@
             this.guna2Button1.Name = "guna2Button1";
             this.guna2Button1.Size = new System.Drawing.Size(200, 40);
             this.guna2Button1.TabIndex = 3;
-            this.guna2Button1.Text = "🗑 Devolução Imediata";
+            this.guna2Button1.Text = "Devolver compra";
             this.guna2Button1.Click += new System.EventHandler(this.guna2Button1_Click);
             // 
             // panelTop
@@ -154,7 +155,7 @@
             this.guna2Button5.Name = "guna2Button5";
             this.guna2Button5.Size = new System.Drawing.Size(213, 40);
             this.guna2Button5.TabIndex = 9;
-            this.guna2Button5.Text = "△Crescente";
+            this.guna2Button5.Text = "Mais antigas";
             this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
             // 
             // label2
@@ -177,7 +178,7 @@
             this.guna2Button4.Name = "guna2Button4";
             this.guna2Button4.Size = new System.Drawing.Size(213, 40);
             this.guna2Button4.TabIndex = 8;
-            this.guna2Button4.Text = "▽Decrescente";
+            this.guna2Button4.Text = "Mais recentes";
             this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // guna2Button2
@@ -190,7 +191,7 @@
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(213, 40);
             this.guna2Button2.TabIndex = 7;
-            this.guna2Button2.Text = "✓ Listar por  Datas";
+            this.guna2Button2.Text = "Listar por Datas";
             this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // guna2DataGridView1

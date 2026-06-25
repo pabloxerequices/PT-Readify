@@ -1,21 +1,32 @@
 ﻿using BusinessLogicLayer;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PT_Readify
 {
     public partial class Devolução_da_Compra : Form
     {
+        private HistoricoSortHelper _sortHelper;
+
         public Devolução_da_Compra()
         {
             InitializeComponent();
+            DevolucaoUiHelper.ConfigurarGrid(guna2DataGridView1);
+            guna2DataGridView1.CellFormatting += Grid_CellFormatting;
+
+            _sortHelper = new HistoricoSortHelper(
+                guna2DataGridView1,
+                guna2Button2,
+                guna2Button4,
+                guna2Button5,
+                "Data_Compra");
+        }
+
+        private void Grid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DevolucaoUiHelper.FormatarCelula(guna2DataGridView1, e);
         }
 
         private void Devolução_da_Compra_Load(object sender, EventArgs e)
@@ -27,80 +38,95 @@ namespace PT_Readify
                 return;
             }
 
-            guna2DataGridView1.DataSource = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
-            guna2Button4.Visible = false;
-            guna2Button5.Visible = false;
-        }
+            guna2Button1.Visible = false;
+            panel1.Visible = false;
 
-        private void guna2Button2_Click(object sender, EventArgs e)
-        {
-            guna2Button2.Visible = false;
-            guna2Button5.Visible = true;
-            guna2Button4.Visible = true;
-        }
-
-        private void guna2Button4_Click(object sender, EventArgs e)
-        {
-            // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
-
-            // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
-            if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))
-            {
-                guna2DataGridView1.DataSource = null;
-                MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                // Repõe a visibilidade caso falhe
-                guna2Button2.Visible = true;
-                guna2Button4.Visible = false;
-                guna2Button5.Visible = false;
-                return;
-            }
-
-            // 3. Ordena de forma Decrescente (Mais recente para o mais antigo)
-            DataView view = historico.DefaultView;
-            view.Sort = "Data_Compra DESC";
-            guna2DataGridView1.DataSource = view;
-
-            // 4. Controlo de visibilidade: Mostra o botão principal e esconde as setas
             guna2Button2.Visible = true;
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
+            guna2Button2.Parent = panelBottom;
+            guna2Button4.Parent = panelBottom;
+            guna2Button5.Parent = panelBottom;
+
+            guna2Button2.Location = new System.Drawing.Point(250, 20);
+            guna2Button4.Location = new System.Drawing.Point(480, 20);
+            guna2Button5.Location = new System.Drawing.Point(710, 20);
+
+            panelBottom.Controls.Add(guna2Button2);
+            panelBottom.Controls.Add(guna2Button4);
+            panelBottom.Controls.Add(guna2Button5);
+            guna2Button2.BringToFront();
+            guna2Button4.BringToFront();
+            guna2Button5.BringToFront();
+
+            guna2Button3.Text = "Devolver compra";
+            CarregarCompras();
         }
 
-        private void guna2Button5_Click(object sender, EventArgs e)
+        private void CarregarCompras()
         {
-            // 1. Obtém o DataTable correto das COMPRAS filtrado pelo ID do utilizador (por agora '1')
-            DataTable historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
+            DataTable compras = BLL.Historicos.LoadComprasDevolviveisPorUtilizador(globais.id_utilizador);
+            _sortHelper.DefinirDados(compras);
 
-            // 2. VALIDAÇÃO: Garante que a tabela não está vazia e que a coluna "Data_Compra" existe
-            if (historico == null || historico.Columns.Count == 0 || !historico.Columns.Contains("Data_Compra"))
+            int total = compras?.Rows.Count ?? 0;
+            guna2Button3.Enabled = total > 0;
+
+            if (total == 0)
             {
-                guna2DataGridView1.DataSource = null;
-                MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                labelTotal.Text = $"Sem compras elegíveis (prazo: {BLL.Historicos.MaxDiasDevolucaoCompra} dias)";
+                labelTotal.ForeColor = Color.FromArgb(241, 196, 15);
+            }
+            else
+            {
+                labelTotal.Text = $"{total} compra(s) elegível(eis) para devolução";
+                labelTotal.ForeColor = Color.White;
+            }
+        }
 
-                // Repõe a visibilidade caso falhe
-                guna2Button2.Visible = true;
-                guna2Button4.Visible = false;
-                guna2Button5.Visible = false;
+        private void guna2Button2_Click(object sender, EventArgs e) => _sortHelper.MostrarOpcoesOrdenacao();
+
+        private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
+
+        private void guna2Button5_Click(object sender, EventArgs e) => _sortHelper.OrdenarCrescente();
+
+        private void guna2Button1_Click(object sender, EventArgs e) => DevolverCompraSelecionada();
+
+        private void guna2Button3_Click(object sender, EventArgs e) => DevolverCompraSelecionada();
+
+        private void DevolverCompraSelecionada()
+        {
+            if (guna2DataGridView1.CurrentRow == null)
+            {
+                MessageBox.Show("Selecione uma compra para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 3. Ordena de forma Crescente (Mais antigo para o mais recente)
-            DataView view = historico.DefaultView;
-            view.Sort = "Data_Compra ASC";
-            guna2DataGridView1.DataSource = view;
+            try
+            {
+                int idHistorico = Convert.ToInt32(guna2DataGridView1.CurrentRow.Cells["Id"].Value);
+                var resumo = BLL.Historicos.ObterResumoDevolucaoCompra(idHistorico, globais.id_utilizador);
 
-            // 4. Controlo de visibilidade: Mostra o botão principal e esconde as setas
-            guna2Button2.Visible = true;
-            guna2Button4.Visible = false;
-            guna2Button5.Visible = false;
-        }
+                DialogResult confirmar = MessageBox.Show(
+                    DevolucaoUiHelper.ConstruirConfirmacaoCompra(resumo),
+                    "Devolução da Compra",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
 
-        private void guna2Button1_Click(object sender, EventArgs e)
-        {
+                if (confirmar != DialogResult.Yes)
+                    return;
 
+                var resultado = BLL.Historicos.DevolverCompra(idHistorico, globais.id_utilizador);
+                CarregarCompras();
+                MessageBox.Show(
+                    DevolucaoUiHelper.ConstruirSucessoCompra(resultado),
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao devolver: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
-    
 }
