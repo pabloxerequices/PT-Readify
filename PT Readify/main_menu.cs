@@ -54,7 +54,26 @@ namespace PT_Readify
         public void AtualizarTituloCarrinhoMenu()
         {
             int total = CarrinhoService.TotalItens;
-            button3.Text = total > 0 ? $"Livros ({total} no carrinho)" : "Livros";
+            var cfg = ConfigManager.Current;
+            string booksLabel = LanguageHelper.T("Books", cfg);
+            button3.Text = total > 0
+                ? string.Format(LanguageHelper.T("BooksInCart", cfg), total)
+                : booksLabel;
+        }
+
+        private void ApplyMenuLanguage(Config cfg)
+        {
+            if (cfg == null) return;
+
+            button1.Text = LanguageHelper.T("Logout", cfg);
+            button2.Text = LanguageHelper.T("Profile", cfg);
+            button4.Text = LanguageHelper.T("Loans", cfg);
+            button5.Text = LanguageHelper.T("Reservations", cfg);
+            button6.Text = LanguageHelper.T("Assistant", cfg);
+            button7.Text = LanguageHelper.T("PurchaseHistory", cfg);
+            button8.Text = LanguageHelper.T("LoanHistory", cfg);
+            button9.Text = LanguageHelper.T("Help", cfg);
+            buttonConfig.Text = LanguageHelper.T("SettingsTitle", cfg);
         }
 
         private void pesquisarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -77,42 +96,19 @@ namespace PT_Readify
 
         private void main_menu_Load(object sender, EventArgs e)
         {
-            // Carrega configurações ao iniciar (aplica apenas o básico; outros forms devem ler ConfigManager.Current)
             var cfg = ConfigManager.Current;
-            try
-            {
-                // Aplicar tema simples: altera BackColor
-                if (cfg != null && cfg.Theme == "Escuro")
-                {
-                    this.BackColor = Color.FromArgb(45, 45, 48);
-                    panel1.BackColor = Color.FromArgb(37, 37, 38);
-                }
-                else
-                {
-                    this.BackColor = Color.LightBlue;
-                    panel1.BackColor = Color.WhiteSmoke;
-                }
-
-                // Aplicar fonte global do menu lateral (exemplo)
-                if (cfg != null)
-                {
-                    try
-                    {
-                        var f = new Font(cfg.FontName, cfg.FontSize);
-                        panel1.Font = f;
-                        panel2.Font = f;
-                    }
-                    catch
-                    {
-                        // ignore if font invalid
-                    }
-                }
-            }
-            catch { }
+            ApplyConfig(cfg);
+            AutoLogoutManager.Attach(this);
 
             MostrarNotificacoesPendentes();
             panel_livros(new pesquisar_livros_rodrigo());
             AtualizarTituloCarrinhoMenu();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            AutoLogoutManager.Detach();
+            base.OnFormClosed(e);
         }
 
         private void MostrarNotificacoesPendentes()
@@ -219,8 +215,12 @@ namespace PT_Readify
 
         private void buttonConfig_Click(object sender, EventArgs e)
         {
-            // Abre as configurações embutidas no panel2
             panel_livros(new Configuracoes());
+        }
+
+        public void ShowBooksPanel()
+        {
+            panel_livros(new pesquisar_livros_rodrigo());
         }
 
         // Adicione este método público à classe main_menu para aplicar tema/fonte de runtime.
@@ -228,24 +228,11 @@ namespace PT_Readify
         {
             if (cfg == null) return;
 
-            if (cfg.Theme == "Escuro")
-            {
-                this.BackColor = Color.FromArgb(45, 45, 48);
-                try { this.panel1.BackColor = Color.FromArgb(37, 37, 38); } catch { }
-            }
-            else
-            {
-                this.BackColor = Color.LightBlue;
-                try { this.panel1.BackColor = Color.WhiteSmoke; } catch { }
-            }
-
-            try
-            {
-                var f1 = new Font(cfg.FontName, cfg.FontSize);
-                this.panel1.Font = f1;
-                this.panel2.Font = f1;
-            }
-            catch { /* ignora fontes inválidas */ }
+            ConfigApplier.ApplyTheme(this, panel1, cfg);
+            ConfigApplier.ApplyFont(panel1, cfg);
+            ConfigApplier.ApplyFont(panel2, cfg);
+            ApplyMenuLanguage(cfg);
+            AtualizarTituloCarrinhoMenu();
         }
     }
 }

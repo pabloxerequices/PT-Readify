@@ -214,6 +214,17 @@ namespace PT_Readify
 
         private Panel CriarCardLivro(DataRow livro)
         {
+            var cfg = ConfigManager.Current;
+            Font cardFont;
+            try
+            {
+                cardFont = new Font(cfg?.FontName ?? "Segoe UI", Math.Max(8, Math.Min(24, cfg?.FontSize ?? 15)));
+            }
+            catch
+            {
+                cardFont = new Font("Segoe UI", 9);
+            }
+
             int idLivro = Convert.ToInt32(livro["Id_Livro"]);
             string titulo = livro["Titulo"]?.ToString() ?? "Sem título";
             string autor = livro["Autor"]?.ToString() ?? "Autor desconhecido";
@@ -276,7 +287,7 @@ namespace PT_Readify
                 Location = new Point(10, 260),
                 Size = new Size(180, 30),
                 Text = titulo,
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                Font = new Font(cardFont.FontFamily, cardFont.Size, FontStyle.Bold),
                 AutoEllipsis = true,
                 ForeColor = Color.FromArgb(50, 50, 50)
             };
@@ -288,7 +299,7 @@ namespace PT_Readify
                 Location = new Point(10, 300),
                 Size = new Size(180, 20),
                 Text = $"€ {preco:F2}",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Font = new Font(cardFont.FontFamily, cardFont.Size + 1, FontStyle.Bold),
                 ForeColor = Color.FromArgb(52, 168, 83)
             };
             card.Controls.Add(lblPreco);
@@ -366,33 +377,8 @@ namespace PT_Readify
 
         private void MostrarDetalhesLivro(int idLivro, DataRow livro)
         {
-            string titulo = livro["Titulo"]?.ToString() ?? "";
-            string autor = livro["Autor"]?.ToString() ?? "";
-            string editora = livro["Editora"]?.ToString() ?? "";
-            int paginas = Convert.ToInt32(livro["Quantas_Paginas"] ?? 0);
-            int ano = Convert.ToInt32(livro["Ano"] ?? 0);
-            string idioma = livro["Idioma"]?.ToString() ?? "";
-            string estado = livro["Estado_Livro"]?.ToString() ?? "";
-            string bio = livro["Bio"]?.ToString() ?? "";
-            decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
-            int stock = livro.Table.Columns.Contains("Stock") ? Convert.ToInt32(livro["Stock"] ?? 0) : BLL.Livros.ObterStock(idLivro);
-            
-            List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
-            string generos = generosLivro.Count > 0 ? string.Join(", ", generosLivro) : "Sem gênero";
-            
-            string detalhes = $"Título: {titulo}\n" +
-                              $"Autor: {autor}\n" +
-                              $"Editora: {editora}\n" +
-                              $"Páginas: {paginas}\n" +
-                              $"Ano: {ano}\n" +
-                              $"Idioma: {idioma}\n" +
-                              $"Gêneros: {generos}\n" +
-                              $"Estado: {estado}\n" +
-                              $"Stock: {stock}\n" +
-                              $"Preço: €{preco:F2}\n\n" +
-                              $"Descrição:\n{bio}";
-
-            MessageBox.Show(detalhes, titulo, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var detalhes = new Detalhes_Livro(livro);
+            detalhes.ShowDialog(this);
         }
 
         private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, decimal preco)
