@@ -93,7 +93,7 @@
             this.guna2Button5.Name = "guna2Button5";
             this.guna2Button5.Size = new System.Drawing.Size(213, 40);
             this.guna2Button5.TabIndex = 4;
-            this.guna2Button5.Text = "△Crescente";
+            this.guna2Button5.Text = "Mais antigas";
             this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
             // 
             // labelTotal
@@ -116,7 +116,7 @@
             this.guna2Button4.Name = "guna2Button4";
             this.guna2Button4.Size = new System.Drawing.Size(213, 40);
             this.guna2Button4.TabIndex = 3;
-            this.guna2Button4.Text = "▽Decrescente";
+            this.guna2Button4.Text = "Mais recentes";
             this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // guna2Button2
@@ -129,7 +129,7 @@
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(213, 40);
             this.guna2Button2.TabIndex = 2;
-            this.guna2Button2.Text = "✓ Listar por  Datas";
+            this.guna2Button2.Text = "Listar por Datas";
             this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // guna2Button3
@@ -142,7 +142,7 @@
             this.guna2Button3.Name = "guna2Button3";
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
-            this.guna2Button3.Text = "🗑 Devolução Imediata";
+            this.guna2Button3.Text = "Devolver livro";
             this.guna2Button3.Click += new System.EventHandler(this.guna2Button3_Click);
             // 
             // panelContent

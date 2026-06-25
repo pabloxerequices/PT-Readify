@@ -45,6 +45,7 @@
             this.lblEstatisticas = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.button6 = new Guna.UI2.WinForms.Guna2Button();
             this.pictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.panelLeft.SuspendLayout();
             this.panelRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -53,6 +54,7 @@
             // panelLeft
             // 
             this.panelLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(224)))), ((int)(((byte)(230)))));
+            this.panelLeft.Controls.Add(this.guna2Button1);
             this.panelLeft.Controls.Add(this.lblLivros);
             this.panelLeft.Controls.Add(this.button1);
             this.panelLeft.Controls.Add(this.button2);
@@ -112,7 +114,8 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(220, 58);
             this.button3.TabIndex = 2;
-            this.button3.Text = "Editar livros";
+            this.button3.Text = "Gestão de Stock";
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // lblUtilizadores
             // 
@@ -249,6 +252,19 @@
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
+            // guna2Button1
+            // 
+            this.guna2Button1.BorderRadius = 8;
+            this.guna2Button1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(195)))), ((int)(((byte)(85)))));
+            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.guna2Button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(70)))), ((int)(((byte)(50)))));
+            this.guna2Button1.Location = new System.Drawing.Point(12, 655);
+            this.guna2Button1.Name = "guna2Button1";
+            this.guna2Button1.Size = new System.Drawing.Size(109, 33);
+            this.guna2Button1.TabIndex = 8;
+            this.guna2Button1.Text = "Logout";
+            this.guna2Button1.Click += new System.EventHandler(this.guna2Button1_Click);
+            // 
             // main_menu__admin_
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -290,5 +306,6 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel lblEstatisticas;
         private Guna.UI2.WinForms.Guna2Button button6;
         private Guna.UI2.WinForms.Guna2PictureBox pictureBox1;
+        private Guna.UI2.WinForms.Guna2Button guna2Button1;
     }
 }

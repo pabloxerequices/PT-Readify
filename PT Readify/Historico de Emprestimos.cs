@@ -2,20 +2,33 @@
 using System;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PT_Readify
 {
     public partial class Historico_de_Emprestimos : Form
     {
+        private HistoricoSortHelper _sortHelper;
+
         public Historico_de_Emprestimos()
         {
             InitializeComponent();
             dataGridViewHistorico_Emprestimos.DataError += (s, e) => e.ThrowException = false;
             dataGridViewHistorico_Emprestimos.CellFormatting += DataGridViewHistorico_Emprestimos_CellFormatting;
+            DevolucaoUiHelper.ConfigurarGrid(dataGridViewHistorico_Emprestimos);
+            dataGridViewHistorico_Emprestimos.CellFormatting += Grid_CellFormatting;
+            dataGridViewHistorico_Emprestimos.RowPrePaint += Grid_RowPrePaint;
+
+            _sortHelper = new HistoricoSortHelper(
+                dataGridViewHistorico_Emprestimos,
+                guna2Button2,
+                guna2Button4,
+                guna2Button5,
+                "Data_Levantamento");
         }
 
-        private void DataGridViewHistorico_Emprestimos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void Grid_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridViewHistorico_Emprestimos.Columns[e.ColumnIndex].Name == "Estado Multa" && e.Value != null && e.Value.ToString() != "—")
             {
@@ -23,6 +36,12 @@ namespace PT_Readify
                     ? Color.FromArgb(46, 204, 113)
                     : Color.FromArgb(231, 76, 60);
             }
+            DevolucaoUiHelper.FormatarCelula(dataGridViewHistorico_Emprestimos, e);
+        }
+
+        private void Grid_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            DevolucaoUiHelper.ColorirLinhaEmprestimo(dataGridViewHistorico_Emprestimos, e);
         }
 
         private void Historico_de_Emprestimos_Load(object sender, EventArgs e)
@@ -35,8 +54,6 @@ namespace PT_Readify
             }
 
             CarregarHistorico();
-            guna2Button4.Visible = false;
-            guna2Button5.Visible = false;
             guna2Button3.Text = "Devolver livro";
         }
 
@@ -60,11 +77,15 @@ namespace PT_Readify
         {
             OrdenarHistorico("Data_Levantamento DESC");
         }
+            var historico = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
+            _sortHelper.DefinirDados(historico);
 
-        private void guna2Button5_Click(object sender, EventArgs e)
-        {
-            OrdenarHistorico("Data_Levantamento ASC");
-        }
+            int ativos = historico?.AsEnumerable()
+                .Count(r => r["Estado_Emprestimo"]?.ToString() == "Ativo") ?? 0;
+            int emAtraso = historico?.AsEnumerable()
+                .Count(r => r["Estado_Emprestimo"]?.ToString() == "Ativo" &&
+                            r["Data_Prevista"] != DBNull.Value &&
+                            Convert.ToDateTime(r["Data_Prevista"]).Date < DateTime.Now.Date) ?? 0;
 
         private void OrdenarHistorico(string sortExpression)
         {
@@ -72,24 +93,34 @@ namespace PT_Readify
                 dadosEmprestimosOriginais = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
 
             if (dadosEmprestimosOriginais == null || dadosEmprestimosOriginais.Columns.Count == 0 || !dadosEmprestimosOriginais.Columns.Contains("Data_Levantamento"))
+            guna2Button3.Enabled = ativos > 0;
+
+            if (ativos == 0)
             {
-                dataGridViewHistorico_Emprestimos.DataSource = null;
-                MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                guna2Button2.Visible = true;
-                guna2Button4.Visible = false;
-                guna2Button5.Visible = false;
-                return;
+                labelTotal.Text = "Sem empréstimos ativos";
+                labelTotal.ForeColor = Color.FromArgb(241, 196, 15);
             }
+            else if (emAtraso > 0)
+            {
+                labelTotal.Text = $"{ativos} ativo(s) — {emAtraso} em atraso (multa: 2€/semana)";
+                labelTotal.ForeColor = Color.FromArgb(231, 76, 60);
+            }
+            else
+            {
+                labelTotal.Text = $"{ativos} empréstimo(s) ativo(s)";
+                labelTotal.ForeColor = Color.White;
+            }
+        }
 
             DataView view = dadosEmprestimosOriginais.DefaultView;
             view.Sort = sortExpression;
             dataGridViewHistorico_Emprestimos.DataSource =
                 GridDisplayHelper.FormatEmprestimosParaExibicao(dadosEmprestimosOriginais.DefaultView.ToTable());
+        private void guna2Button2_Click(object sender, EventArgs e) => _sortHelper.MostrarOpcoesOrdenacao();
 
-            guna2Button2.Visible = true;
-            guna2Button4.Visible = false;
-            guna2Button5.Visible = false;
-        }
+        private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
+
+        private void guna2Button5_Click(object sender, EventArgs e) => _sortHelper.OrdenarCrescente();
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
@@ -109,31 +140,24 @@ namespace PT_Readify
                 }
 
                 int idHistorico = Convert.ToInt32(dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Id"].Value);
-                string titulo = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Titulo"]?.Value?.ToString() ?? "livro";
+                var resumo = BLL.Historicos.ObterResumoDevolucaoEmprestimo(idHistorico, globais.id_utilizador);
 
                 DialogResult confirmar = MessageBox.Show(
-                    $"Confirmar devolução de \"{titulo}\"?",
-                    "Devolução",
+                    DevolucaoUiHelper.ConstruirConfirmacaoEmprestimo(resumo),
+                    "Devolução de Empréstimo",
                     MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+                    resumo.DiasAtraso > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Question);
 
                 if (confirmar != DialogResult.Yes)
                     return;
 
-                BLL.Historicos.DevolverEmprestimo(idHistorico, globais.id_utilizador);
-
-                var historicoAtualizado = BLL.Historicos.LoadHistoricoEmpPorUtilizador(globais.id_utilizador);
-                DataRow[] linha = historicoAtualizado.Select($"Id = {idHistorico}");
-                string msgMulta = "";
-                if (linha.Length > 0)
-                {
-                    int multa = Convert.ToInt32(linha[0]["Valor_Multa"]);
-                    if (multa > 0)
-                        msgMulta = $"\n\nMulta aplicada: {(multa / 100m):C2} (2€ por semana de atraso).";
-                }
-
+                var resultado = BLL.Historicos.DevolverEmprestimo(idHistorico, globais.id_utilizador);
                 CarregarHistorico();
-                MessageBox.Show("Livro devolvido com sucesso!" + msgMulta, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    DevolucaoUiHelper.ConstruirSucessoEmprestimo(resultado),
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

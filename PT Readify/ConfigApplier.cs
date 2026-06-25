@@ -62,11 +62,13 @@ namespace PT_Readify
 
         public static void ApplyReadingMode(Form form, Config cfg)
         {
-            if (form == null || cfg == null || !cfg.FullscreenReading) return;
+            // Mantido por compatibilidade — fullscreen não se aplica a Detalhes_Livro.
+            FormLaunchHelper.PrepareForm(form);
+        }
 
-            form.FormBorderStyle = FormBorderStyle.None;
-            form.WindowState = FormWindowState.Maximized;
-            form.TopMost = false;
+        public static bool ShouldFullscreenForm(Form form)
+        {
+            return FormLaunchHelper.ShouldApplyFullscreen(form);
         }
 
         public static Font GetReadingFont(Config cfg)

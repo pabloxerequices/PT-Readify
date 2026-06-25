@@ -92,7 +92,7 @@
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(213, 40);
             this.guna2Button2.TabIndex = 2;
-            this.guna2Button2.Text = "✓ Listar por  Datas";
+            this.guna2Button2.Text = "Listar por Datas";
             this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // guna2Button3
@@ -140,7 +140,7 @@
             this.guna2Button4.Name = "guna2Button4";
             this.guna2Button4.Size = new System.Drawing.Size(213, 40);
             this.guna2Button4.TabIndex = 4;
-            this.guna2Button4.Text = "▽Decrescente";
+            this.guna2Button4.Text = "Mais recentes";
             this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // guna2Button5
@@ -153,7 +153,7 @@
             this.guna2Button5.Name = "guna2Button5";
             this.guna2Button5.Size = new System.Drawing.Size(213, 40);
             this.guna2Button5.TabIndex = 5;
-            this.guna2Button5.Text = "△Crescente";
+            this.guna2Button5.Text = "Mais antigas";
             this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
             // 
             // guna2DataGridView1Historico_Compras

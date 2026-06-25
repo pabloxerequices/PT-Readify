@@ -79,6 +79,10 @@
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
     <Compile Include="GridDisplayHelper.cs" />
+    <Compile Include="GestaoStockLivros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaunchHelper.cs" />
     <Compile Include="AutoLogoutManager.cs" />
     <Compile Include="CarrinhoService.cs" />
     <Compile Include="ReciboCompraEmailService.cs" />
@@ -110,6 +114,8 @@
       <DependentUpon>Chat_Bot.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL.cs" />
+    <Compile Include="DevolucaoUiHelper.cs" />
+    <Compile Include="HistoricoSortHelper.cs" />
     <Compile Include="Detalhes_Livro.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -245,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GestaoStockLivros.resx">
+      <DependentUpon>GestaoStockLivros.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Historico de Emprestimos.resx">
       <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
