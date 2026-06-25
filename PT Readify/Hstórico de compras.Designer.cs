@@ -106,7 +106,7 @@
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
             this.guna2Button3.Text = "🗑 Devolução da Compra";
-            this.guna2Button3.Click += new System.EventHandler(this.btnLimparCarrinho_Click);
+            //this.guna2Button3.Click += new System.EventHandler(this.btnLimparCarrinho_Click);
             // 
             // panelTop
             // 
@@ -141,7 +141,7 @@
             this.guna2Button4.Size = new System.Drawing.Size(213, 40);
             this.guna2Button4.TabIndex = 4;
             this.guna2Button4.Text = "Mais recentes";
-            this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
+            //this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // guna2Button5
             // 
@@ -154,7 +154,7 @@
             this.guna2Button5.Size = new System.Drawing.Size(213, 40);
             this.guna2Button5.TabIndex = 5;
             this.guna2Button5.Text = "Mais antigas";
-            this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
+           // this.guna2Button5.Click += new System.EventHandler(this.guna2Button5_Click);
             // 
             // guna2DataGridView1Historico_Compras
             // 

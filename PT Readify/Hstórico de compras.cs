@@ -115,10 +115,16 @@ namespace PT_Readify
             OrdenarCompras("Data_Compra DESC");
         }
 
+        // Renomeado para evitar duplicidade
+        private void guna2Button4_OrdenarDecrescente_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
+
         private void guna2Button5_Click(object sender, EventArgs e)
         {
             OrdenarCompras("Data_Compra ASC");
-        private void btnLimparCarrinho_Click(object sender, EventArgs e)
+        }
+
+        // Renomeado para evitar duplicidade
+        private void btnLimparCarrinho_Devolucao_Click(object sender, EventArgs e)
         {
             if (globais.id_utilizador <= 0)
             {
@@ -132,10 +138,10 @@ namespace PT_Readify
         }
 
         private void guna2Button2_Click(object sender, EventArgs e) => _sortHelper.MostrarOpcoesOrdenacao();
-
-        private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
-
-        private void guna2Button5_Click(object sender, EventArgs e) => _sortHelper.OrdenarCrescente();
+        
+        //private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
+        
+       // private void guna2Button5_Click(object sender, EventArgs e) => _sortHelper.OrdenarCrescente();
 
         private void guna2DataGridView1Historico_Compras_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
