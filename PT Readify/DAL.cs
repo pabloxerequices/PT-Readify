@@ -232,6 +232,23 @@ namespace DataAccessLayer
                         Data_Devolução datetime NOT NULL
                     );
                 END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Historico_Compra' AND COLUMN_NAME = 'Estado_Compra')
+                BEGIN
+                    ALTER TABLE Historico_Compra ADD Estado_Compra nvarchar(20) NOT NULL
+                        CONSTRAINT DF_Historico_Compra_Estado_Compra DEFAULT 'Ativa';
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'Historico_Compra' AND COLUMN_NAME = 'Data_Devolução')
+                BEGIN
+                    ALTER TABLE Historico_Compra ADD Data_Devolução datetime NULL;
+                END");
         }
 
         private void ExecutarMigracao(string sql)
