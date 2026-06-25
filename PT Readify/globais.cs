@@ -47,9 +47,9 @@ namespace PT_Readify
             {
                 Theme = "Claro",
                 FullscreenReading = false,
-                FontName = "Arial",
-                FontSize = 12,
-                AutoLogoutMinutes = 15,
+                FontName = "Segoe UI",
+                FontSize = 15,
+                AutoLogoutMinutes = 1,
                 Language = "pt",
                 OriginalLanguage = "pt"
             };
@@ -87,11 +87,7 @@ namespace PT_Readify
                 {
                     var serializer = new XmlSerializer(typeof(Config));
                     var cfg = (Config)serializer.Deserialize(stream);
-                    // Ensure non-null and valid ranges:
-                    if (cfg.FontSize <= 0) cfg.FontSize = Config.Default().FontSize;
-                    if (cfg.AutoLogoutMinutes < 0) cfg.AutoLogoutMinutes = Config.Default().AutoLogoutMinutes;
-                    if (string.IsNullOrWhiteSpace(cfg.Language)) cfg.Language = Config.Default().Language;
-                    if (string.IsNullOrWhiteSpace(cfg.OriginalLanguage)) cfg.OriginalLanguage = cfg.Language;
+                    Normalize(cfg);
                     return cfg;
                 }
             }
@@ -126,6 +122,32 @@ namespace PT_Readify
         {
             var def = Config.Default();
             Save(def);
+        }
+
+        private static void Normalize(Config cfg)
+        {
+            if (cfg == null) return;
+
+            if (string.IsNullOrWhiteSpace(cfg.Theme))
+                cfg.Theme = Config.Default().Theme;
+            else if (cfg.Theme.Equals("Light", StringComparison.OrdinalIgnoreCase))
+                cfg.Theme = "Claro";
+            else if (cfg.Theme.Equals("Dark", StringComparison.OrdinalIgnoreCase))
+                cfg.Theme = "Escuro";
+
+            if (string.IsNullOrWhiteSpace(cfg.FontName))
+                cfg.FontName = Config.Default().FontName;
+
+            if (cfg.FontSize < 15) cfg.FontSize = 15;
+            if (cfg.FontSize > 100) cfg.FontSize = 100;
+
+            cfg.AutoLogoutMinutes = AutoLogoutManager.NormalizeMinutes(cfg.AutoLogoutMinutes);
+
+            if (string.IsNullOrWhiteSpace(cfg.Language))
+                cfg.Language = Config.Default().Language;
+
+            if (string.IsNullOrWhiteSpace(cfg.OriginalLanguage))
+                cfg.OriginalLanguage = cfg.Language;
         }
     }
 }
