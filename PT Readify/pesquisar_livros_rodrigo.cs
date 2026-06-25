@@ -378,7 +378,7 @@ namespace PT_Readify
         private void MostrarDetalhesLivro(int idLivro, DataRow livro)
         {
             var detalhes = new Detalhes_Livro(livro);
-            detalhes.ShowDialog(this);
+            FormLaunchHelper.ShowDialog(detalhes, this);
         }
 
         private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, decimal preco)
@@ -422,7 +422,7 @@ namespace PT_Readify
                 mainMenu.AbrirEmprestimos();
                 return;
             }
-            new Requesitar_livros().Show();
+            FormLaunchHelper.Show(new Requesitar_livros(), FindForm());
         }
 
         private void AtualizarContadorCarrinho()
@@ -442,7 +442,7 @@ namespace PT_Readify
 
             using (var carrinho = new Carrinho())
             {
-                carrinho.ShowDialog(FindForm() ?? this);
+                FormLaunchHelper.ShowDialog(carrinho, FindForm() ?? this);
             }
             RecarregarLivros();
         }

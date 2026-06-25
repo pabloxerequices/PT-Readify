@@ -31,13 +31,17 @@ namespace PT_Readify
 
         private void button2_Click(object sender, EventArgs e)
         {
-            new inserir_livros_rodrigo_admin_().Show();
+            FormLaunchHelper.Show(new inserir_livros_rodrigo_admin_(), this);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            new livros().Show();
-            
+            FormLaunchHelper.Show(new livros(), this);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            FormLaunchHelper.Show(new GestaoStockLivros(), this);
         }
 
         private void button4_Click(object sender, EventArgs e)

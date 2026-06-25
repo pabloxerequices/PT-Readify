@@ -344,7 +344,7 @@ namespace PT_Readify
             panelDetalhes.Controls.Add(btnAdicionar);
 
             detalhes.Controls.Add(panelDetalhes);
-            detalhes.ShowDialog(this);
+            FormLaunchHelper.ShowDialog(detalhes, this);
         }
 
         private void AdicionarAoCarrinho(int idLivro)
