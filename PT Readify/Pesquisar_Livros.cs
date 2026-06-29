@@ -155,11 +155,10 @@ namespace PT_Readify
                 string estado = (this.Controls.Find("comboEstado", true).FirstOrDefault() as ComboBox)?.SelectedItem?.ToString() ?? "Todos";
                 string genero = (this.Controls.Find("comboGenero", true).FirstOrDefault() as ComboBox)?.SelectedItem?.ToString() ?? "Todos";
 
-                List<string> generos = null;
-                if (!string.IsNullOrEmpty(genero) && genero != "Todos")
-                    generos = new List<string> { genero };
+                string generoParam = (genero == "Todos" || string.IsNullOrEmpty(genero)) ? null : genero;
+                string estadoParam = (estado == "Todos" || string.IsNullOrEmpty(estado)) ? null : estado;
 
-                livrosTable = BLL.Livros.pesquisarLivro(titulo, autor, Convert.ToString(generos), estado);
+                livrosTable = BLL.Livros.pesquisarLivro(titulo, autor, generoParam, estadoParam);
 
                 AtualizarCards();
             }

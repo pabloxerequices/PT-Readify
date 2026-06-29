@@ -245,6 +245,7 @@
             this.Controls.Add(this.pictureBox2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "registar_ultilizador";
+            this.ShowIcon = false;
             this.Text = "Registrar";
             this.Load += new System.EventHandler(this.registar_ultilizador_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

@@ -49,6 +49,7 @@ namespace PT_Readify
         private void BuildLayout()
         {
             Text = "Gestão de Stock";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             MinimumSize = new Size(960, 580);
             ClientSize = new Size(1020, 620);

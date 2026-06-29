@@ -28,6 +28,7 @@ namespace PT_Readify
         public HistoricoEmprestimosAdmin()
         {
             Text = "Histórico de Empréstimos (Admin)";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(1150, 600);
             BackColor = CorContent;

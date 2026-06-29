@@ -1178,7 +1178,7 @@ namespace BusinessLogicLayer
                 try
                 {
                     return dal.executarReader(
-                        "SELECT l.Id_Livro, l.Titulo, l.Autor, l.Preço, l.Estado_Livro " +
+                        "SELECT DISTINCT l.Id_Livro, l.Titulo, l.Autor, l.Preço, l.Estado_Livro " +
                         "FROM Livro l " +
                         "LEFT JOIN Livro_Genero lg ON l.Id_Livro = lg.Id_Livro " +
                         "LEFT JOIN Genero g ON lg.Id_Genero = g.Id_Genero " +
@@ -1189,8 +1189,8 @@ namespace BusinessLogicLayer
                         new SqlParameter[] {
                             new SqlParameter("@titulo", string.IsNullOrWhiteSpace(titulo) ? (object)DBNull.Value : titulo),
                             new SqlParameter("@autor", string.IsNullOrWhiteSpace(autor) ? (object)DBNull.Value : autor),
-                            new SqlParameter("@genero", string.IsNullOrWhiteSpace(genero) ? (object)DBNull.Value : genero),
-                            new SqlParameter("@estado", string.IsNullOrWhiteSpace(estado) ? (object)DBNull.Value : estado)
+                            new SqlParameter("@genero", string.IsNullOrWhiteSpace(genero) || genero == "Todos" ? (object)DBNull.Value : genero),
+                            new SqlParameter("@estado", string.IsNullOrWhiteSpace(estado) || estado == "Todos" ? (object)DBNull.Value : estado)
                         });
                 }
                 catch (Exception ex)

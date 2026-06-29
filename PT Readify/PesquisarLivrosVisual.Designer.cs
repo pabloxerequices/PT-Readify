@@ -23,6 +23,8 @@ namespace PT_Readify
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "PesquisarLivrosVisual";
+            this.ShowIcon = false;
+            this.Text = "Pesquisar Livros";
             this.Load += new System.EventHandler(this.PesquisarLivrosVisual_Load);
             this.ResumeLayout(false);
 

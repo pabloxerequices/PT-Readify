@@ -36,7 +36,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(954, 590);
             this.Name = "Devolução_Imediata";
-            this.Text = "Devolução_Imediata";
+            this.ShowIcon = false;
+            this.Text = "Devolução Imediata";
             this.ResumeLayout(false);
 
         }

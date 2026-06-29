@@ -14,6 +14,7 @@ namespace PT_Readify
         public EstatisticasAdmin()
         {
             Text = "Estatísticas da Biblioteca";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(900, 600);
 

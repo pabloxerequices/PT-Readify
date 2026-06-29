@@ -115,6 +115,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Chat_Bot";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Assistente PT Readify";
             this.Load += new System.EventHandler(this.Chat_Bot_Load_1);

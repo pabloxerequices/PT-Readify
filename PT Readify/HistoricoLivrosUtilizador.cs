@@ -31,6 +31,7 @@ namespace PT_Readify
         public HistoricoLivrosUtilizador()
         {
             Text = "Histórico de Livros";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(1100, 600);
             BackColor = CorContent;

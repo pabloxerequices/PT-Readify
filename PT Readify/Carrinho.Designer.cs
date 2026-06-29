@@ -181,6 +181,7 @@
             this.Controls.Add(this.panelTop);
             this.MinimumSize = new System.Drawing.Size(1000, 540);
             this.Name = "Carrinho";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Carrinho de Compras - PT Readify";
             this.Load += new System.EventHandler(this.Carrinho_Load);

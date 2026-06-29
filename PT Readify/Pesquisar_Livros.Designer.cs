@@ -208,6 +208,7 @@ namespace PT_Readify
             this.Controls.Add(this.labelAutor);
             this.Controls.Add(this.labelTitulo);
             this.Name = "Pesquisar_Livros";
+            this.ShowIcon = false;
             this.Text = "Pesquisar Livros";
             this.Load += new System.EventHandler(this.Pesquisar_Livros_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLivros)).EndInit();

@@ -29,6 +29,7 @@ namespace PT_Readify
         public RelatorioMultasAdmin()
         {
             Text = "Relatório de Multas";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(1100, 600);
             BackColor = CorContent;

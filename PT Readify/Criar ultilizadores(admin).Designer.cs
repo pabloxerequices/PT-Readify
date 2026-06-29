@@ -299,7 +299,8 @@
             this.Controls.Add(this.pictureBox6);
             this.Controls.Add(this.dataGridView1);
             this.Name = "Criar_ultilizadores_admin_";
-            this.Text = "Criar_ultilizadores_admin_";
+            this.ShowIcon = false;
+            this.Text = "Criar Utilizadores (Admin)";
             this.Load += new System.EventHandler(this.Criar_ultilizadores_admin__Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();

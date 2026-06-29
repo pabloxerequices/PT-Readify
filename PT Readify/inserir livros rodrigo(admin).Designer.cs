@@ -448,6 +448,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "inserir_livros_rodrigo_admin_";
+            this.ShowIcon = false;
             this.Text = "Inserir livros (Admin)";
             this.Load += new System.EventHandler(this.inserir_livros_rodrigo_admin__Load);
             this.leftPanel.ResumeLayout(false);

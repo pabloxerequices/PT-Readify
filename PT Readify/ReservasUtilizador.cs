@@ -12,6 +12,7 @@ namespace PT_Readify
         public ReservasUtilizador()
         {
             Text = "As minhas reservas";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(900, 450);
 
