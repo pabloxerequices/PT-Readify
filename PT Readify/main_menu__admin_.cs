@@ -36,7 +36,7 @@ namespace PT_Readify
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FormLaunchHelper.Show(new livros(), this);
+            FormLaunchHelper.Show(new pesquisar_livros_rodrigo(), this);
         }
 
         private void button3_Click(object sender, EventArgs e)

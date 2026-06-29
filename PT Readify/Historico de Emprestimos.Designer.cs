@@ -202,7 +202,8 @@
             this.Controls.Add(this.panelBottom);
             this.Controls.Add(this.panelTop);
             this.Name = "Historico_de_Emprestimos";
-            this.Text = "Historico_de_Emprestimos";
+            this.ShowIcon = false;
+            this.Text = "Historico de Emprestimos";
             this.Load += new System.EventHandler(this.Historico_de_Emprestimos_Load);
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
