@@ -171,7 +171,7 @@ namespace PT_Readify
         private void button2_Click(object sender, EventArgs e)
         {
             FormLaunchHelper.Show(new Perfil(), this);
-            this.Close();
+            
         }
 
         private void button6_Click_1(object sender, EventArgs e)
@@ -232,6 +232,11 @@ namespace PT_Readify
             ConfigApplier.ApplyFont(panel2, cfg);
             ApplyMenuLanguage(cfg);
             AtualizarTituloCarrinhoMenu();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            new Carteira().Show();
         }
     }
 }

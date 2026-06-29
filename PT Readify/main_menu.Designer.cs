@@ -43,6 +43,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button10 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -62,6 +63,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel1.Controls.Add(this.button10);
             this.panel1.Controls.Add(this.button9);
             this.panel1.Controls.Add(this.buttonConfig);
             this.panel1.Controls.Add(this.button8);
@@ -97,7 +99,7 @@
             this.buttonConfig.Font = new System.Drawing.Font("Times New Roman", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonConfig.Location = new System.Drawing.Point(26, 843);
             this.buttonConfig.Name = "buttonConfig";
-            this.buttonConfig.Size = new System.Drawing.Size(216, 44);
+            this.buttonConfig.Size = new System.Drawing.Size(216, 55);
             this.buttonConfig.TabIndex = 23;
             this.buttonConfig.Text = "Configurações";
             this.buttonConfig.UseVisualStyleBackColor = true;
@@ -204,11 +206,22 @@
             // 
             // panel2
             // 
-            this.panel2.Location = new System.Drawing.Point(275, 0);
+            this.panel2.Location = new System.Drawing.Point(276, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1646, 1056);
             this.panel2.TabIndex = 22;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint_1);
+            // 
+            // button10
+            // 
+            this.button10.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.Location = new System.Drawing.Point(26, 764);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(216, 54);
+            this.button10.TabIndex = 22;
+            this.button10.Text = "Carteira\r\n";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // main_menu
             // 
@@ -247,5 +260,6 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button buttonConfig;
+        private System.Windows.Forms.Button button10;
     }
 }
