@@ -54,6 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL.cs" />
+    <Compile Include="Carteira.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Carteira.Designer.cs">
+      <DependentUpon>Carteira.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configurações.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -228,6 +234,9 @@
     <EmbeddedResource Include="Carrinho.resx">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Carteira.resx">
+      <DependentUpon>Carteira.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Chat_Bot.resx">
       <DependentUpon>Chat_Bot.cs</DependentUpon>
     </EmbeddedResource>
@@ -304,10 +313,10 @@
     <EmbeddedResource Include="registar_ultilizador.resx">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="smtp.config.example">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

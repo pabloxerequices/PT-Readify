@@ -1,0 +1,598 @@
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace PT_Readify
+{
+    public partial class Carteira : Form
+    {
+        // --- VARIÁVEIS DE CONTROLO DE ESTADO ---
+        private double saldoAtual = 150.00;
+        private string passwordUtilizador = string.Empty;
+        private bool passwordDefinida = false;
+
+        // Variáveis para limite de tentativas
+        private int tentativasFalhadas = 0;
+        private const int MAX_TENTATIVAS = 3;
+
+        // Variável para guardar método selecionado
+        private string metodoAtualSelecionado = string.Empty;
+
+        public Carteira()
+        {
+            InitializeComponent();
+        }
+
+        private void Carteira_Load(object sender, EventArgs e)
+        {
+            // Atualiza o saldo na label
+            AtualizarSaldo();
+            
+            // Solicita ao utilizador que defina a sua password
+            SolicitarPasswordUtilizador();
+        }
+
+        /// <summary>
+        /// Atualiza a exibição do saldo atual.
+        /// </summary>
+        private void AtualizarSaldo()
+        {
+            lblSaldo.Text = $"Saldo Atual: {saldoAtual:F2}€";
+        }
+
+        /// <summary>
+        /// Solicita ao utilizador que defina a sua password de acesso.
+        /// Se não definir, a aplicação fecha.
+        /// </summary>
+        private void SolicitarPasswordUtilizador()
+        {
+            while (string.IsNullOrEmpty(passwordUtilizador))
+            {
+                using (Form promptForm = new Form())
+                {
+                    promptForm.Text = "Definir Password";
+                    promptForm.Width = 400;
+                    promptForm.Height = 200;
+                    promptForm.StartPosition = FormStartPosition.CenterParent;
+                    promptForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    promptForm.MaximizeBox = false;
+                    promptForm.MinimizeBox = false;
+                    promptForm.BackColor = Color.WhiteSmoke;
+
+                    // ===== LABEL INSTRUÇÃO =====
+                    Label lblInstrucao = new Label()
+                    {
+                        Text = "Defina a sua password de acesso à Carteira Digital:",
+                        Left = 20,
+                        Top = 20,
+                        Width = 400,
+                        AutoSize = true,
+                        Font = new Font("Arial", 10, FontStyle.Bold)
+                    };
+                    promptForm.Controls.Add(lblInstrucao);
+
+                    // ===== TEXTBOX PASSWORD =====
+                    TextBox txtPassword = new TextBox()
+                    {
+                        Left = 20,
+                        Top = 60,
+                        Width = 400,
+                        Height = 35,
+                        PasswordChar = '*',
+                        Font = new Font("Arial", 12),
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+                    promptForm.Controls.Add(txtPassword);
+
+                    // ===== LABEL REQUISITOS =====
+                    Label lblRequisitos = new Label()
+                    {
+                        Text = "• Mínimo 4 caracteres\n• Máximo 20 caracteres\n• Pode conter letras, números e símbolos",
+                        Left = 20,
+                        Top = 105,
+                        Width = 400,
+                        AutoSize = true,
+                        Font = new Font("Arial", 9),
+                        ForeColor = Color.DarkBlue
+                    };
+                    promptForm.Controls.Add(lblRequisitos);
+
+                    // ===== BOTÃO OK =====
+                    Button btnOK = new Button()
+                    {
+                        Text = "CONFIRMAR",
+                        Left = 170,
+                        Top = 185,
+                        Width = 110,
+                        Height = 35,
+                        BackColor = Color.DodgerBlue,
+                        ForeColor = Color.White,
+                        Font = new Font("Arial", 10, FontStyle.Bold),
+                        Cursor = Cursors.Hand,
+                        DialogResult = DialogResult.OK
+                    };
+                    promptForm.Controls.Add(btnOK);
+
+                    // ===== BOTÃO SAIR =====
+                    Button btnSair = new Button()
+                    {
+                        Text = "SAIR",
+                        Left = 290,
+                        Top = 185,
+                        Width = 130,
+                        Height = 35,
+                        BackColor = Color.Red,
+                        ForeColor = Color.White,
+                        Font = new Font("Arial", 10, FontStyle.Bold),
+                        Cursor = Cursors.Hand,
+                        DialogResult = DialogResult.Cancel
+                    };
+                    promptForm.Controls.Add(btnSair);
+
+                    promptForm.AcceptButton = btnOK;
+                    promptForm.CancelButton = btnSair;
+
+                    if (promptForm.ShowDialog() == DialogResult.OK)
+                    {
+                        // Valida a password introduzida
+                        if (ValidarPasswordDefinicao(txtPassword.Text))
+                        {
+                            passwordUtilizador = txtPassword.Text;
+                            passwordDefinida = true;
+                            MessageBox.Show(
+                                "Password definida com sucesso!",
+                                "Sucesso",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information
+                            );
+                        }
+                    }
+                    else
+                    {
+                        // Utilizador clicou em SAIR
+                        this.Close();
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Valida a password na altura da definição.
+        /// Verifica se não está vazia e cumpre os requisitos mínimos.
+        /// </summary>
+        private bool ValidarPasswordDefinicao(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show(
+                    "A password não pode estar vazia. Tente novamente.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return false;
+            }
+
+            if (password.Length < 4)
+            {
+                MessageBox.Show(
+                    "A password deve ter um mínimo de 4 caracteres.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return false;
+            }
+
+            if (password.Length > 20)
+            {
+                MessageBox.Show(
+                    "A password deve ter um máximo de 20 caracteres.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Permite ao utilizador alterar a sua password existente.
+        /// Exige a password antiga para confirmar.
+        /// </summary>
+        private void AlterarPassword()
+        {
+            using (Form promptForm = new Form())
+            {
+                promptForm.Text = "Alterar Password";
+                promptForm.Width = 450;
+                promptForm.Height = 280;
+                promptForm.StartPosition = FormStartPosition.CenterScreen;
+                promptForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                promptForm.MaximizeBox = false;
+                promptForm.MinimizeBox = false;
+                promptForm.BackColor = Color.WhiteSmoke;
+
+                // ===== LABEL PASSWORD ANTIGA =====
+                Label lblPasswordAntiga = new Label()
+                {
+                    Text = "Password Atual:",
+                    Left = 20,
+                    Top = 20,
+                    AutoSize = true,
+                    Font = new Font("Arial", 10, FontStyle.Bold)
+                };
+                promptForm.Controls.Add(lblPasswordAntiga);
+
+                // ===== TEXTBOX PASSWORD ANTIGA =====
+                TextBox txtPasswordAntiga = new TextBox()
+                {
+                    Left = 20,
+                    Top = 45,
+                    Width = 400,
+                    Height = 30,
+                    PasswordChar = '*',
+                    Font = new Font("Arial", 11),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+                promptForm.Controls.Add(txtPasswordAntiga);
+
+                // ===== LABEL PASSWORD NOVA =====
+                Label lblPasswordNova = new Label()
+                {
+                    Text = "Nova Password:",
+                    Left = 20,
+                    Top = 90,
+                    AutoSize = true,
+                    Font = new Font("Arial", 10, FontStyle.Bold)
+                };
+                promptForm.Controls.Add(lblPasswordNova);
+
+                // ===== TEXTBOX PASSWORD NOVA =====
+                TextBox txtPasswordNova = new TextBox()
+                {
+                    Left = 20,
+                    Top = 115,
+                    Width = 400,
+                    Height = 30,
+                    PasswordChar = '*',
+                    Font = new Font("Arial", 11),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+                promptForm.Controls.Add(txtPasswordNova);
+
+                // ===== BOTÃO ALTERAR =====
+                Button btnAlterar = new Button()
+                {
+                    Text = "ALTERAR",
+                    Left = 170,
+                    Top = 165,
+                    Width = 110,
+                    Height = 35,
+                    BackColor = Color.Green,
+                    ForeColor = Color.White,
+                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnAlterar.Click += (s, e) =>
+                {
+                    if (txtPasswordAntiga.Text != passwordUtilizador)
+                    {
+                        MessageBox.Show(
+                            "Password atual incorreta!",
+                            "Erro",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+                        return;
+                    }
+
+                    if (ValidarPasswordDefinicao(txtPasswordNova.Text))
+                    {
+                        passwordUtilizador = txtPasswordNova.Text;
+                        MessageBox.Show(
+                            "Password alterada com sucesso!",
+                            "Sucesso",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                        promptForm.Close();
+                    }
+                };
+                promptForm.Controls.Add(btnAlterar);
+
+                // ===== BOTÃO CANCELAR =====
+                Button btnCancelar = new Button()
+                {
+                    Text = "CANCELAR",
+                    Left = 290,
+                    Top = 165,
+                    Width = 130,
+                    Height = 35,
+                    BackColor = Color.Gray,
+                    ForeColor = Color.White,
+                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    DialogResult = DialogResult.Cancel
+                };
+                promptForm.Controls.Add(btnCancelar);
+                promptForm.CancelButton = btnCancelar;
+
+                promptForm.ShowDialog();
+            }
+        }
+
+        // -----------------------------------------------------------------
+        // --- LÓGICA DE EVENTOS ---
+        // -----------------------------------------------------------------
+
+        /// <summary>
+        /// Valida o acesso à carteira através da password introduzida.
+        /// Inclui limite de tentativas falhadas.
+        /// </summary>
+        private void BtnEntrar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtPassword.Text))
+            {
+                MessageBox.Show(
+                    "Por favor, introduza a password.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                txtPassword.Focus();
+                return;
+            }
+
+            if (txtPassword.Text == passwordUtilizador)
+            {
+                // ✓ Password correta - Acesso concedido
+                tentativasFalhadas = 0;  // Reset contador
+                panelAutenticacao.Visible = false;
+                panelCarteira.Visible = true;
+                txtPassword.Clear();
+                MessageBox.Show(
+                    "Bem-vindo à sua Carteira Digital!",
+                    "Autenticação Bem-Sucedida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            else
+            {
+                // ✗ Password incorreta - Incrementa contador
+                tentativasFalhadas++;
+                int tentativasRestantes = MAX_TENTATIVAS - tentativasFalhadas;
+
+                if (tentativasRestantes <= 0)
+                {
+                    // Bloqueado por excesso de tentativas
+                    MessageBox.Show(
+                        "Tentativas de acesso excedidas!\nA aplicação será fechada.",
+                        "Acesso Bloqueado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Stop
+                    );
+                    this.Close();
+                }
+                else
+                {
+                    // Avisar do número de tentativas restantes
+                    MessageBox.Show(
+                        $"Password incorreta!\n\nTentativas restantes: {tentativasRestantes}",
+                        "Erro de Autenticação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+
+                txtPassword.Focus();
+                txtPassword.SelectAll();
+            }
+        }
+
+        /// <summary>
+        /// Altera a navegação do painel da carteira para o painel de edição.
+        /// </summary>
+        private void BtnAlterarPagamento_Click(object sender, EventArgs e)
+        {
+            panelCarteira.Visible = false;
+            panelEdicao.Visible = true;
+            cbMetodosPagamento.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Volta ao painel da carteira a partir do painel de edição.
+        /// </summary>
+        private void BtnVoltar_Click(object sender, EventArgs e)
+        {
+            panelEdicao.Visible = false;
+            panelCarteira.Visible = true;
+            LimparCamposPagamento();
+        }
+
+        /// <summary>
+        /// Botão para alterar a password da Carteira.
+        /// </summary>
+        private void BtnAlterarPassword_Click(object sender, EventArgs e)
+        {
+            DialogResult resultado = MessageBox.Show(
+                "Tem a certeza que deseja alterar a sua password?",
+                "Confirmar Alteração",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resultado == DialogResult.Yes)
+            {
+                AlterarPassword();
+            }
+        }
+
+        /// <summary>
+        /// Controla a visibilidade dos sub-painéis com base no método de pagamento selecionado.
+        /// </summary>
+        private void CbMetodosPagamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            panelPayPal.Visible = false;
+            panelMBWay.Visible = false;
+            panelTransferencia.Visible = false;
+            panelApplePay.Visible = false;
+
+            switch (cbMetodosPagamento.SelectedItem?.ToString())
+            {
+                case "PayPal":
+                    panelPayPal.Visible = true;
+                    txtEmailPayPal.Focus();
+                    metodoAtualSelecionado = "PayPal";
+                    break;
+                case "MBWay":
+                    panelMBWay.Visible = true;
+                    txtTelemovelMBWay.Focus();
+                    metodoAtualSelecionado = "MBWay";
+                    break;
+                case "Transferência Bancária":
+                    panelTransferencia.Visible = true;
+                    txtIbanTransferencia.Focus();
+                    metodoAtualSelecionado = "Transferência Bancária";
+                    break;
+                case "Apple Pay":
+                    panelApplePay.Visible = true;
+                    txtAppleID.Focus();
+                    metodoAtualSelecionado = "Apple Pay";
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Valida e grava os dados do método de pagamento selecionado.
+        /// </summary>
+        private void BtnSalvar_Click(object sender, EventArgs e)
+        {
+            string metodoSelecionado = cbMetodosPagamento.SelectedItem?.ToString();
+            bool validado = false;
+            string valorIntroduzido = string.Empty;
+
+            if (string.IsNullOrEmpty(metodoSelecionado))
+            {
+                MessageBox.Show(
+                    "Por favor, selecione um método de pagamento.",
+                    "Aviso de Validação",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
+
+            switch (metodoSelecionado)
+            {
+                case "PayPal":
+                    validado = !string.IsNullOrWhiteSpace(txtEmailPayPal.Text);
+                    valorIntroduzido = txtEmailPayPal.Text;
+                    break;
+                case "MBWay":
+                    validado = !string.IsNullOrWhiteSpace(txtTelemovelMBWay.Text);
+                    valorIntroduzido = txtTelemovelMBWay.Text;
+                    break;
+                case "Transferência Bancária":
+                    validado = !string.IsNullOrWhiteSpace(txtIbanTransferencia.Text);
+                    valorIntroduzido = txtIbanTransferencia.Text;
+                    break;
+                case "Apple Pay":
+                    validado = !string.IsNullOrWhiteSpace(txtAppleID.Text);
+                    valorIntroduzido = txtAppleID.Text;
+                    break;
+            }
+
+            if (validado)
+            {
+                MessageBox.Show(
+                    $"Método [{metodoSelecionado}] configurado com sucesso!\nDados guardados: {valorIntroduzido}",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                panelEdicao.Visible = false;
+                panelCarteira.Visible = true;
+                LimparCamposPagamento();
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Por favor, preencha o campo de dados do método de pagamento selecionado.",
+                    "Aviso de Validação",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+            }
+        }
+
+        /// <summary>
+        /// Limpa todos os campos de pagamento.
+        /// </summary>
+        private void LimparCamposPagamento()
+        {
+            txtEmailPayPal.Clear();
+            txtTelemovelMBWay.Clear();
+            txtIbanTransferencia.Clear();
+            txtAppleID.Clear();
+        }
+
+        private void lblTitulo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        // Para comprar um livro
+        public bool ComprarLivro(string titulo, double preco)
+        {
+            // Verifica se o saldo é suficiente
+            if (saldoAtual >= preco)
+            {
+                saldoAtual -= preco;
+                AtualizarSaldo();
+                MessageBox.Show($"Compra bem-sucedida: {titulo}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Saldo insuficiente para completar a compra.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        // Para adicionar saldo
+        public void AdicionarSaldo(double valor)
+        {
+            if (valor > 0)
+            {
+                saldoAtual += valor;
+                AtualizarSaldo();
+                MessageBox.Show($"Saldo adicionado com sucesso: +{valor:F2}€", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("O valor a adicionar deve ser positivo.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Para obter saldo
+        public double ObterSaldo()
+        {
+            return saldoAtual;
+        }
+
+        private void btnFechar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
