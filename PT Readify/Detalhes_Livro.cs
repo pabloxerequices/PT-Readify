@@ -43,6 +43,11 @@ namespace PT_Readify
             "Estado_Livro", "Stock", "Preço", "Preco", "ISBN", "Bio", "Id_Livro"
         };
 
+        // --- VARIÁVEIS DE LIGAÇÃO COM CARTEIRA ---
+        private string tituloLivro = string.Empty;
+        private double precoLivro = 0.0;
+        private Carteira carteiraAssociada = null;
+
         public Detalhes_Livro()
         {
             InitializeComponent();
