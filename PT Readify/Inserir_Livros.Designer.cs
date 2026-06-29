@@ -416,7 +416,8 @@
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.MinimumSize = new System.Drawing.Size(900, 520);
             this.Name = "Inserir_Livros";
-            this.Text = "inserir_livros";
+            this.ShowIcon = false;
+            this.Text = "Inserir Livros";
             this.Load += new System.EventHandler(this.Inserir_Livros_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

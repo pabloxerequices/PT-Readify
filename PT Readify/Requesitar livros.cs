@@ -23,6 +23,7 @@ namespace PT_Readify
         private void BuildUi()
         {
             Text = "Requisições / Empréstimos";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(950, 580);
 

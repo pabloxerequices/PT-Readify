@@ -237,7 +237,8 @@
             this.Controls.Add(this.panelTop);
             this.Controls.Add(this.panelBottom);
             this.Name = "Devolução_da_Compra";
-            this.Text = "Devolução_da_Compra";
+            this.ShowIcon = false;
+            this.Text = "Devolução da Compra";
             this.Load += new System.EventHandler(this.Devolução_da_Compra_Load);
             this.panelBottom.ResumeLayout(false);
             this.panelBottom.PerformLayout();

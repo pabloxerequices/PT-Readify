@@ -203,6 +203,7 @@
             this.ClientSize = new System.Drawing.Size(980, 520);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlTop);
+            this.ShowIcon = false;
             this.Text = "Configurações";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
         }

@@ -12,6 +12,7 @@ namespace PT_Readify
         public NotificacoesUtilizador()
         {
             Text = "Notificações";
+            ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(800, 450);
 

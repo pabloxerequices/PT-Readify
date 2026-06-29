@@ -100,7 +100,8 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Name = "confirmar_perfil";
-            this.Text = "confirmar_perfil";
+            this.ShowIcon = false;
+            this.Text = "Confirmar Perfil";
             this.Load += new System.EventHandler(this.confirmar_perfil_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace PT_Readify
     public partial class pesquisar_livros_rodrigo : Form
     {
         private DataTable todosLivros;
+        private Dictionary<int, HashSet<string>> generosPorLivro = new Dictionary<int, HashSet<string>>();
+        private bool atualizandoCombos;
 
         public pesquisar_livros_rodrigo()
         {
@@ -82,24 +85,53 @@ namespace PT_Readify
                 }
 
                 combobox1.Items.Clear();
-                foreach (var idioma in idiomas.OrderBy(x => x))
-                {
+                combobox1.Items.Add("Todos");
+                foreach (var idioma in idiomas.Where(i => i != "Todos").OrderBy(x => x))
                     combobox1.Items.Add(idioma);
-                }
-                combobox1.SelectedIndex = 0;
 
                 comboBox2.Items.Clear();
-                foreach (var genero in generos.OrderBy(x => x))
-                {
+                comboBox2.Items.Add("Todos");
+                foreach (var genero in generos.Where(g => g != "Todos").OrderBy(x => x))
                     comboBox2.Items.Add(genero);
-                }
-                comboBox2.SelectedIndex = 0;
 
-                ExibirLivros(todosLivros);
+                atualizandoCombos = true;
+                try
+                {
+                    combobox1.SelectedIndex = 0;
+                    comboBox2.SelectedIndex = 0;
+                }
+                finally
+                {
+                    atualizandoCombos = false;
+                }
+
+                CarregarGenerosPorLivro();
+                AplicarFiltros();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao carregar livros: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CarregarGenerosPorLivro()
+        {
+            generosPorLivro.Clear();
+            if (todosLivros == null)
+                return;
+
+            foreach (DataRow row in todosLivros.Rows)
+            {
+                int idLivro = Convert.ToInt32(row["Id_Livro"]);
+                try
+                {
+                    List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
+                    generosPorLivro[idLivro] = new HashSet<string>(generosLivro, StringComparer.OrdinalIgnoreCase);
+                }
+                catch
+                {
+                    generosPorLivro[idLivro] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                }
             }
         }
 
@@ -110,8 +142,8 @@ namespace PT_Readify
             textbox3.TextChanged += (s, e) => AplicarFiltros();
             textbox4.TextChanged += (s, e) => AplicarFiltros();
             textbox5.TextChanged += (s, e) => AplicarFiltros();
-            combobox1.SelectedValueChanged += (s, e) => AplicarFiltros();
-            comboBox2.SelectedValueChanged += (s, e) => AplicarFiltros();
+            combobox1.SelectedIndexChanged += (s, e) => AplicarFiltros();
+            comboBox2.SelectedIndexChanged += (s, e) => AplicarFiltros();
 
             button1.Click += (s, e) => LimparFiltros();
             button2.Click += (s, e) => AplicarFiltros();
@@ -119,7 +151,7 @@ namespace PT_Readify
 
         private void AplicarFiltros()
         {
-            if (todosLivros == null || todosLivros.Rows.Count == 0)
+            if (todosLivros == null || atualizandoCombos)
                 return;
 
             string titulo = textbox1.Text.ToLower().Trim();
@@ -127,8 +159,8 @@ namespace PT_Readify
             string autor = textbox3.Text.ToLower().Trim();
             string idioma = combobox1.SelectedItem?.ToString() ?? "Todos";
             string generoSelecionado = comboBox2.SelectedItem?.ToString() ?? "Todos";
-            bool precoMinValido = decimal.TryParse(textbox4.Text, out decimal precoMin);
-            bool precoMaxValido = decimal.TryParse(textbox5.Text, out decimal precoMax);
+            bool precoMinValido = decimal.TryParse(textbox4.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal precoMin);
+            bool precoMaxValido = decimal.TryParse(textbox5.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal precoMax);
 
             if (!precoMinValido) precoMin = 0;
             if (!precoMaxValido) precoMax = 1000000;
@@ -147,7 +179,7 @@ namespace PT_Readify
                 bool cumpreTitulo = string.IsNullOrEmpty(titulo) || rowTitulo.Contains(titulo);
                 bool cumpreEditora = string.IsNullOrEmpty(editora) || rowEditora.Contains(editora);
                 bool cumpreAutor = string.IsNullOrEmpty(autor) || rowAutor.Contains(autor);
-                bool cumpreIdioma = idioma == "Todos" || rowIdioma == idioma;
+                bool cumpreIdioma = idioma == "Todos" || string.Equals(rowIdioma, idioma, StringComparison.OrdinalIgnoreCase);
                 bool cumprePreco = rowPreco >= precoMin && rowPreco <= precoMax;
 
                 bool cumpreGenero = generoSelecionado == "Todos" || VerificaGeneroLivro(idLivro, generoSelecionado);
@@ -163,15 +195,10 @@ namespace PT_Readify
 
         private bool VerificaGeneroLivro(int idLivro, string genero)
         {
-            try
-            {
-                List<string> generosLivro = BLL.Livros.ObterGenerosLivro(idLivro);
-                return generosLivro.Any(g => g.Equals(genero, StringComparison.OrdinalIgnoreCase));
-            }
-            catch
-            {
-                return false;
-            }
+            if (generosPorLivro.TryGetValue(idLivro, out HashSet<string> generosLivro))
+                return generosLivro.Contains(genero);
+
+            return false;
         }
 
         private void LimparFiltros()
@@ -181,10 +208,19 @@ namespace PT_Readify
             textbox3.Text = "";
             textbox4.Text = "0";
             textbox5.Text = "1000";
-            combobox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 0;
 
-            ExibirLivros(todosLivros);
+            atualizandoCombos = true;
+            try
+            {
+                combobox1.SelectedIndex = 0;
+                comboBox2.SelectedIndex = 0;
+            }
+            finally
+            {
+                atualizandoCombos = false;
+            }
+
+            AplicarFiltros();
         }
 
         private void ExibirLivros(DataTable livros)

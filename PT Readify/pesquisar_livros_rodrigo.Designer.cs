@@ -339,6 +339,7 @@
             this.Controls.Add(this.panelTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Name = "pesquisar_livros_rodrigo";
+            this.ShowIcon = false;
             this.Text = "Pesquisar Livros";
             this.Load += new System.EventHandler(this.pesquisar_livros_rodrigo_Load);
             this.panelTop.ResumeLayout(false);

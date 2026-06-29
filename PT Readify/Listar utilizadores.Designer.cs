@@ -367,7 +367,8 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label1);
             this.Name = "Listar_utilizadores";
-            this.Text = "Listar_utilizadores";
+            this.ShowIcon = false;
+            this.Text = "Listar Utilizadores";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Listar_utilizadores_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

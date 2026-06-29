@@ -137,6 +137,7 @@ namespace PT_Readify
             this.Controls.Add(this.pnlHeader);
             this.MinimumSize = new Size(720, 480);
             this.StartPosition = FormStartPosition.CenterParent;
+            this.ShowIcon = false;
             this.Text = "Detalhes do Livro";
             this.Load += new EventHandler(this.Detalhes_Livro_Load);
 

@@ -329,6 +329,7 @@
             this.Controls.Add(this.pictureBox6);
             this.Controls.Add(this.pictureBox2);
             this.Name = "Perfil";
+            this.ShowIcon = false;
             this.Text = "Perfil";
             this.Load += new System.EventHandler(this.Perfil_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

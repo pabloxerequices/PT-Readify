@@ -278,6 +278,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "main_menu__admin_";
+            this.ShowIcon = false;
             this.Text = "Menu Administrador";
             this.panelLeft.ResumeLayout(false);
             this.panelLeft.PerformLayout();

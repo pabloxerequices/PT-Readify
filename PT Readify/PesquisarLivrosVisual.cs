@@ -22,6 +22,7 @@ namespace PT_Readify
         {
             InitializeComponent();
             this.Text = "Pesquisar Livros - PT Readify";
+            this.ShowIcon = false;
             this.WindowState = FormWindowState.Maximized;
             this.BackColor = Color.FromArgb(240, 242, 245);
             InicializarControles();
@@ -37,7 +38,7 @@ namespace PT_Readify
             panelFiltros.Padding = new Padding(10);
 
             Label lblTitulo = new Label();
-            lblTitulo.Text = "TÌtulo:";
+            lblTitulo.Text = "Tùtulo:";
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(10, 10);
             lblTitulo.AutoSize = true;
@@ -83,7 +84,7 @@ namespace PT_Readify
             catch { }
 
             Label lblGenero = new Label();
-            lblGenero.Text = "GÍnero:";
+            lblGenero.Text = "Gùnero:";
             lblGenero.ForeColor = Color.White;
             lblGenero.Location = new Point(280, 40);
             lblGenero.AutoSize = true;
@@ -137,11 +138,10 @@ namespace PT_Readify
                 string estado = (this.Controls.Find("comboEstado", true).FirstOrDefault() as ComboBox)?.SelectedItem?.ToString() ?? "Todos";
                 string genero = (this.Controls.Find("comboGenero", true).FirstOrDefault() as ComboBox)?.SelectedItem?.ToString() ?? "Todos";
 
-                List<string> generos = null;
-                if (!string.IsNullOrEmpty(genero) && genero != "Todos")
-                    generos = new List<string> { genero };
+                string generoParam = (genero == "Todos" || string.IsNullOrEmpty(genero)) ? null : genero;
+                string estadoParam = (estado == "Todos" || string.IsNullOrEmpty(estado)) ? null : estado;
 
-                livrosTable = BLL.Livros.pesquisarLivro(titulo, autor, Convert.ToString(generos), estado);
+                livrosTable = BLL.Livros.pesquisarLivro(titulo, autor, generoParam, estadoParam);
 
                 AtualizarCards();
             }
@@ -198,7 +198,7 @@ namespace PT_Readify
                 }
                 else
                 {
-                    // Criar imagem padr„o se n„o houver capa
+                    // Criar imagem padrùo se nùo houver capa
                     Bitmap defaultImg = new Bitmap(180, 200);
                     using (Graphics g = Graphics.FromImage(defaultImg))
                     {
@@ -219,7 +219,7 @@ namespace PT_Readify
                 pic.Image = errorImg;
             }
 
-            // Label TÌtulo
+            // Label Tùtulo
             Label lblTitulo = new Label();
             lblTitulo.Text = row["Titulo"].ToString();
             lblTitulo.Width = 180;
@@ -230,9 +230,9 @@ namespace PT_Readify
             lblTitulo.TextAlign = ContentAlignment.TopLeft;
             lblTitulo.Cursor = Cursors.Hand;
 
-            // Label PreÁo
+            // Label Preùo
             Label lblPreco = new Label();
-            decimal preco = Convert.ToDecimal(row["PreÁo"]) / 100;
+            decimal preco = Convert.ToDecimal(row["Preùo"]) / 100;
             lblPreco.Text = preco.ToString("C2");
             lblPreco.Width = 180;
             lblPreco.Height = 30;
@@ -306,7 +306,7 @@ namespace PT_Readify
                 Label lbl = new Label();
                 string texto = col.ColumnName + ": " + row[col].ToString();
                 
-                // Se o texto for muito longo, quebrar em m˙ltiplas linhas
+                // Se o texto for muito longo, quebrar em mùltiplas linhas
                 if (texto.Length > 60)
                 {
                     lbl.Text = texto;

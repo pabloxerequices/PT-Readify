@@ -58,7 +58,8 @@
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.button1);
             this.Name = "livros";
-            this.Text = "livros";
+            this.ShowIcon = false;
+            this.Text = "Livros";
             this.Load += new System.EventHandler(this.livros_Load);
             this.ResumeLayout(false);
 
