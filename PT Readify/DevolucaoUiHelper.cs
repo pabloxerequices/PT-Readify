@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BusinessLogicLayer;
 
 namespace PT_Readify
 {
@@ -25,6 +26,11 @@ namespace PT_Readify
             { "Valor_Multa", "Multa" },
             { "Preço", "Preço" }
         };
+
+        public static string TextoPoliticaDevolucaoCompra()
+        {
+            return $"Só pode efetuar devoluções nos primeiros {BLL.Historicos.MaxDiasDevolucaoCompra} dias após a data de compra.";
+        }
 
         public static void ConfigurarGrid(DataGridView grid)
         {
@@ -134,6 +140,7 @@ namespace PT_Readify
                    $"Comprado em: {dataCompra}\n" +
                    $"Reembolso: {resumo.ValorReembolso:C2}\n" +
                    $"Prazo restante: {resumo.DiasRestantesPrazo} dia(s)\n\n" +
+                   $"{TextoPoliticaDevolucaoCompra()}\n\n" +
                    "O valor será creditado na sua carteira e o stock do livro será reposto.";
         }
 
