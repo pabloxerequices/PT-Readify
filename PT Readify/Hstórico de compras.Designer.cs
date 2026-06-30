@@ -166,6 +166,7 @@
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
             this.guna2Button3.Text = "🗑 Devolução da Compra";
+            this.guna2Button3.Click += new System.EventHandler(this.btnLimparCarrinho_Devolucao_Click);
             // 
             // panelTop
             // 

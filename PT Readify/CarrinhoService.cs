@@ -176,8 +176,27 @@ namespace PT_Readify
             if (globais.id_utilizador <= 0)
                 throw new InvalidOperationException("Inicie sessão para finalizar o pedido.");
 
+            decimal totalCompra = TotalPreco;
+            if (!CarteiraService.TemSaldoSuficiente(totalCompra))
+                throw new InvalidOperationException(
+                    $"Saldo insuficiente na carteira. Saldo: {CarteiraService.Saldo:C2}. Total do carrinho: {totalCompra:C2}.");
+
             var itensRecibo = new List<ItemReciboCompra>();
             DateTime dataCompra = DateTime.Now;
+
+            foreach (DataRow row in _itens.Rows)
+            {
+                if (row.RowState == DataRowState.Deleted)
+                    continue;
+
+                int idLivro = Convert.ToInt32(row["Id_Livro"]);
+                int quantidade = Convert.ToInt32(row["Quantidade"]);
+                string titulo = row["Titulo"]?.ToString() ?? "";
+
+                ValidarStockParaCompra(idLivro, titulo, quantidade);
+            }
+
+            CarteiraService.Debitar(totalCompra);
 
             foreach (DataRow row in _itens.Rows)
             {
@@ -190,7 +209,6 @@ namespace PT_Readify
                 string autor = row["Autor"]?.ToString() ?? "";
                 decimal preco = Convert.ToDecimal(row["Preco"]);
 
-                ValidarStockParaCompra(idLivro, titulo, quantidade);
                 BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
 
                 itensRecibo.Add(new ItemReciboCompra

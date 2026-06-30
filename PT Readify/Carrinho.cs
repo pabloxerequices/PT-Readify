@@ -196,8 +196,19 @@ namespace PT_Readify
                 return;
             }
 
+            decimal totalCompra = CarrinhoService.TotalPreco;
+            if (!CarteiraService.TemSaldoSuficiente(totalCompra))
+            {
+                MessageBox.Show(
+                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira Digital para concluir a compra.",
+                    "Saldo insuficiente",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             DialogResult resultado = MessageBox.Show(
-                $"Confirmar compra de {CarrinhoService.TotalItens} item(ns) por {CarrinhoService.TotalPreco:C2}?",
+                $"Confirmar compra de {CarrinhoService.TotalItens} item(ns) por {totalCompra:C2}?\n\nSerá debitado {totalCompra:C2} da sua carteira (saldo atual: {CarteiraService.Saldo:C2}).",
                 "Confirmar compra",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);

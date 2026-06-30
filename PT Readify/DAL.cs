@@ -249,6 +249,17 @@ namespace DataAccessLayer
                 BEGIN
                     ALTER TABLE Historico_Compra ADD Data_Devolução datetime NULL;
                 END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+                    WHERE TABLE_NAME = 'Carteira')
+                BEGIN
+                    CREATE TABLE Carteira (
+                        Id_Utilizador int NOT NULL PRIMARY KEY,
+                        Saldo decimal(18, 2) NOT NULL CONSTRAINT DF_Carteira_Saldo DEFAULT 0
+                    );
+                END");
         }
 
         private void ExecutarMigracao(string sql)

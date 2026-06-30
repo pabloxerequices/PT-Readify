@@ -214,7 +214,7 @@
             this.lblSaldo.Name = "lblSaldo";
             this.lblSaldo.Size = new System.Drawing.Size(380, 50);
             this.lblSaldo.TabIndex = 1;
-            this.lblSaldo.Text = "Saldo Atual: 150.00€";
+            this.lblSaldo.Text = "Saldo Atual: 0.00€";
             // 
             // btnAlterarPagamento
             // 

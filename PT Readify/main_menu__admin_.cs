@@ -79,6 +79,7 @@ namespace PT_Readify
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             globais.id_utilizador = 0;
+            CarteiraService.Limpar();
             new Form1().Show();
             this.Close();
         }

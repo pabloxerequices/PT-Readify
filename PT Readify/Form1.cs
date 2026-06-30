@@ -28,6 +28,8 @@ namespace PT_Readify
         private void Form1_Load(object sender, EventArgs e)
         {
             globais.id_utilizador = 0;
+            CarteiraService.Limpar();
+            textBox2.UseSystemPasswordChar = true;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -53,6 +55,7 @@ namespace PT_Readify
                             globais.profilepassword = textBox2.Text;
 
                             globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
+                            CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
 
                             main_menu__admin_ main_menu_admin = new main_menu__admin_();
                             main_menu_admin.Show();
@@ -66,6 +69,7 @@ namespace PT_Readify
                             globais.profilepassword = textBox2.Text;
 
                             globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
+                            CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
 
                             main_menu main_menu = new main_menu();
                             main_menu.Show();
@@ -103,6 +107,22 @@ namespace PT_Readify
         {
             registar_ultilizador registar_Ultilizador = new registar_ultilizador();
             registar_Ultilizador.Show();
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            // Se estiver escondida, mostra. Se estiver visível, esconde.
+            if (textBox2.UseSystemPasswordChar == true)
+            {
+                textBox2.UseSystemPasswordChar = false;
+                // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
+                // pictureBox5.Image = Properties.Resources.eye_open; 
+            }
+            else
+            {
+                textBox2.UseSystemPasswordChar = true;
+                // pictureBox5.Image = Properties.Resources.key_icon;
+            }
         }
     }
     

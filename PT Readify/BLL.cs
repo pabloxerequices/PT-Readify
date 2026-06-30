@@ -128,6 +128,77 @@ namespace BusinessLogicLayer
 
         }
 
+        public class Carteira
+        {
+            public static void GarantirRegisto(int idUtilizador, DAL dal = null)
+            {
+                if (idUtilizador <= 0)
+                    return;
+
+                dal = dal ?? new DAL();
+                dal.GarantirEsquema();
+
+                object existe = dal.executarScalar(
+                    "SELECT COUNT(*) FROM Carteira WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+
+                if (Convert.ToInt32(existe) == 0)
+                {
+                    dal.executarNonQuery(
+                        "INSERT INTO Carteira (Id_Utilizador, Saldo) VALUES (@id, 0)",
+                        new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+                }
+            }
+
+            public static decimal ObterSaldo(int idUtilizador)
+            {
+                if (idUtilizador <= 0)
+                    return 0m;
+
+                var dal = new DAL();
+                dal.GarantirEsquema();
+                GarantirRegisto(idUtilizador, dal);
+
+                object resultado = dal.executarScalar(
+                    "SELECT Saldo FROM Carteira WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+
+                if (resultado == null || resultado == DBNull.Value)
+                    return 0m;
+
+                return Convert.ToDecimal(resultado);
+            }
+
+            public static void AtualizarSaldo(int idUtilizador, decimal saldo)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("Utilizador inválido.");
+
+                var dal = new DAL();
+                dal.GarantirEsquema();
+                GarantirRegisto(idUtilizador, dal);
+
+                dal.executarNonQuery(
+                    "UPDATE Carteira SET Saldo=@saldo WHERE Id_Utilizador=@id",
+                    new SqlParameter[]
+                    {
+                        new SqlParameter("@id", idUtilizador),
+                        new SqlParameter("@saldo", saldo)
+                    });
+            }
+
+            public static void AdicionarSaldo(int idUtilizador, decimal valor)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("Utilizador inválido.");
+
+                if (valor <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(valor), "O valor a adicionar deve ser positivo.");
+
+                AtualizarSaldo(idUtilizador, ObterSaldo(idUtilizador) + valor);
+            }
+        }
+
         //---------------------------------------------------------------
 
         public class Clientes
@@ -253,6 +324,14 @@ namespace BusinessLogicLayer
                 return Convert.ToInt32(resultado);
             }
 
+            private static decimal PrecoCentimosParaEuros(object precoDb)
+            {
+                if (precoDb == null || precoDb == DBNull.Value)
+                    return 0m;
+
+                return Convert.ToDecimal(precoDb) / 100m;
+            }
+
             public static bool TemEmprestimoAtivo(int idUtilizador)
             {
                 DAL dal = new DAL();
@@ -300,6 +379,7 @@ namespace BusinessLogicLayer
             static public int insertHistorico_de_compras(int id, DateTime data_compra, string titulo, string autor, decimal preco, string estado_livro, int id_livro, int Id_Utilizador)
             {
                 DAL dal = new DAL();
+                dal.GarantirEsquema();
 
                 SqlParameter[] sqlParams = new SqlParameter[] {
                  new SqlParameter("@Id", id),
@@ -311,6 +391,14 @@ namespace BusinessLogicLayer
                  new SqlParameter("@id_livro", id_livro),
                  new SqlParameter("@Id_Utilizador", Id_Utilizador),
                 };
+
+                if (dal.ColunaExiste("Historico_Compra", "Estado_Compra"))
+                {
+                    return dal.executarNonQuery(
+                        "INSERT INTO Historico_Compra (Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro, Id_Utilizador, Estado_Compra) " +
+                        "VALUES (@Id, @data_compra, @titulo, @autor, @preco, @estado_livro, @id_livro, @Id_Utilizador, 'Ativa')",
+                        sqlParams);
+                }
 
                 return dal.executarNonQuery(
                     "INSERT INTO Historico_Compra (Id, Data_Compra, Titulo, Autor, Preço, Estado_Livro, Id_Livro, Id_Utilizador) " +
@@ -390,7 +478,7 @@ namespace BusinessLogicLayer
                 {
                     Titulo = row["Titulo"]?.ToString() ?? "",
                     Autor = row["Autor"]?.ToString() ?? "",
-                    ValorReembolso = Convert.ToDecimal(row["Preço"]),
+                    ValorReembolso = PrecoCentimosParaEuros(row["Preço"]),
                     DataDevolucao = DateTime.Now,
                     DataReferencia = dataCompra,
                     DiasRestantesPrazo = Math.Max(0, MaxDiasDevolucaoCompra - diasDesdeCompra),
@@ -480,9 +568,10 @@ namespace BusinessLogicLayer
 
                 Devolução.insertDevoluçãoCompra(idUtilizador, idLivro, dataDevolucao);
                 Livros.IncrementarStock(idLivro);
+                Carteira.AdicionarSaldo(idUtilizador, resumo.ValorReembolso);
 
                 Notificacoes.Criar(idUtilizador, idLivro,
-                    $"Devolução da compra \"{resumo.Titulo}\" registada. Reembolso de {resumo.ValorReembolso:C2}.");
+                    $"Devolução da compra \"{resumo.Titulo}\" registada. Reembolso de {resumo.ValorReembolso:C2} creditado na carteira.");
 
                 resumo.DataDevolucao = dataDevolucao;
                 return resumo;

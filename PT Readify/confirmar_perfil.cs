@@ -36,6 +36,7 @@ namespace PT_Readify
                         globais.profileEmail = textBox1.Text;
                         globais.profilepassword = textBox2.Text;
                         globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
+                        CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
                         globais.confirmacao = true;
                         this.Hide();
                     }
