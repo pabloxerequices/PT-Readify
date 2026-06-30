@@ -35,6 +35,21 @@ namespace PT_Readify
             SaldoAlterado?.Invoke();
         }
 
+        /// <summary>
+        /// Sincroniza o saldo em memória com a base de dados (ex.: após reembolso de devolução).
+        /// </summary>
+        public static void Recarregar()
+        {
+            if (_utilizadorCarregado <= 0)
+            {
+                GarantirCarregado();
+                return;
+            }
+
+            _saldo = BLL.Carteira.ObterSaldo(_utilizadorCarregado);
+            SaldoAlterado?.Invoke();
+        }
+
         public static void Limpar()
         {
             _utilizadorCarregado = -1;

@@ -10,6 +10,7 @@ namespace PT_Readify
     {
         private DataTable dadosComprasOriginais;
         private HistoricoSortHelper _sortHelper;
+        private ToolTip _toolTipDevolucao;
 
         public Hstórico_de_compras()
         {
@@ -49,6 +50,9 @@ namespace PT_Readify
             CarregarCompras();
             guna2Button4.Visible = false;
             guna2Button5.Visible = false;
+
+            _toolTipDevolucao = new ToolTip();
+            _toolTipDevolucao.SetToolTip(guna2Button3, DevolucaoUiHelper.TextoPoliticaDevolucaoCompra());
         }
 
         private void CarregarCompras()
@@ -132,7 +136,11 @@ namespace PT_Readify
             }
 
             Devolução_da_Compra devolução = new Devolução_da_Compra();
-            devolução.FormClosed += (s, args) => CarregarHistorico();
+            devolução.FormClosed += (s, args) =>
+            {
+                CarteiraService.Recarregar();
+                CarregarHistorico();
+            };
             devolução.Show();
         }
 

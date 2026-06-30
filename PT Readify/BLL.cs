@@ -590,7 +590,7 @@ namespace BusinessLogicLayer
                 int diasDesdeCompra = (DateTime.Now.Date - dataCompra.Date).Days;
                 if (diasDesdeCompra > MaxDiasDevolucaoCompra)
                     throw new InvalidOperationException(
-                        $"O prazo de devolução expirou ({MaxDiasDevolucaoCompra} dias após a compra).");
+                        $"Só pode devolver compras nos primeiros {MaxDiasDevolucaoCompra} dias após a data de compra. O prazo desta compra já expirou.");
             }
 
             private static void ValidarEmprestimoDevolvivel(DataRow row)

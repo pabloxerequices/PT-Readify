@@ -61,6 +61,15 @@ namespace PT_Readify
 
             guna2Button3.Text = "Devolver compra";
             guna2DataGridView1.DataError += (s, ev) => ev.ThrowException = false;
+
+            label2.Text = DevolucaoUiHelper.TextoPoliticaDevolucaoCompra();
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+            label2.ForeColor = Color.FromArgb(189, 195, 199);
+            label2.AutoSize = true;
+            label2.Location = new Point(14, 48);
+            panelTop.Controls.Add(label2);
+            panelTop.Height = 78;
+
             CarregarCompras();
         }
 
@@ -74,12 +83,12 @@ namespace PT_Readify
 
             if (total == 0)
             {
-                labelTotal.Text = $"Sem compras elegíveis (prazo: {BLL.Historicos.MaxDiasDevolucaoCompra} dias)";
+                labelTotal.Text = $"Sem compras elegíveis nos primeiros {BLL.Historicos.MaxDiasDevolucaoCompra} dias";
                 labelTotal.ForeColor = Color.FromArgb(241, 196, 15);
             }
             else
             {
-                labelTotal.Text = $"{total} compra(s) elegível(eis) para devolução";
+                labelTotal.Text = $"{total} compra(s) elegível(eis) (prazo: {BLL.Historicos.MaxDiasDevolucaoCompra} dias após a compra)";
                 labelTotal.ForeColor = Color.White;
             }
         }
@@ -117,7 +126,7 @@ namespace PT_Readify
                     return;
 
                 var resultado = BLL.Historicos.DevolverCompra(idHistorico, globais.id_utilizador);
-                CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
+                CarteiraService.Recarregar();
                 CarregarCompras();
                 MessageBox.Show(
                     DevolucaoUiHelper.ConstruirSucessoCompra(resultado),

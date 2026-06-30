@@ -545,7 +545,9 @@ namespace PT_Readify
                            "1. Dirija-se ao menu **\"Histórico de Empréstimos\"** ou **\"Perfil\"**.\n" +
                            "2. Identifique o livro que está atualmente consigo.\n" +
                            "3. Se a entrega for feita via balcão físico, o funcionário dará baixa no sistema.\n" +
-                           "4. Certifique-se de que o estado do livro passa para **'Devolvido'** na sua aplicação.";
+                           "4. Certifique-se de que o estado do livro passa para **'Devolvido'** na sua aplicação.\n\n" +
+                           "Para devolver uma **compra**, vá a **\"Histórico de Compras\"** → **\"Devolução da Compra\"**. " +
+                           "Só pode efetuar devoluções nos primeiros 30 dias após a data de compra; o valor é reembolsado na carteira digital.";
                 case "emprestimo":
                     return "Para requisitar um livro:\n" +
                            "1. Vá ao Menu **\"Requisições/Empréstimos\"**\n" +
@@ -555,7 +557,9 @@ namespace PT_Readify
                     return "Para comprar:\n" +
                            "1. Menu **\"Livros\"** → escolha o livro\n" +
                            "2. Adicione ao carrinho\n" +
-                           "3. Conclua no carrinho de compras.";
+                           "3. Conclua no carrinho de compras.\n\n" +
+                           "Para devolver uma compra, use **\"Histórico de Compras\"** → **\"Devolução da Compra\"**. " +
+                           "Só pode devolver nos primeiros 30 dias após a compra; o valor é creditado na carteira.";
                 default:
                     return "";
             }
