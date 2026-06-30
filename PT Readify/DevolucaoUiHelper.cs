@@ -60,10 +60,13 @@ namespace PT_Readify
 
             if (coluna == "Preço" || coluna == "Valor_Multa")
             {
+                if (e.Value is string)
+                    return;
+
                 if (coluna == "Valor_Multa" && int.TryParse(e.Value.ToString(), out int centimos))
                     e.Value = (centimos / 100m).ToString("C2");
                 else if (decimal.TryParse(e.Value.ToString(), out decimal valor))
-                    e.Value = valor.ToString("C2");
+                    e.Value = (valor / 100m).ToString("C2");
                 return;
             }
 
@@ -131,7 +134,7 @@ namespace PT_Readify
                    $"Comprado em: {dataCompra}\n" +
                    $"Reembolso: {resumo.ValorReembolso:C2}\n" +
                    $"Prazo restante: {resumo.DiasRestantesPrazo} dia(s)\n\n" +
-                   "O stock do livro será reposto na biblioteca.";
+                   "O valor será creditado na sua carteira e o stock do livro será reposto.";
         }
 
         public static string ConstruirConfirmacaoEmprestimo(BusinessLogicLayer.BLL.Historicos.ResultadoDevolucao resumo)
@@ -158,6 +161,7 @@ namespace PT_Readify
             return $"Compra devolvida com sucesso!\n\n" +
                    $"Livro: {resultado.Titulo}\n" +
                    $"Reembolso: {resultado.ValorReembolso:C2}\n" +
+                   $"Creditado na carteira digital.\n" +
                    $"Data: {resultado.DataDevolucao:dd/MM/yyyy HH:mm}";
         }
 

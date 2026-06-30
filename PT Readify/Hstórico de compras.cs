@@ -56,24 +56,16 @@ namespace PT_Readify
             dadosComprasOriginais = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
             guna2DataGridView1Historico_Compras.DataSource =
                 GridDisplayHelper.FormatComprasParaExibicao(dadosComprasOriginais);
+            AtualizarLabelTotal();
         }
 
-        private void btnLimparCarrinho_Click(object sender, EventArgs e)
+        private void AtualizarLabelTotal()
         {
-            Devolução_da_Compra devolução = new Devolução_da_Compra();
-            CarregarHistorico();
-        }
-
-        private void CarregarHistorico()
-        {
-            var historico = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
-            _sortHelper.DefinirDados(historico);
-
-            int total = historico?.Rows.Count ?? 0;
+            int total = dadosComprasOriginais?.Rows.Count ?? 0;
             int devolvidas = 0;
-            if (historico != null && historico.Columns.Contains("Estado_Compra"))
+            if (dadosComprasOriginais != null && dadosComprasOriginais.Columns.Contains("Estado_Compra"))
             {
-                foreach (DataRow row in historico.Rows)
+                foreach (DataRow row in dadosComprasOriginais.Rows)
                 {
                     if (row["Estado_Compra"]?.ToString() == "Devolvida")
                         devolvidas++;
@@ -83,6 +75,13 @@ namespace PT_Readify
             labelTotal.Text = total == 0
                 ? "Sem compras registadas"
                 : $"{total} compra(s)" + (devolvidas > 0 ? $" — {devolvidas} devolvida(s)" : "");
+        }
+
+        private void CarregarHistorico()
+        {
+            dadosComprasOriginais = BLL.Historicos.LoadHistoricoComprasPorUtilizador(globais.id_utilizador);
+            _sortHelper.DefinirDados(GridDisplayHelper.FormatComprasParaExibicao(dadosComprasOriginais));
+            AtualizarLabelTotal();
         }
 
         private void OrdenarCompras(string sortExpression)

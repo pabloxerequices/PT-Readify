@@ -90,6 +90,7 @@ namespace PT_Readify
         private void button1_Click(object sender, EventArgs e)
         {
             globais.id_utilizador = 0;
+            CarteiraService.Limpar();
             new Form1().Show();
             this.Close();
         }
@@ -101,6 +102,8 @@ namespace PT_Readify
             AutoLogoutManager.Attach(this);
 
             MostrarNotificacoesPendentes();
+            if (globais.id_utilizador > 0)
+                CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
             panel_livros(new pesquisar_livros_rodrigo());
             AtualizarTituloCarrinhoMenu();
         }
@@ -236,6 +239,14 @@ namespace PT_Readify
 
         private void button10_Click(object sender, EventArgs e)
         {
+            if (globais.id_utilizador <= 0)
+            {
+                MessageBox.Show("Inicie sessão para aceder à Carteira Digital.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
             new Carteira().Show();
         }
     }

@@ -60,13 +60,14 @@ namespace PT_Readify
             guna2Button5.BringToFront();
 
             guna2Button3.Text = "Devolver compra";
+            guna2DataGridView1.DataError += (s, ev) => ev.ThrowException = false;
             CarregarCompras();
         }
 
         private void CarregarCompras()
         {
             DataTable compras = BLL.Historicos.LoadComprasDevolviveisPorUtilizador(globais.id_utilizador);
-            _sortHelper.DefinirDados(compras);
+            _sortHelper.DefinirDados(GridDisplayHelper.FormatComprasParaExibicao(compras));
 
             int total = compras?.Rows.Count ?? 0;
             guna2Button3.Enabled = total > 0;
@@ -116,6 +117,7 @@ namespace PT_Readify
                     return;
 
                 var resultado = BLL.Historicos.DevolverCompra(idHistorico, globais.id_utilizador);
+                CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
                 CarregarCompras();
                 MessageBox.Show(
                     DevolucaoUiHelper.ConstruirSucessoCompra(resultado),

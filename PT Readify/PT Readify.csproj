@@ -91,6 +91,7 @@
     <Compile Include="FormLaunchHelper.cs" />
     <Compile Include="AutoLogoutManager.cs" />
     <Compile Include="CarrinhoService.cs" />
+    <Compile Include="CarteiraService.cs" />
     <Compile Include="ReciboCompraEmailService.cs" />
     <Compile Include="ChatConversationEngine.cs" />
     <Compile Include="ConfigApplier.cs" />

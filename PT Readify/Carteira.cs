@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace PT_Readify
 {
     public partial class Carteira : Form
     {
         // --- VARIÁVEIS DE CONTROLO DE ESTADO ---
-        private double saldoAtual = 150.00;
         private string passwordUtilizador = string.Empty;
         private bool passwordDefinida = false;
 
@@ -17,19 +18,157 @@ namespace PT_Readify
 
         // Variável para guardar método selecionado
         private string metodoAtualSelecionado = string.Empty;
+        private Guna2Button btnAdicionarFundos;
 
         public Carteira()
         {
             InitializeComponent();
+            CarteiraService.SaldoAlterado += OnSaldoAlterado;
+            FormClosed += (s, e) => CarteiraService.SaldoAlterado -= OnSaldoAlterado;
+        }
+
+        private void OnSaldoAlterado()
+        {
+            if (IsDisposed)
+                return;
+
+            if (InvokeRequired)
+                BeginInvoke(new Action(AtualizarSaldo));
+            else
+                AtualizarSaldo();
         }
 
         private void Carteira_Load(object sender, EventArgs e)
         {
-            // Atualiza o saldo na label
+            if (globais.id_utilizador <= 0)
+            {
+                MessageBox.Show(
+                    "Inicie sessão para aceder à Carteira Digital.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                Close();
+                return;
+            }
+
+            CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
+            ConfigurarBotaoAdicionarFundos();
             AtualizarSaldo();
-            
-            // Solicita ao utilizador que defina a sua password
             SolicitarPasswordUtilizador();
+        }
+
+        private void ConfigurarBotaoAdicionarFundos()
+        {
+            if (btnAdicionarFundos != null)
+                return;
+
+            btnAdicionarFundos = new Guna2Button
+            {
+                BorderRadius = 8,
+                FillColor = Color.FromArgb(46, 204, 113),
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(60, 200),
+                Name = "btnAdicionarFundos",
+                Size = new Size(380, 45),
+                TabIndex = 3,
+                Text = "Adicionar Fundos"
+            };
+            btnAdicionarFundos.Click += BtnAdicionarFundos_Click;
+            panelCarteira.Controls.Add(btnAdicionarFundos);
+            btnAlterarPagamento.Location = new Point(60, 260);
+        }
+
+        private void BtnAdicionarFundos_Click(object sender, EventArgs e)
+        {
+            using (Form promptForm = new Form())
+            {
+                promptForm.Text = "Adicionar Fundos";
+                promptForm.Width = 420;
+                promptForm.Height = 220;
+                promptForm.StartPosition = FormStartPosition.CenterParent;
+                promptForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                promptForm.MaximizeBox = false;
+                promptForm.MinimizeBox = false;
+                promptForm.BackColor = Color.WhiteSmoke;
+
+                Label lblInstrucao = new Label
+                {
+                    Text = "Introduza o valor a carregar na carteira (€):",
+                    Left = 20,
+                    Top = 20,
+                    Width = 360,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+                };
+                promptForm.Controls.Add(lblInstrucao);
+
+                TextBox txtValor = new TextBox
+                {
+                    Left = 20,
+                    Top = 55,
+                    Width = 360,
+                    Height = 35,
+                    Font = new Font("Segoe UI", 12F),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+                promptForm.Controls.Add(txtValor);
+
+                Button btnConfirmar = new Button
+                {
+                    Text = "CONFIRMAR",
+                    Left = 90,
+                    Top = 115,
+                    Width = 110,
+                    Height = 35,
+                    BackColor = Color.FromArgb(46, 204, 113),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    DialogResult = DialogResult.OK
+                };
+                promptForm.Controls.Add(btnConfirmar);
+
+                Button btnCancelar = new Button
+                {
+                    Text = "CANCELAR",
+                    Left = 220,
+                    Top = 115,
+                    Width = 110,
+                    Height = 35,
+                    BackColor = Color.Gray,
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    DialogResult = DialogResult.Cancel
+                };
+                promptForm.Controls.Add(btnCancelar);
+
+                promptForm.AcceptButton = btnConfirmar;
+                promptForm.CancelButton = btnCancelar;
+
+                if (promptForm.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                string textoValor = txtValor.Text.Trim().Replace(',', '.');
+                if (!decimal.TryParse(textoValor, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal valor)
+                    || valor <= 0)
+                {
+                    MessageBox.Show(
+                        "Introduza um valor válido maior que zero.",
+                        "Valor inválido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                try
+                {
+                    AdicionarSaldo(valor);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         /// <summary>
@@ -37,7 +176,7 @@ namespace PT_Readify
         /// </summary>
         private void AtualizarSaldo()
         {
-            lblSaldo.Text = $"Saldo Atual: {saldoAtual:F2}€";
+            lblSaldo.Text = $"Saldo Atual: {CarteiraService.Saldo:F2}€";
         }
 
         /// <summary>
@@ -551,44 +690,50 @@ namespace PT_Readify
 
         }
 
-        // Para comprar um livro
-        public bool ComprarLivro(string titulo, double preco)
+        public bool ComprarLivro(string titulo, decimal preco)
         {
-            // Verifica se o saldo é suficiente
-            if (saldoAtual >= preco)
-            {
-                saldoAtual -= preco;
-                AtualizarSaldo();
-                MessageBox.Show($"Compra bem-sucedida: {titulo}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return true;
-            }
-            else
+            if (!CarteiraService.TemSaldoSuficiente(preco))
             {
                 MessageBox.Show("Saldo insuficiente para completar a compra.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
+            try
+            {
+                CarteiraService.Debitar(preco);
+                MessageBox.Show($"Compra bem-sucedida: {titulo}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return true;
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
-        // Para adicionar saldo
-        public void AdicionarSaldo(double valor)
+        public void AdicionarSaldo(decimal valor)
         {
-            if (valor > 0)
+            try
             {
-                saldoAtual += valor;
+                CarteiraService.AdicionarSaldo(valor);
                 AtualizarSaldo();
-                MessageBox.Show($"Saldo adicionado com sucesso: +{valor:F2}€", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    $"Fundos adicionados e guardados com sucesso: +{valor:F2}€\n\nSaldo atual: {CarteiraService.Saldo:F2}€",
+                    "Sucesso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
-            else
+            catch (ArgumentOutOfRangeException)
             {
                 MessageBox.Show("O valor a adicionar deve ser positivo.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        // Para obter saldo
-        public double ObterSaldo()
-        {
-            return saldoAtual;
-        }
+        public decimal ObterSaldo() => CarteiraService.Saldo;
 
         private void btnFechar_Click(object sender, EventArgs e)
         {
