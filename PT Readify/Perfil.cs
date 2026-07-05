@@ -16,6 +16,7 @@ namespace PT_Readify
     public partial class Perfil : Form
     {
         string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal;
+        string passwordOriginalHash = "";
         byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
         bool modoEdicao = false;
         byte[] fotoBytes = null;
@@ -53,7 +54,8 @@ namespace PT_Readify
             int idUtilizador = globais.id_utilizador; 
             DataTable dt = BLL.utilizador.queryUtilizadorById(idUtilizador);
             textBox1.Text = dt.Rows[0]["Nome"].ToString();
-            textBox3.Text = dt.Rows[0]["Palavra_Passe"].ToString();
+            passwordOriginalHash = dt.Rows[0]["Palavra_Passe"].ToString();
+            textBox3.Text = "";
             textBox4.Text = dt.Rows[0]["numero_telefone"].ToString();
             textBox2.Text = dt.Rows[0]["Email"].ToString();
             comboBox1.Text = dt.Rows[0]["prefixo_telefone"] + "+".ToString();
@@ -62,6 +64,7 @@ namespace PT_Readify
             if (dt.Rows[0]["Foto"] != DBNull.Value)
             {
                 fotoBytes = (byte[])dt.Rows[0]["Foto"];
+                fotoOriginal = fotoBytes;
                 using (MemoryStream ms = new MemoryStream(fotoBytes))
                 {
                     pictureBox6.Image = Image.FromStream(ms);
@@ -234,10 +237,11 @@ namespace PT_Readify
                                    textBox3.Text != passOriginal ||
                                    textBox4.Text != telefoneOriginal ||
                                       comboBox1.Text != prefixoOriginal ||
-                                      !fotoBytes.SequenceEqual(fotoOriginal ?? new byte[0]));
+                                      !(fotoBytes ?? new byte[0]).SequenceEqual(fotoOriginal ?? new byte[0]));
 
             if (houveAlteracao)
             {
+                bool passwordAlterada = !string.IsNullOrWhiteSpace(textBox3.Text);
                 //verificar se o numero de telefone é válido (apenas dígitos) e se tem 9 dígitos
                 if (!textBox4.Text.All(char.IsDigit))
                 {
@@ -251,9 +255,9 @@ namespace PT_Readify
                 }
              
                 else
-                     if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
+                     if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
                 {
-                    MessageBox.Show("Os campos Nome, Email e Palavra-Passe não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Os campos Nome e Email não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else
@@ -263,17 +267,17 @@ namespace PT_Readify
                     return;
                 }
                 else
-                     if (textBox3.Text.Length < 6)
+                     if (passwordAlterada && textBox3.Text.Length < 6)
                 {
                     MessageBox.Show("A palavra-passe deve conter pelo menos 6 caracteres.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else if (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch)))
+                else if (passwordAlterada && (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch))))
                 {
                     MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
                     return;
                 }
-                else if (textBox3.Text.Contains(" "))
+                else if (passwordAlterada && textBox3.Text.Contains(" "))
                 {
                     MessageBox.Show("A password não pode conter espaços em branco");
                     return;
@@ -286,7 +290,7 @@ namespace PT_Readify
                                                     globais.id_utilizador,
                                                     textBox2.Text,
                                                     textBox1.Text,
-                                                    textBox3.Text,
+                                                    passwordAlterada ? textBox3.Text : passwordOriginalHash,
                                                     fotoBytes, // <--- SUBSTÍTUIDO: Agora passa os bytes da foto (ou null se ele não escolheu nenhuma)
                                                     int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
                                                     int.Parse(textBox4.Text)

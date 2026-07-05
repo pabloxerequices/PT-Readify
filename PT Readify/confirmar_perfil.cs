@@ -30,12 +30,27 @@ namespace PT_Readify
                 DataTable dt = BLL.utilizador.QueryutilizadorByemail(textBox1.Text);
                 if (dt.Rows.Count != 0)
                 {
-                    if (dt.Rows[0][5].ToString() == textBox2.Text)
+                    DataRow utilizador = dt.Rows[0];
+                    int idUtilizador = Convert.ToInt32(utilizador["Id_Utilizador"]);
+                    string passwordGuardada = utilizador["Palavra_Passe"].ToString();
+
+                    if (BLL.utilizador.ContaEstaBloqueada(utilizador) || BLL.utilizador.BloquearSeTiverTresMultas(idUtilizador))
                     {
-                        MessageBox.Show("Bem Vindo " + dt.Rows[0][3].ToString());
+                        MessageBox.Show("A sua conta está bloqueada por ter 3 multas. Contacte um administrador.");
+                        return;
+                    }
+
+                    if (BLL.utilizador.VerificarPassword(passwordGuardada, textBox2.Text))
+                    {
+                        if (!BLL.utilizador.IsPasswordHash(passwordGuardada))
+                        {
+                            BLL.utilizador.AtualizarPasswordHash(idUtilizador, BLL.utilizador.HashPassword(textBox2.Text));
+                        }
+
+                        MessageBox.Show("Bem Vindo " + utilizador["Nome"].ToString());
                         globais.profileEmail = textBox1.Text;
-                        globais.profilepassword = textBox2.Text;
-                        globais.id_utilizador = Convert.ToInt32(dt.Rows[0][0]);
+                        globais.profilepassword = "";
+                        globais.id_utilizador = idUtilizador;
                         CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
                         globais.confirmacao = true;
                         this.Hide();

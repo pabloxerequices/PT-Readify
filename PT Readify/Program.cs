@@ -20,6 +20,9 @@ namespace PT_Readify
 
             _ = ConfigManager.Current;
 
+            // Garante que |DataDirectory| corresponde à pasta da aplicação em execução
+            AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+
             try
             {
                 new DAL().GarantirEsquema();

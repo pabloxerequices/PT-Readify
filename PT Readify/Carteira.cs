@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using BusinessLogicLayer;
 using Guna.UI2.WinForms;
 
 namespace PT_Readify
@@ -10,7 +11,6 @@ namespace PT_Readify
     {
         // --- VARIÁVEIS DE CONTROLO DE ESTADO ---
         private string passwordUtilizador = string.Empty;
-        private bool passwordDefinida = false;
 
         // Variáveis para limite de tentativas
         private int tentativasFalhadas = 0;
@@ -276,8 +276,7 @@ namespace PT_Readify
                         // Valida a password introduzida
                         if (ValidarPasswordDefinicao(txtPassword.Text))
                         {
-                            passwordUtilizador = txtPassword.Text;
-                            passwordDefinida = true;
+                            passwordUtilizador = BLL.utilizador.HashPassword(txtPassword.Text);
                             MessageBox.Show(
                                 "Password definida com sucesso!",
                                 "Sucesso",
@@ -418,7 +417,7 @@ namespace PT_Readify
                 };
                 btnAlterar.Click += (s, e) =>
                 {
-                    if (txtPasswordAntiga.Text != passwordUtilizador)
+                    if (!BLL.utilizador.VerificarPassword(passwordUtilizador, txtPasswordAntiga.Text))
                     {
                         MessageBox.Show(
                             "Password atual incorreta!",
@@ -431,7 +430,7 @@ namespace PT_Readify
 
                     if (ValidarPasswordDefinicao(txtPasswordNova.Text))
                     {
-                        passwordUtilizador = txtPasswordNova.Text;
+                        passwordUtilizador = BLL.utilizador.HashPassword(txtPasswordNova.Text);
                         MessageBox.Show(
                             "Password alterada com sucesso!",
                             "Sucesso",
@@ -486,7 +485,7 @@ namespace PT_Readify
                 return;
             }
 
-            if (txtPassword.Text == passwordUtilizador)
+            if (BLL.utilizador.VerificarPassword(passwordUtilizador, txtPassword.Text))
             {
                 // ✓ Password correta - Acesso concedido
                 tentativasFalhadas = 0;  // Reset contador
