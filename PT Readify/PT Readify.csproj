@@ -84,6 +84,7 @@
     <Compile Include="Carrinho.Designer.cs">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </Compile>
+    <Compile Include="Email.cs" />
     <Compile Include="GridDisplayHelper.cs" />
     <Compile Include="GestaoStockLivros.cs">
       <SubType>Form</SubType>
@@ -315,9 +316,6 @@
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="smtp.config.example">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

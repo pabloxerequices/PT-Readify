@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
-
+using System.Data.SqlClient;
+using System.Net; // Necessário para credenciais de rede
+using System.Net.Mail; // Necessário para enviar o e-mail
+using DataAccessLayer;
+    
 namespace PT_Readify
 {
     public partial class Carrinho : Form
@@ -182,6 +188,78 @@ namespace PT_Readify
             }
         }
 
+        // ==========================================
+        // MÉTODO PARA IR BUSCAR O E-MAIL À BD
+        // ==========================================
+        private string ObterEmailDoUtilizadorDaBD(int idUtilizador)
+        {
+            if (idUtilizador <= 0)
+                return string.Empty;
+
+            // Ajusta a Connection String para a tua
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Database1.mdf;Integrated Security=True";
+
+            string query = "SELECT email FROM utilizador WHERE id_utilizador = @id";
+            string email = string.Empty;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idUtilizador);
+                        conn.Open();
+                        var result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            email = result.ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao aceder à base de dados para obter o e-mail: " + ex.Message);
+            }
+
+            return email;
+        }
+
+        // ==========================================
+        // MÉTODO NOVO PARA ENVIAR O E-MAIL DIRETAMENTE
+        // ==========================================
+        private bool EnviarEmailRecibo(string destinatario, string assunto, string corpo)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("martimr480@gmail.com");
+                mail.To.Add(destinatario);
+                mail.Subject = assunto;
+                mail.Body = corpo;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    smtp.UseDefaultCredentials = false;
+                    smtp.EnableSsl = true;
+                    // ATENÇÃO: Substitui "TUA_SENHA_DE_APP_AQUI" pela palavra-passe de app de 16 dígitos gerada na tua conta Google
+                    smtp.Credentials = new NetworkCredential("martimr480@gmail.com", "TUA_SENHA_DE_APP_AQUI");
+
+                    smtp.Send(mail);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao enviar o e-mail de recibo: " + ex.Message, "Falha de E-mail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        // ==========================================
+        // LÓGICA DE CONFIRMAÇÃO
+        // ==========================================
         private void ConfirmarPedido()
         {
             if (carrinhoTable.Rows.Count == 0)
@@ -200,54 +278,87 @@ namespace PT_Readify
             if (!CarteiraService.TemSaldoSuficiente(totalCompra))
             {
                 MessageBox.Show(
-                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira Digital para concluir a compra.",
+                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira.",
                     "Saldo insuficiente",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
             }
 
-            DialogResult resultado = MessageBox.Show(
-                $"Confirmar compra de {CarrinhoService.TotalItens} item(ns) por {totalCompra:C2}?\n\nSerá debitado {totalCompra:C2} da sua carteira (saldo atual: {CarteiraService.Saldo:C2}).",
-                "Confirmar compra",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (resultado != DialogResult.Yes)
-                return;
-
             try
             {
-                ResultadoEnvioRecibo resultadoRecibo = CarrinhoService.ProcessarCarrinho();
-                AtualizarTotalGeral();
+                this.Cursor = Cursors.WaitCursor;
 
-                MessageBox.Show(
-                    "Compra finalizada com sucesso!\n\nConsulte o Histórico de Compras.",
-                    "Sucesso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                // 1. Obter E-mail
+                string emailUsuario = ObterEmailDoUtilizadorDaBD(globais.id_utilizador);
+
+                if (string.IsNullOrEmpty(emailUsuario))
+                {
+                    this.Cursor = Cursors.Default;
+                    MessageBox.Show("Não foi possível encontrar o e-mail do utilizador na Base de Dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // 2. Registar a compra na BD através do serviço (descontar saldo, atualizar stock, etc)
+                var resultadoRecibo = CarrinhoService.ProcessarCarrinho();
 
                 if (resultadoRecibo.Sucesso)
                 {
-                    MessageBox.Show(
-                        resultadoRecibo.Mensagem,
-                        "Recibo enviado",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    // 3. Gerar os dados para o e-mail
+                    string dataHoraAtual = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+                    List<string> nomesLivros = new List<string>();
+                    foreach (DataRow linha in carrinhoTable.Rows)
+                    {
+                        nomesLivros.Add($"{linha["Quantidade"]}x {linha["Titulo"]}");
+                    }
+                    string livrosComprados = string.Join(", ", nomesLivros);
+
+                    string assuntoDinamico = $"Confirmação de Compra: {livrosComprados} - {dataHoraAtual}";
+
+                    string corpoDinamico = $"Olá!\n\nA tua compra foi processada com sucesso.\n\n" +
+                                           $"Livros adquiridos:\n{livrosComprados}\n\n" +
+                                           $"Total pago: {totalCompra:C2}\n" +
+                                           $"Data da transação: {dataHoraAtual}\n\n" +
+                                           $"Obrigado por utilizares o PT_Readify!";
+
+                    // 4. Disparar o e-mail
+                    bool emailEnviado = EnviarEmailRecibo(emailUsuario, assuntoDinamico, corpoDinamico);
+
+                    this.Cursor = Cursors.Default;
+
+                    if (emailEnviado)
+                    {
+                        MessageBox.Show(
+                            "Compra efetuada e recibo enviado com sucesso para o teu e-mail!",
+                            "Sucesso",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "A compra foi registada, mas ocorreu um problema a enviar o e-mail.",
+                            "Aviso - E-mail",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                    }
+
+                    AtualizarTotalGeral();
                 }
                 else
                 {
+                    this.Cursor = Cursors.Default;
                     MessageBox.Show(
-                        "A compra foi registada, mas o recibo por email não foi enviado.\n\n" +
-                        resultadoRecibo.Mensagem + "\n\n" +
-                        "Configure o ficheiro smtp.config na pasta da aplicação (veja smtp.config.example).",
-                        "Aviso - Email",
+                        "Falha ao registar a compra na base de dados:\n\n" + resultadoRecibo.Mensagem,
+                        "Erro",
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                        MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
