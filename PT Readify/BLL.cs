@@ -18,6 +18,85 @@ namespace BusinessLogicLayer
         //--------------------------UTILIZADOR-------------------------
         public class utilizador
         {
+            private const int PasswordWorkFactor = 10;
+
+            public static string HashPassword(string password)
+            {
+                return BCrypt.Net.BCrypt.HashPassword(password, BCrypt.Net.BCrypt.GenerateSalt(PasswordWorkFactor));
+            }
+
+            public static bool PasswordCompare(string hash, string password)
+            {
+                if (string.IsNullOrWhiteSpace(hash) || password == null)
+                    return false;
+
+                try
+                {
+                    return BCrypt.Net.BCrypt.Verify(password, hash);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            public static bool IsPasswordHash(string passwordValue)
+            {
+                return !string.IsNullOrWhiteSpace(passwordValue)
+                    && (passwordValue.StartsWith("$2a$") || passwordValue.StartsWith("$2b$") || passwordValue.StartsWith("$2y$"));
+            }
+
+            public static bool VerificarPassword(string passwordGuardada, string passwordIntroduzida)
+            {
+                if (IsPasswordHash(passwordGuardada))
+                    return PasswordCompare(passwordGuardada, passwordIntroduzida);
+
+                return passwordGuardada == passwordIntroduzida;
+            }
+
+            public static string PrepararPasswordParaGuardar(string password)
+            {
+                if (IsPasswordHash(password))
+                    return password;
+
+                return HashPassword(password);
+            }
+
+            public static void AtualizarPasswordHash(int idUtilizador, string passwordHash)
+            {
+                DAL dal = new DAL();
+                dal.executarNonQuery(
+                    "UPDATE utilizador SET Palavra_Passe=@Palavra_Passe WHERE Id_Utilizador=@Id_Utilizador",
+                    new SqlParameter[] {
+                        new SqlParameter("@Palavra_Passe", passwordHash),
+                        new SqlParameter("@Id_Utilizador", idUtilizador)
+                    });
+            }
+
+            public static bool ContaEstaBloqueada(DataRow utilizadorRow)
+            {
+                string estado = utilizadorRow["Estado_Conta"]?.ToString() ?? "";
+                return estado.Equals("Bloqueada", StringComparison.OrdinalIgnoreCase)
+                    || estado.Equals("Bloqueado", StringComparison.OrdinalIgnoreCase);
+            }
+
+            public static bool BloquearSeTiverTresMultas(int idUtilizador)
+            {
+                DAL dal = new DAL();
+                dal.GarantirEsquema();
+                object resultado = dal.executarScalar(
+                    "SELECT COUNT(*) FROM HistoricoEmp WHERE Id_Utilizador=@id AND Valor_Multa > 0",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+
+                if (Convert.ToInt32(resultado) < 3)
+                    return false;
+
+                dal.executarNonQuery(
+                    "UPDATE utilizador SET Estado_Conta='Bloqueada' WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+                return true;
+            }
+
             //load utilizador por id
             static public DataTable LoadById(int Id_Utilizador)
             {
@@ -47,6 +126,7 @@ namespace BusinessLogicLayer
             //registar utilizador
             static public int insertutilizador(bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone)
             {
+                Palavra_Passe = PrepararPasswordParaGuardar(Palavra_Passe);
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
                     new SqlParameter("@Estado_Conta", Estado_Conta),
@@ -65,6 +145,7 @@ namespace BusinessLogicLayer
 
             static public int insertutilizadoradmin(bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone, object Foto)
             {
+                Palavra_Passe = PrepararPasswordParaGuardar(Palavra_Passe);
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
                     new SqlParameter("@Estado_Conta", Estado_Conta),
@@ -89,6 +170,7 @@ namespace BusinessLogicLayer
             //update utilizador (perfil editar)
             static public int updateUtilizador(int Id_Utilizador, string Email, string Nome, string Palavra_Passe, object Foto, int prefixo_telefone, int numero_telefone)
             {
+                Palavra_Passe = PrepararPasswordParaGuardar(Palavra_Passe);
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]
                 {
@@ -109,6 +191,7 @@ namespace BusinessLogicLayer
             }
             static public int updateutilizadoradmin(int Id_Utilizador, bool Tipo_Utilizador, string Estado_Conta, string Email, string Nome, string Palavra_Passe, int prefixo_telefone, int numero_telefone, object Foto)
             {
+                Palavra_Passe = PrepararPasswordParaGuardar(Palavra_Passe);
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]
                 { new SqlParameter("@Id_Utilizador", Id_Utilizador),
@@ -359,12 +442,13 @@ namespace BusinessLogicLayer
             {
                 DAL dal = new DAL();
                 DataTable emAtraso = dal.executarReader(
-                    "SELECT Id, Data_Prevista FROM HistoricoEmp WHERE Estado_Emprestimo='Ativo' AND Data_Entrega=@pendente AND Data_Prevista < GETDATE()",
+                    "SELECT Id, Id_Utilizador, Data_Prevista FROM HistoricoEmp WHERE Estado_Emprestimo='Ativo' AND Data_Entrega=@pendente AND Data_Prevista < GETDATE()",
                     new SqlParameter[] { new SqlParameter("@pendente", DataEntregaPendente) });
 
                 foreach (DataRow row in emAtraso.Rows)
                 {
                     int id = Convert.ToInt32(row["Id"]);
+                    int idUtilizador = Convert.ToInt32(row["Id_Utilizador"]);
                     DateTime prevista = Convert.ToDateTime(row["Data_Prevista"]);
                     int multa = CalcularMultaCentimos(prevista);
                     dal.executarNonQuery(
@@ -373,6 +457,7 @@ namespace BusinessLogicLayer
                             new SqlParameter("@multa", multa),
                             new SqlParameter("@id", id)
                         });
+                    utilizador.BloquearSeTiverTresMultas(idUtilizador);
                 }
             }
 
@@ -677,6 +762,10 @@ namespace BusinessLogicLayer
                 if (idUtilizador <= 0)
                     throw new InvalidOperationException("É necessário iniciar sessão para requisitar livros.");
 
+                AtualizarMultasEmAtraso();
+                if (utilizador.BloquearSeTiverTresMultas(idUtilizador))
+                    throw new InvalidOperationException("A sua conta está bloqueada por ter 3 multas. Contacte um administrador.");
+
                 if (diasDevolucao < 0 || diasDevolucao > MaxDiasEmprestimo)
                     throw new InvalidOperationException($"O prazo de devolução deve ser entre 0 e {MaxDiasEmprestimo} dias.");
 
@@ -704,6 +793,10 @@ namespace BusinessLogicLayer
             {
                 if (idUtilizador <= 0)
                     throw new InvalidOperationException("É necessário iniciar sessão para reservar livros.");
+
+                AtualizarMultasEmAtraso();
+                if (utilizador.BloquearSeTiverTresMultas(idUtilizador))
+                    throw new InvalidOperationException("A sua conta está bloqueada por ter 3 multas. Contacte um administrador.");
 
                 DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
                 if (dtLivro == null || dtLivro.Rows.Count == 0)

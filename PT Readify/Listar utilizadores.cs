@@ -10,6 +10,7 @@ namespace PT_Readify
     public partial class Listar_utilizadores : Form
     {
         string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal, estadoContaOriginal, tipoUtilizadorOriginal;
+        string passwordOriginalHash = "";
         byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
         bool modoEdicao = false;
         byte[] fotoBytes = null;
@@ -29,7 +30,8 @@ namespace PT_Readify
             // Carregar a foto de perfil
             if (dataGridView1.CurrentRow.Cells["foto"].Value != DBNull.Value)
             {
-                byte[] fotoBytes = (byte[])dataGridView1.CurrentRow.Cells["foto"].Value;
+                fotoBytes = (byte[])dataGridView1.CurrentRow.Cells["foto"].Value;
+                fotoOriginal = fotoBytes;
                 using (MemoryStream ms = new MemoryStream(fotoBytes))
                 {
                     pictureBox6.Image = Image.FromStream(ms);
@@ -38,10 +40,13 @@ namespace PT_Readify
             else
             {
                 pictureBox6.Image = null; // Ou uma imagem padrão, se preferir
+                fotoBytes = null;
+                fotoOriginal = null;
             }
             textBox1.Text = dataGridView1.CurrentRow.Cells["nome"].Value.ToString();
             textBox2.Text = dataGridView1.CurrentRow.Cells["email"].Value.ToString();
-            textBox3.Text = dataGridView1.CurrentRow.Cells["palavra_passe"].Value.ToString();
+            passwordOriginalHash = dataGridView1.CurrentRow.Cells["palavra_passe"].Value.ToString();
+            textBox3.Text = "";
             textBox4.Text = dataGridView1.CurrentRow.Cells["numero_telefone"].Value.ToString();
                 comboBox1.Text = "+" + dataGridView1.CurrentRow.Cells["prefixo_telefone"].Value.ToString();
             comboBox2.Text = dataGridView1.CurrentRow.Cells["Estado_Conta"].Value.ToString();
@@ -108,10 +113,11 @@ namespace PT_Readify
                                       comboBox1.Text != prefixoOriginal ||
                                         comboBox2.Text != estadoContaOriginal ||
                                         checkBox1.Checked.ToString() != tipoUtilizadorOriginal ||
-                                      !fotoBytes.SequenceEqual(fotoOriginal ?? new byte[0]));
+                                      !(fotoBytes ?? new byte[0]).SequenceEqual(fotoOriginal ?? new byte[0]));
 
             if (houveAlteracao)
             {
+                bool passwordAlterada = !string.IsNullOrWhiteSpace(textBox3.Text);
                 //verificar se o numero de telefone é válido (apenas dígitos) e se tem 9 dígitos
                 if (!textBox4.Text.All(char.IsDigit))
                 {
@@ -125,9 +131,9 @@ namespace PT_Readify
                 }
 
                 else
-                     if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text))
+                     if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
                 {
-                    MessageBox.Show("Os campos Nome, Email e Palavra-Passe não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Os campos Nome e Email não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else
@@ -137,17 +143,17 @@ namespace PT_Readify
                     return;
                 }
                 else
-                     if (textBox3.Text.Length < 6)
+                     if (passwordAlterada && textBox3.Text.Length < 6)
                 {
                     MessageBox.Show("A palavra-passe deve conter pelo menos 6 caracteres.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else if (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch)))
+                else if (passwordAlterada && (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch))))
                 {
                     MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
                     return;
                 }
-                else if (textBox3.Text.Contains(" "))
+                else if (passwordAlterada && textBox3.Text.Contains(" "))
                 {
                     MessageBox.Show("A password não pode conter espaços em branco");
                     return;
@@ -160,7 +166,7 @@ namespace PT_Readify
                         comboBox2.Text, // Estado_Conta
                         textBox2.Text, // Email
                         textBox1.Text, // Nome
-                        textBox3.Text, // Palavra_Passe
+                        passwordAlterada ? textBox3.Text : passwordOriginalHash, // Palavra_Passe
 
 
                     int.Parse(comboBox1.Text.Replace("+", "")), // Prefixo do telefone (removendo o "+")
@@ -215,6 +221,8 @@ namespace PT_Readify
             passOriginal = textBox3.Text;
             telefoneOriginal = textBox4.Text;
             prefixoOriginal = comboBox1.Text;
+            estadoContaOriginal = comboBox2.Text;
+            tipoUtilizadorOriginal = checkBox1.Checked.ToString();
 
             // 1. Entrar no modo de edição
             modoEdicao = true;

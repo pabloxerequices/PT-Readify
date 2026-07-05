@@ -7,7 +7,6 @@ using System.Data;
 using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
 
-
 namespace DataAccessLayer
 {
     public class DAL
@@ -18,7 +17,13 @@ namespace DataAccessLayer
 
         public DAL()
         {
-			_SqlConn = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename =" + System.Windows.Forms.Application.StartupPath + @"\Base_Dados.mdf;Integrated Security = True; Connect Timeout = 30");
+            // Define a pasta de execução como o DataDirectory
+            AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+
+            // String direta e simples apontando para o ficheiro mdf
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Base_Dados.mdf;Integrated Security=True;Connect Timeout=30;MultipleActiveResultSets=True";
+
+            _SqlConn = new SqlConnection(connString);
         }
 
         private void abrirLigacao()
@@ -29,7 +34,7 @@ namespace DataAccessLayer
             }
             catch (Exception e)
             {
-				MessageBox.Show(e.ToString());
+                MessageBox.Show(e.ToString());
             }
         }
 
@@ -37,11 +42,14 @@ namespace DataAccessLayer
         {
             try
             {
-                _SqlConn.Close();
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    _SqlConn.Close();
+                }
             }
             catch (Exception e)
             {
-				MessageBox.Show(e.ToString());
+                MessageBox.Show(e.ToString());
             }
         }
 
@@ -53,26 +61,29 @@ namespace DataAccessLayer
         public DataTable executarStoredProcReader(String sqlCmd, SqlParameter[] sqlParams)
         {
             DataTable returnTable = new DataTable("returnTable");
-
             associarComando(sqlCmd);
-
             _SqlCommand.CommandType = CommandType.StoredProcedure;
 
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                _SqlReader = _SqlCommand.ExecuteReader();
+                abrirLigacao();
 
-                returnTable.Load(_SqlReader);
-
-                _SqlReader.Close();
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    using (_SqlReader = _SqlCommand.ExecuteReader())
+                    {
+                        returnTable.Load(_SqlReader);
+                    }
+                }
             }
-
-            fecharLigacao();
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
+            }
 
             return returnTable;
         }
@@ -86,21 +97,26 @@ namespace DataAccessLayer
         public int executarStoredProcNonQuery(String sqlCmd, SqlParameter[] sqlParams)
         {
             int retorno = -1;
-
             associarComando(sqlCmd);
-
             _SqlCommand.CommandType = CommandType.StoredProcedure;
+
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                retorno = _SqlCommand.ExecuteNonQuery();
-            }
+                abrirLigacao();
 
-            fecharLigacao();
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    retorno = _SqlCommand.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
+            }
 
             return retorno;
         }
@@ -110,18 +126,25 @@ namespace DataAccessLayer
             object resultado = null;
             associarComando(sqlCmd);
             _SqlCommand.CommandType = CommandType.StoredProcedure;
+
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                resultado = _SqlCommand.ExecuteScalar();
+                abrirLigacao();
+
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    resultado = _SqlCommand.ExecuteScalar();
+                }
+            }
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
             }
 
-            fecharLigacao();
-            _SqlCommand.Parameters.Clear();
             return resultado;
         }
 
@@ -277,49 +300,57 @@ namespace DataAccessLayer
         public DataTable executarReader(String sqlCmd, SqlParameter[] sqlParams)
         {
             DataTable returnTable = new DataTable("returnTable");
-
             associarComando(sqlCmd);
-
             _SqlCommand.CommandType = CommandType.Text;
 
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                _SqlReader = _SqlCommand.ExecuteReader();
+                abrirLigacao();
 
-                returnTable.Load(_SqlReader);
-
-                _SqlReader.Close();
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    using (_SqlReader = _SqlCommand.ExecuteReader())
+                    {
+                        returnTable.Load(_SqlReader);
+                    }
+                }
+            }
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
             }
 
-            fecharLigacao();
-            _SqlCommand.Parameters.Clear();
             return returnTable;
         }
 
         public int executarNonQuery(String sqlCmd, SqlParameter[] sqlParams)
         {
             int retorno = -1;
-
             associarComando(sqlCmd);
-
             _SqlCommand.CommandType = CommandType.Text;
+
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                _SqlCommand.ExecuteNonQuery();
+                abrirLigacao();
+
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    retorno = _SqlCommand.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
             }
 
-            fecharLigacao();
-            _SqlCommand.Parameters.Clear();
             return retorno;
         }
 
@@ -328,18 +359,25 @@ namespace DataAccessLayer
             object resultado = null;
             associarComando(sqlCmd);
             _SqlCommand.CommandType = CommandType.Text;
+
             if (sqlParams != null)
                 _SqlCommand.Parameters.AddRange(sqlParams);
 
-            abrirLigacao();
-
-            if (_SqlConn.State == ConnectionState.Open)
+            try
             {
-                resultado = _SqlCommand.ExecuteScalar();
+                abrirLigacao();
+
+                if (_SqlConn.State == ConnectionState.Open)
+                {
+                    resultado = _SqlCommand.ExecuteScalar();
+                }
+            }
+            finally
+            {
+                fecharLigacao();
+                _SqlCommand.Parameters.Clear();
             }
 
-            fecharLigacao();
-            _SqlCommand.Parameters.Clear();
             return resultado;
         }
     }

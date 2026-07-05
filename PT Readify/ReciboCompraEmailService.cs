@@ -50,14 +50,18 @@ namespace PT_Readify
 
         private static string ObterEmailUtilizador(int idUtilizador)
         {
+            var dt = BLL.utilizador.LoadById(idUtilizador);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                string emailBaseDados = dt.Rows[0]["Email"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(emailBaseDados))
+                    return emailBaseDados;
+            }
+
             if (!string.IsNullOrWhiteSpace(globais.profileEmail) && globais.id_utilizador == idUtilizador)
                 return globais.profileEmail;
 
-            var dt = BLL.utilizador.LoadById(idUtilizador);
-            if (dt == null || dt.Rows.Count == 0)
-                return null;
-
-            return dt.Rows[0]["Email"]?.ToString();
+            return null;
         }
 
         private static string ObterNomeUtilizador(int idUtilizador)

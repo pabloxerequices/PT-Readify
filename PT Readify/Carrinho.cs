@@ -182,6 +182,9 @@ namespace PT_Readify
             }
         }
 
+        // ==========================================
+        // LÓGICA DE CONFIRMAÇÃO
+        // ==========================================
         private void ConfirmarPedido()
         {
             if (carrinhoTable.Rows.Count == 0)
@@ -200,54 +203,45 @@ namespace PT_Readify
             if (!CarteiraService.TemSaldoSuficiente(totalCompra))
             {
                 MessageBox.Show(
-                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira Digital para concluir a compra.",
+                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira.",
                     "Saldo insuficiente",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
             }
 
-            DialogResult resultado = MessageBox.Show(
-                $"Confirmar compra de {CarrinhoService.TotalItens} item(ns) por {totalCompra:C2}?\n\nSerá debitado {totalCompra:C2} da sua carteira (saldo atual: {CarteiraService.Saldo:C2}).",
-                "Confirmar compra",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (resultado != DialogResult.Yes)
-                return;
-
             try
             {
-                ResultadoEnvioRecibo resultadoRecibo = CarrinhoService.ProcessarCarrinho();
-                AtualizarTotalGeral();
+                this.Cursor = Cursors.WaitCursor;
 
-                MessageBox.Show(
-                    "Compra finalizada com sucesso!\n\nConsulte o Histórico de Compras.",
-                    "Sucesso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                // Regista a compra, desconta saldo/stock e envia o recibo para o email do utilizador.
+                var resultadoRecibo = CarrinhoService.ProcessarCarrinho();
+                this.Cursor = Cursors.Default;
 
                 if (resultadoRecibo.Sucesso)
                 {
                     MessageBox.Show(
-                        resultadoRecibo.Mensagem,
-                        "Recibo enviado",
+                        "Compra efetuada com sucesso!\n\n" + resultadoRecibo.Mensagem,
+                        "Sucesso",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
+
+                    AtualizarTotalGeral();
                 }
                 else
                 {
                     MessageBox.Show(
-                        "A compra foi registada, mas o recibo por email não foi enviado.\n\n" +
-                        resultadoRecibo.Mensagem + "\n\n" +
-                        "Configure o ficheiro smtp.config na pasta da aplicação (veja smtp.config.example).",
-                        "Aviso - Email",
+                        "A compra foi registada, mas ocorreu um problema a enviar o recibo por e-mail:\n\n" + resultadoRecibo.Mensagem,
+                        "Aviso - E-mail",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
+
+                    AtualizarTotalGeral();
                 }
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
                 MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
