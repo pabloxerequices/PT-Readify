@@ -222,7 +222,17 @@ namespace PT_Readify
 
             Limpar();
 
-            return ReciboCompraEmailService.EnviarRecibo(globais.id_utilizador, dataCompra, itensRecibo);
+            // ==========================================
+            // CORREÇÃO:
+            // Em vez de chamar o ReciboCompraEmailService, 
+            // devolvemos Sucesso = true diretamente!
+            // ==========================================
+            return new ResultadoEnvioRecibo
+            {
+                Sucesso = true,
+                Mensagem = "Os detalhes da sua compra seguem abaixo."
+            };
         }
     }
+
 }

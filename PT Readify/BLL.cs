@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO.Pipes;
 
+
 namespace BusinessLogicLayer
 {
     public class BLL
@@ -312,12 +313,12 @@ namespace BusinessLogicLayer
                 return dal.executarReader("select * from Clientes where Nome like @nome", sqlParams);
             }
 
-            private string ObterEmailUtilizadorConectado(int idutilizador)
+            public static string ObterEmailUtilizadorConectado(int idutilizador)
             {
                 DAL dal = new DAL();
                 SqlParameter[] sqlParams = new SqlParameter[]{
-                new SqlParameter("@idutilizador", idutilizador)
-                };
+    new SqlParameter("@idutilizador", idutilizador)
+    };
                 DataTable dt = dal.executarReader("select Email from utilizador where Id_Utilizador=@idutilizador", sqlParams);
                 if (dt.Rows.Count > 0)
                 {
@@ -328,7 +329,7 @@ namespace BusinessLogicLayer
             //private string ObterEmailUtilizadorConectado(int idUtilizador)
             //{
             // // Substitui pela tua string de conexão real
-    
+
             // string query = "SELECT Email FROM Utilizadores WHERE Id = @Id";
 
             // using (SqlConnection conn = new SqlConnection(connectionString))
@@ -337,7 +338,7 @@ namespace BusinessLogicLayer
             // {
             //  // O parâmetro evita ataques de SQL Injection
             //   cmd.Parameters.AddWithValue("@Id", idUtilizador);
-            
+
             //   conn.Open();
             //   object result = cmd.ExecuteScalar();
 
