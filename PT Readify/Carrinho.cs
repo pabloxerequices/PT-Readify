@@ -2,7 +2,11 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-
+using System.Net;
+using System.Net.Mail;
+using System.Net.Http;
+using System.Threading.Tasks;
+using BusinessLogicLayer;
 namespace PT_Readify
 {
     public partial class Carrinho : Form
@@ -220,6 +224,118 @@ namespace PT_Readify
 
                 if (resultadoRecibo.Sucesso)
                 {
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.EnableSsl = true;
+                        smtp.Credentials = new NetworkCredential("martimr480@gmail.com", "djni szgk juxn ludr");
+
+                        using (MailMessage mail = new MailMessage())
+                        {
+                            mail.From = new MailAddress("martimr480@gmail.com", "Livraria");
+                            mail.To.Add(BLL.Clientes.ObterEmailUtilizadorConectado(globais.id_utilizador)); // Destinatário do e-mail (e-mail do utilizador)
+                            mail.Subject = "Recibo de Compra";
+
+                            // Captura a data e hora exatas do momento da compra
+                            DateTime dataHoraCompra = DateTime.Now;
+
+                            // Monta o corpo do e-mail com o recibo original, data/hora e aviso de devolução
+                            string corpoEmail = $@"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Recibo de Compra</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }}
+        .message {{
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }}
+        .info-section {{
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }}
+        .info-item {{
+            margin-bottom: 10px;
+        }}
+        .label {{
+            font-weight: 600;
+            color: #007bff;
+            display: inline-block;
+            min-width: 200px;
+        }}
+        .value {{
+            color: #555;
+        }}
+        .warning {{
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }}
+        .warning strong {{
+            color: #856404;
+        }}
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""header"">
+            <h2 style=""color: #007bff; margin: 0;"">Seu Pedido foi Confirmado! ✓</h2>
+        </div>
+        
+        <div class=""message"">
+            $""{resultadoRecibo.Mensagem}
+        </div>
+        
+        <div class=""info-section"">
+            <div class=""info-item"">
+                <span class=""label"">Data e Hora da Compra:</span>
+                <span class=""value"">{{dataHoraCompra:dd/MM/yyyy HH:mm:ss}}</span>
+            </div>
+        </div>
+        
+        <div class=""warning"">
+            <strong>ℹ️ Informação Importante:</strong><br>
+            Dispõe de um prazo de 30 dias úteis para efetuar qualquer devolução.
+        </div>
+    </div>
+</body>
+</html> ";
+
+                            mail.Body = corpoEmail;
+                            mail.IsBodyHtml = true;
+
+                            // Envia o e-mail (apenas uma vez para evitar duplicados)
+                            smtp.Send(mail);
+                        }
+                    }
+
                     MessageBox.Show(
                         "Compra efetuada com sucesso!\n\n" + resultadoRecibo.Mensagem,
                         "Sucesso",

@@ -311,6 +311,46 @@ namespace BusinessLogicLayer
                 };
                 return dal.executarReader("select * from Clientes where Nome like @nome", sqlParams);
             }
+
+            private string ObterEmailUtilizadorConectado(int idutilizador)
+            {
+                DAL dal = new DAL();
+                SqlParameter[] sqlParams = new SqlParameter[]{
+                new SqlParameter("@idutilizador", idutilizador)
+                };
+                DataTable dt = dal.executarReader("select Email from utilizador where Id_Utilizador=@idutilizador", sqlParams);
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.Rows[0]["Email"].ToString();
+                }
+                return string.Empty;
+            }
+            //private string ObterEmailUtilizadorConectado(int idUtilizador)
+            //{
+            // // Substitui pela tua string de conexão real
+    
+            // string query = "SELECT Email FROM Utilizadores WHERE Id = @Id";
+
+            // using (SqlConnection conn = new SqlConnection(connectionString))
+            // {
+            // using (SqlCommand cmd = new SqlCommand(query, conn))
+            // {
+            //  // O parâmetro evita ataques de SQL Injection
+            //   cmd.Parameters.AddWithValue("@Id", idUtilizador);
+            
+            //   conn.Open();
+            //   object result = cmd.ExecuteScalar();
+
+            //  if (result != null)
+            //  {
+            //    return result.ToString();
+            //  }
+            // }
+            //}
+
+            //   // Retorna uma string vazia ou email padrão caso não encontre
+            // return string.Empty; 
+            //}
             static public DataTable queryClientePorId(int id)
             {
                 DAL dal = new DAL();

@@ -109,6 +109,15 @@ namespace BusinessLogicLayer
                 };
                 return dal.executarNonQuery("DELETE FROM Clientes WHERE [ID] = @id", sqlParams);
             }
+
+            public static string ObterEmailUtilizadorConectado(int idutilizador)
+            {
+                DataAccessLayer.DAL dal = new DataAccessLayer.DAL();
+                string sql = "SELECT Email FROM utilizador WHERE ID = @idutilizador";
+                object emailObj = dal.executarScalar(sql, new SqlParameter("@idutilizador", idutilizador));
+
+                return emailObj != null && emailObj != DBNull.Value ? emailObj.ToString() : null;
+            }
         }
 
         //----------------------LIVROS---------------------------- 
