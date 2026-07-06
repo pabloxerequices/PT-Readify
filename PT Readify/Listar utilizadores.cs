@@ -9,6 +9,7 @@ namespace PT_Readify
 {
     public partial class Listar_utilizadores : Form
     {
+
         string nomeOriginal, emailOriginal, passOriginal, telefoneOriginal, prefixoOriginal, estadoContaOriginal, tipoUtilizadorOriginal;
         string passwordOriginalHash = "";
         byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
@@ -61,6 +62,27 @@ namespace PT_Readify
             this.Hide();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            // Se estiver escondida, mostra. Se estiver visível, esconde.
+            if (textBox3.UseSystemPasswordChar == true)
+            {
+                textBox3.UseSystemPasswordChar = false;
+                // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
+                // pictureBox5.Image = Properties.Resources.eye_open; 
+            }
+            else
+            {
+                textBox3.UseSystemPasswordChar = true;
+                // pictureBox5.Image = Properties.Resources.key_icon;
+            }
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -93,7 +115,7 @@ namespace PT_Readify
         {
             // Carregar os dados do utilizador selecionado na datagrifview para os TextBoxes
             dataGridView1.DataSource = BLL.utilizador.Load();
-
+            textBox3.UseSystemPasswordChar = true;
             comboBox1.Items.AddRange(globais.prefixosEuropa);
         }
 

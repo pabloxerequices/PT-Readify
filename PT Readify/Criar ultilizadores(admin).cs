@@ -24,6 +24,7 @@ namespace PT_Readify
         {
             dataGridView1.DataSource = BLL.utilizador.Load();
             comboBox1.Items.AddRange(globais.prefixosEuropa);
+            textBox3.UseSystemPasswordChar = true;
         }
 
         private void pictureBox6_Click(object sender, EventArgs e)
@@ -110,6 +111,27 @@ namespace PT_Readify
             {
                 BLL.utilizador.insertutilizadoradmin(checkBox1.Checked, "Ativa", textBox2.Text, textBox1.Text, textBox3.Text, int.Parse(new string(comboBox1.Text.Where(char.IsDigit).ToArray())), int.Parse(textBox4.Text), fotoBytes);
                 MessageBox.Show("Utilizador criado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            // Se estiver escondida, mostra. Se estiver visível, esconde.
+            if (textBox3.UseSystemPasswordChar == true)
+            {
+                textBox3.UseSystemPasswordChar = false;
+                // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
+                // pictureBox5.Image = Properties.Resources.eye_open; 
+            }
+            else
+            {
+                textBox3.UseSystemPasswordChar = true;
+                // pictureBox5.Image = Properties.Resources.key_icon;
             }
         }
     }
