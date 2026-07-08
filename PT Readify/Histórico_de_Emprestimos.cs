@@ -180,5 +180,47 @@ namespace PT_Readify
         private void dataGridViewHistorico_Emprestimos_CellContentClick_2(object sender, DataGridViewCellEventArgs e)
         {
         }
+
+        private void btnPagarMulta_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewHistorico_Emprestimos.CurrentRow == null)
+            {
+                MessageBox.Show("Selecione um empréstimo rejeitado para pagar a multa.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                string estado = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Estado_Emprestimo"].Value?.ToString();
+
+                if (estado != "Rejeitado")
+                {
+                    MessageBox.Show("Apenas empréstimos rejeitados têm multa por livro estragado.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int idHistorico = Convert.ToInt32(dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Id"].Value);
+                int idLivro = Convert.ToInt32(dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Id_Livro"].Value);
+                string titulo = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Titulo"].Value.ToString();
+
+                DialogResult confirmar = MessageBox.Show(
+                    $"Pagar a multa por livro estragado de \"{titulo}\"?\n\n" +
+                    $"Após o pagamento, o livro será devolvido.",
+                    "Confirmar Pagamento",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmar != DialogResult.Yes)
+                    return;
+
+                BLL.Historicos.PagarMultaLivroEstragado(idHistorico, globais.id_utilizador, idLivro, titulo);
+                CarregarHistorico();
+                MessageBox.Show("Multa paga com sucesso! O livro foi devolvido.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao pagar multa: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

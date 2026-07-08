@@ -77,6 +77,7 @@
             this.panelBottom.Controls.Add(this.guna2Button4);
             this.panelBottom.Controls.Add(this.guna2Button2);
             this.panelBottom.Controls.Add(this.guna2Button3);
+            this.panelBottom.Controls.Add(this.btnPagarMulta);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 476);
             this.panelBottom.Name = "panelBottom";
@@ -144,6 +145,19 @@
             this.guna2Button3.TabIndex = 3;
             this.guna2Button3.Text = "Devolver livro";
             this.guna2Button3.Click += new System.EventHandler(this.guna2Button3_Click);
+            // 
+            // btnPagarMulta
+            // 
+            this.btnPagarMulta.BorderRadius = 6;
+            this.btnPagarMulta.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            this.btnPagarMulta.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnPagarMulta.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(70)))), ((int)(((byte)(50)))));
+            this.btnPagarMulta.Location = new System.Drawing.Point(539, 20);
+            this.btnPagarMulta.Name = "btnPagarMulta";
+            this.btnPagarMulta.Size = new System.Drawing.Size(220, 40);
+            this.btnPagarMulta.TabIndex = 4;
+            this.btnPagarMulta.Text = "Pagar Multa Livro Estragado";
+            this.btnPagarMulta.Click += new System.EventHandler(this.btnPagarMulta_Click);
             // 
             // panelContent
             // 
@@ -223,6 +237,7 @@
         private System.Windows.Forms.Label labelTotal;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
         private Guna.UI2.WinForms.Guna2Button guna2Button3;
+        private Guna.UI2.WinForms.Guna2Button btnPagarMulta;
         private System.Windows.Forms.Panel panelContent;
         private Guna.UI2.WinForms.Guna2Button guna2Button5;
         private Guna.UI2.WinForms.Guna2Button guna2Button4;

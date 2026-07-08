@@ -76,6 +76,16 @@ namespace PT_Readify
             new RelatorioMultasAdmin().Show();
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            FormLaunchHelper.Show(new Aprovar_Devolucoes_Admin(), this);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            FormLaunchHelper.Show(new Aprovar_Devolucoes_Emp(), this);
+        }
+
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             globais.id_utilizador = 0;

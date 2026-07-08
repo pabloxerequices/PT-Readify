@@ -333,7 +333,7 @@ namespace PT_Readify
             Label lblPreco = new Label
             {
                 Location = new Point(10, 300),
-                Size = new Size(180, 20),
+                Size = new Size(180, 25),
                 Text = $"€ {preco:F2}",
                 Font = new Font(cardFont.FontFamily, cardFont.Size + 1, FontStyle.Bold),
                 ForeColor = Color.FromArgb(52, 168, 83)
@@ -491,6 +491,11 @@ namespace PT_Readify
         private void button3_Click(object sender, EventArgs e)
         {
             AbrirCarrinho();
+        }
+
+        private void buttonRefresh_Click(object sender, EventArgs e)
+        {
+            CarregarTodosLivros();
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
