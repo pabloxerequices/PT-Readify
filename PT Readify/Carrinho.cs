@@ -189,178 +189,120 @@ namespace PT_Readify
         // ==========================================
         // LÓGICA DE CONFIRMAÇÃO
         // ==========================================
-        private void ConfirmarPedido()
+       private void ConfirmarPedido()
+{
+    if (carrinhoTable.Rows.Count == 0)
+    {
+        MessageBox.Show("O carrinho está vazio!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
+
+    if (globais.id_utilizador <= 0)
+    {
+        MessageBox.Show("Inicie sessão para finalizar a compra.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
+
+    decimal totalCompra = CarrinhoService.TotalPreco;
+    if (!CarteiraService.TemSaldoSuficiente(totalCompra))
+    {
+        MessageBox.Show($"Saldo insuficiente na carteira. Total: {totalCompra:C2}", "Saldo insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
+
+    try
+    {
+        this.Cursor = Cursors.WaitCursor;
+
+        // Gerar as linhas da tabela dinamicamente
+        string itensHtml = "";
+        foreach (DataRow row in carrinhoTable.Rows)
         {
-            if (carrinhoTable.Rows.Count == 0)
-            {
-                MessageBox.Show("O carrinho está vazio!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (globais.id_utilizador <= 0)
-            {
-                MessageBox.Show("Inicie sessão para finalizar a compra.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            decimal totalCompra = CarrinhoService.TotalPreco;
-            if (!CarteiraService.TemSaldoSuficiente(totalCompra))
-            {
-                MessageBox.Show(
-                    $"Saldo insuficiente na carteira. Total do carrinho: {totalCompra:C2}\n\nAdicione saldo na Carteira.",
-                    "Saldo insuficiente",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                this.Cursor = Cursors.WaitCursor;
-
-                // Regista a compra, desconta saldo/stock e envia o recibo para o email do utilizador.
-                var resultadoRecibo = CarrinhoService.ProcessarCarrinho();
-                this.Cursor = Cursors.Default;
-
-                if (resultadoRecibo.Sucesso)
-                {
-
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                    {
-                        smtp.EnableSsl = true;
-                        smtp.Credentials = new NetworkCredential("martimr480@gmail.com", "djni szgk juxn ludr");
-
-                        using (MailMessage mail = new MailMessage())
-                        {
-                            mail.From = new MailAddress("martimr480@gmail.com", "Livraria");
-                            mail.To.Add(BLL.Clientes.ObterEmailUtilizadorConectado(globais.id_utilizador)); // Destinatário do e-mail (e-mail do utilizador)
-                            mail.Subject = "Recibo de Compra";
-
-                            // Captura a data e hora exatas do momento da compra
-                            DateTime dataHoraCompra = DateTime.Now;
-
-                            // Monta o corpo do e-mail com o recibo original, data/hora e aviso de devolução
-                            string corpoEmail = $@"<!DOCTYPE html>
-<html lang=""en"">
-<head>
-    <meta charset=""UTF-8"">
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-    <title>Recibo de Compra</title>
-    <style>
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }}
-        .container {{
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }}
-        .header {{
-            border-bottom: 3px solid #007bff;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }}
-        .message {{
-            color: #333;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }}
-        .info-section {{
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-left: 4px solid #007bff;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }}
-        .info-item {{
-            margin-bottom: 10px;
-        }}
-        .label {{
-            font-weight: 600;
-            color: #007bff;
-            display: inline-block;
-            min-width: 200px;
-        }}
-        .value {{
-            color: #555;
-        }}
-        .warning {{
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }}
-        .warning strong {{
-            color: #856404;
-        }}
-    </style>
-</head>
-<body>
-    <div class=""container"">
-        <div class=""header"">
-            <h2 style=""color: #007bff; margin: 0;"">Seu Pedido foi Confirmado! ✓</h2>
-        </div>
-        
-        <div class=""message"">
-            $""{resultadoRecibo.Mensagem}
-        </div>
-        
-        <div class=""info-section"">
-            <div class=""info-item"">
-                <span class=""label"">Data e Hora da Compra:</span>
-                <span class=""value"">{{dataHoraCompra:dd/MM/yyyy HH:mm:ss}}</span>
-            </div>
-        </div>
-        
-        <div class=""warning"">
-            <strong>ℹ️ Informação Importante:</strong><br>
-            Dispõe de um prazo de 30 dias úteis para efetuar qualquer devolução.
-        </div>
-    </div>
-</body>
-</html> ";
-
-                            mail.Body = corpoEmail;
-                            mail.IsBodyHtml = true;
-
-                            // Envia o e-mail (apenas uma vez para evitar duplicados)
-                            smtp.Send(mail);
-                        }
-                    }
-
-                    MessageBox.Show(
-                        "Compra efetuada com sucesso!\n\n" + resultadoRecibo.Mensagem,
-                        "Sucesso",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-
-                    AtualizarTotalGeral();
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "A compra foi registada, mas ocorreu um problema a enviar o recibo por e-mail:\n\n" + resultadoRecibo.Mensagem,
-                        "Aviso - E-mail",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-
-                    AtualizarTotalGeral();
-                }
-            }
-            catch (Exception ex)
-            {
-                this.Cursor = Cursors.Default;
-                MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            itensHtml += $@"
+            <tr style=""border-bottom: 1px solid #eee;"">
+                <td style=""padding: 10px;"">{row["Titulo"]}</td>
+                <td style=""padding: 10px;"">{row["Editora"]}</td>
+                <td style=""padding: 10px; text-align: right;"">{Convert.ToDecimal(row["Preco"]):C2}</td>
+            </tr>";
         }
+
+        var resultadoRecibo = CarrinhoService.ProcessarCarrinho();
+        this.Cursor = Cursors.Default;
+
+        if (resultadoRecibo.Sucesso)
+        {
+            using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+            {
+                smtp.EnableSsl = true;
+                smtp.Credentials = new NetworkCredential("martimr480@gmail.com", "djniszgkjuxnludr");
+
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress("martimr480@gmail.com", "Livraria Readify");
+                    mail.To.Add(BLL.Clientes.ObterEmailUtilizadorConectado(globais.id_utilizador));
+                    mail.Subject = "Recibo de Compra - Livraria Readify";
+                    mail.IsBodyHtml = true;
+
+                    DateTime dataHoraCompra = DateTime.Now;
+
+                    string corpoEmail = $@"
+                    <!DOCTYPE html>
+                    <html lang=""pt-pt"">
+                    <head>
+                        <meta charset=""UTF-8"">
+                        <style>
+                            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px 20px; }}
+                            .container {{ max-width: 500px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 6px solid #2ecc71; }}
+                            .logo {{ text-align: center; margin-bottom: 20px; }}
+                            .logo img {{ width: 120px; height: auto; }}
+                            .header h2 {{ color: #2c3e50; margin-top: 0; font-size: 24px; text-align: center; }}
+                            table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                            th {{ background-color: #f8f9fa; color: #2c3e50; padding: 10px; text-align: left; border-bottom: 2px solid #eee; }}
+                            .total {{ font-weight: bold; font-size: 18px; color: #2c3e50; text-align: right; padding-top: 10px; border-top: 2px solid #2ecc71; }}
+                            .timestamp {{ text-align: center; background: #f8f9fa; padding: 10px; border-radius: 6px; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }}
+                            .warning {{ margin-top: 30px; font-size: 13px; color: #95a5a6; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class=""container"">
+                            <div class=""logo""><img src=""https://i.ibb.co/WWgWxxtx/image.png"" alt=""Logo Readify""></div>
+                            <div class=""header""><h2>Pedido Confirmado na Readify!</h2></div>
+                            <div class=""timestamp""><strong>Data da compra:</strong> {dataHoraCompra:dd/MM/yyyy HH:mm:ss}</div>
+                            
+                            <table>
+                                <thead><tr><th>Livro</th><th>Editora</th><th>Preço</th></tr></thead>
+                                <tbody>{itensHtml}</tbody>
+                            </table>
+                            
+                            <div class=""total"">Total Pago: {totalCompra:C2}</div>
+                            
+                            <div class=""warning"">
+                                Obrigado por comprar na nossa Livraria Readify.<br>
+                                Dispõe de 30 dias úteis para trocas ou devoluções.
+                            </div>
+                        </div>
+                    </body>
+                    </html>";
+
+                    mail.Body = corpoEmail;
+                    smtp.Send(mail);
+                }
+            }
+
+            MessageBox.Show("Compra efetuada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            AtualizarTotalGeral();
+        }
+        else
+        {
+            MessageBox.Show("Erro ao enviar recibo: " + resultadoRecibo.Mensagem, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+    catch (Exception ex)
+    {
+        this.Cursor = Cursors.Default;
+        MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}
 
         private void IrParaEmprestimos()
         {

@@ -142,5 +142,17 @@ namespace PT_Readify
         {
 
         }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            if (textBox3.UseSystemPasswordChar == false)
+            {
+                textBox3.UseSystemPasswordChar = true;
+            }
+            else
+            {
+                textBox3.UseSystemPasswordChar = false;
+            }
+        }
     }
 }

@@ -112,5 +112,21 @@ namespace PT_Readify
                 MessageBox.Show("Utilizador criado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            // Se estiver escondida, mostra. Se estiver visível, esconde.
+            if (textBox3.UseSystemPasswordChar == true)
+            {
+                textBox3.UseSystemPasswordChar = false;
+                // Opcional: podes mudar o ícone para um olho aberto se tiveres a imagem
+                // pictureBox5.Image = Properties.Resources.eye_open; 
+            }
+            else
+            {
+                textBox3.UseSystemPasswordChar = true;
+                // pictureBox5.Image = Properties.Resources.key_icon;
+            }
+        }
     }
 }

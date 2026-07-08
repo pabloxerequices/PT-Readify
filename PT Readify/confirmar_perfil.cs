@@ -70,5 +70,17 @@ namespace PT_Readify
                 MessageBox.Show("Preencha todos os campos");
             }
         }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            if (textBox2.UseSystemPasswordChar == false)
+            {
+                textBox2.UseSystemPasswordChar = true;
+            }
+            else
+            {
+                textBox2.UseSystemPasswordChar = false;
+            }
+        }
     }
 }
