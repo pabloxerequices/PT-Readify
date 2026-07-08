@@ -41,6 +41,8 @@
             this.lblFinanceiro = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.button7 = new Guna.UI2.WinForms.Guna2Button();
             this.button8 = new Guna.UI2.WinForms.Guna2Button();
+            this.button9 = new Guna.UI2.WinForms.Guna2Button();
+            this.button11 = new Guna.UI2.WinForms.Guna2Button();
             this.button10 = new Guna.UI2.WinForms.Guna2Button();
             this.lblEstatisticas = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.button6 = new Guna.UI2.WinForms.Guna2Button();
@@ -160,6 +162,8 @@
             this.panelRight.Controls.Add(this.lblFinanceiro);
             this.panelRight.Controls.Add(this.button7);
             this.panelRight.Controls.Add(this.button8);
+            this.panelRight.Controls.Add(this.button9);
+            this.panelRight.Controls.Add(this.button11);
             this.panelRight.Controls.Add(this.button10);
             this.panelRight.Controls.Add(this.lblEstatisticas);
             this.panelRight.Controls.Add(this.button6);
@@ -204,6 +208,32 @@
             this.button8.TabIndex = 9;
             this.button8.Text = "Relatório de Multas";
             this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.BorderRadius = 8;
+            this.button9.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
+            this.button9.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.button9.ForeColor = System.Drawing.Color.White;
+            this.button9.Location = new System.Drawing.Point(16, 204);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(228, 58);
+            this.button9.TabIndex = 12;
+            this.button9.Text = "Aprovar Devoluções";
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button11
+            // 
+            this.button11.BorderRadius = 8;
+            this.button11.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(89)))), ((int)(((byte)(182)))));
+            this.button11.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.button11.ForeColor = System.Drawing.Color.White;
+            this.button11.Location = new System.Drawing.Point(16, 268);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(228, 58);
+            this.button11.TabIndex = 13;
+            this.button11.Text = "Aprovar Devoluções Empréstimo";
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // button10
             // 
@@ -303,6 +333,8 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel lblFinanceiro;
         private Guna.UI2.WinForms.Guna2Button button7;
         private Guna.UI2.WinForms.Guna2Button button8;
+        private Guna.UI2.WinForms.Guna2Button button9;
+        private Guna.UI2.WinForms.Guna2Button button11;
         private Guna.UI2.WinForms.Guna2Button button10;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblEstatisticas;
         private Guna.UI2.WinForms.Guna2Button button6;

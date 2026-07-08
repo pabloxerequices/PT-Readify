@@ -141,6 +141,21 @@
     </Compile>
     <Compile Include="DAL.cs" />
     <Compile Include="DevolucaoUiHelper.cs" />
+    <Compile Include="Aprovar_Devolucoes_Admin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Aprovar_Devolucoes_Admin.Designer.cs">
+      <DependentUpon>Aprovar_Devolucoes_Admin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Aprovar_Devolucoes_Emp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Aprovar_Devolucoes_Emp.Designer.cs">
+      <DependentUpon>Aprovar_Devolucoes_Emp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputMultaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="HistoricoSortHelper.cs" />
     <Compile Include="Detalhes_Livro.cs">
       <SubType>Form</SubType>
@@ -167,11 +182,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="globais.cs" />
-    <Compile Include="Historico de Emprestimos.cs">
+    <Compile Include="Histórico_de_Emprestimos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Historico de Emprestimos.Designer.cs">
-      <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
+    <Compile Include="Histórico_de_Emprestimos.Designer.cs">
+      <DependentUpon>Histórico_de_Emprestimos.cs</DependentUpon>
     </Compile>
     <Compile Include="Hstórico de compras.cs">
       <SubType>Form</SubType>
@@ -251,6 +266,12 @@
     <Compile Include="Requesitar livros.Designer.cs">
       <DependentUpon>Requesitar livros.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Aprovar_Devolucoes_Admin.resx">
+      <DependentUpon>Aprovar_Devolucoes_Admin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Aprovar_Devolucoes_Emp.resx">
+      <DependentUpon>Aprovar_Devolucoes_Emp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Carrinho.resx">
       <DependentUpon>Carrinho.cs</DependentUpon>
     </EmbeddedResource>
@@ -284,8 +305,8 @@
     <EmbeddedResource Include="GestaoStockLivros.resx">
       <DependentUpon>GestaoStockLivros.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Historico de Emprestimos.resx">
-      <DependentUpon>Historico de Emprestimos.cs</DependentUpon>
+    <EmbeddedResource Include="Histórico_de_Emprestimos.resx">
+      <DependentUpon>Histórico_de_Emprestimos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HistoricoEmprestimosAdmin.resx">
       <DependentUpon>HistoricoEmprestimosAdmin.cs</DependentUpon>

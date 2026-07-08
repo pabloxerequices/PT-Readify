@@ -31,6 +31,7 @@
             this.panelTop = new Guna.UI2.WinForms.Guna2Panel();
             this.label8 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.comboBox2 = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.buttonRefresh = new Guna.UI2.WinForms.Guna2Button();
             this.button3 = new Guna.UI2.WinForms.Guna2Button();
             this.button2 = new Guna.UI2.WinForms.Guna2Button();
             this.button1 = new Guna.UI2.WinForms.Guna2Button();
@@ -55,6 +56,7 @@
             this.panelTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.panelTop.Controls.Add(this.label8);
             this.panelTop.Controls.Add(this.comboBox2);
+            this.panelTop.Controls.Add(this.buttonRefresh);
             this.panelTop.Controls.Add(this.button3);
             this.panelTop.Controls.Add(this.button2);
             this.panelTop.Controls.Add(this.button1);
@@ -105,6 +107,19 @@
             this.comboBox2.Size = new System.Drawing.Size(205, 36);
             this.comboBox2.TabIndex = 12;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            // 
+            // buttonRefresh
+            // 
+            this.buttonRefresh.BorderRadius = 6;
+            this.buttonRefresh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.buttonRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.buttonRefresh.ForeColor = System.Drawing.Color.White;
+            this.buttonRefresh.Location = new System.Drawing.Point(1040, 48);
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.Size = new System.Drawing.Size(70, 36);
+            this.buttonRefresh.TabIndex = 10;
+            this.buttonRefresh.Text = "↻";
+            this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
             // button3
             // 
@@ -361,6 +376,7 @@
         private Guna.UI2.WinForms.Guna2HtmlLabel label6;
         private Guna.UI2.WinForms.Guna2Button button1;
         private Guna.UI2.WinForms.Guna2Button button2;
+        private Guna.UI2.WinForms.Guna2Button buttonRefresh;
         private Guna.UI2.WinForms.Guna2Button button3;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private Guna.UI2.WinForms.Guna2TextBox textbox4;

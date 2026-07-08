@@ -217,6 +217,15 @@ namespace DataAccessLayer
 
             ExecutarMigracao(@"
                 IF NOT EXISTS (
+                    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'HistoricoEmp' AND COLUMN_NAME = 'Multa_Livro_Estragado')
+                BEGIN
+                    ALTER TABLE HistoricoEmp ADD Multa_Livro_Estragado int NOT NULL
+                        CONSTRAINT DF_HistoricoEmp_Multa_Livro_Estragado DEFAULT 0;
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
                     SELECT 1 FROM INFORMATION_SCHEMA.TABLES
                     WHERE TABLE_NAME = 'Notificacao')
                 BEGIN

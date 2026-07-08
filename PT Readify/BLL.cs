@@ -678,7 +678,7 @@ namespace BusinessLogicLayer
                 if (dal.ColunaExiste("Historico_Compra", "Estado_Compra"))
                 {
                     dal.executarNonQuery(
-                        "UPDATE Historico_Compra SET Estado_Compra='Devolvida' WHERE Id=@id",
+                        "UPDATE Historico_Compra SET Estado_Compra='Pendente' WHERE Id=@id",
                         new SqlParameter[] { new SqlParameter("@id", idHistorico) });
                 }
 
@@ -692,12 +692,12 @@ namespace BusinessLogicLayer
                         });
                 }
 
-                Devolução.insertDevoluçãoCompra(idUtilizador, idLivro, dataDevolucao);
-                Livros.IncrementarStock(idLivro);
-                Carteira.AdicionarSaldo(idUtilizador, resumo.ValorReembolso);
+                // Devolução.insertDevoluçãoCompra(idUtilizador, idLivro, dataDevolucao);
+                // Livros.IncrementarStock(idLivro);
+                // Carteira.AdicionarSaldo(idUtilizador, resumo.ValorReembolso);
 
                 Notificacoes.Criar(idUtilizador, idLivro,
-                    $"Devolução da compra \"{resumo.Titulo}\" registada. Reembolso de {resumo.ValorReembolso:C2} creditado na carteira.");
+                    $"Devolução da compra \"{resumo.Titulo}\" registada. Aguarda aprovação do administrador.");
 
                 resumo.DataDevolucao = dataDevolucao;
                 return resumo;
@@ -796,6 +796,158 @@ namespace BusinessLogicLayer
                     insertHistorico_de_compras(idHistorico, dataCompra, titulo, autor, preco, estado, idLivro, idUtilizador);
                     Livros.DecrementarStock(idLivro);
                 }
+            }
+
+            public static DataTable CarregarDevolucoesPendentes()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT hc.Id, hc.Id_Utilizador, hc.Id_Livro, hc.Data_Compra, l.Titulo, l.Autor, u.Nome " +
+                    "FROM Historico_Compra hc " +
+                    "INNER JOIN Livro l ON hc.Id_Livro = l.Id_Livro " +
+                    "INNER JOIN utilizador u ON hc.Id_Utilizador = u.Id_Utilizador " +
+                    "WHERE hc.Estado_Compra = 'Pendente' " +
+                    "ORDER BY hc.Data_Compra DESC", null);
+            }
+
+            public static void AprovarDevolucaoCompra(int idHistorico, int idUtilizador, int idLivro, string titulo)
+            {
+                DAL dal = new DAL();
+                DateTime dataDevolucao = DateTime.Now;
+
+                // Atualizar estado para Devolvida
+                dal.executarNonQuery(
+                    "UPDATE Historico_Compra SET Estado_Compra='Devolvida', Data_Devolução=@data WHERE Id=@id",
+                    new SqlParameter[] {
+                        new SqlParameter("@data", dataDevolucao),
+                        new SqlParameter("@id", idHistorico)
+                    });
+
+                // Registrar na tabela de devoluções
+                Devolução.insertDevoluçãoCompra(idUtilizador, idLivro, dataDevolucao);
+
+                // Incrementar stock
+                Livros.IncrementarStock(idLivro);
+
+                // Calcular e adicionar reembolso
+                DataTable compra = dal.executarReader(
+                    "SELECT Preço FROM Historico_Compra WHERE Id=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+
+                if (compra.Rows.Count > 0)
+                {
+                    decimal precoCentimos = Convert.ToDecimal(compra.Rows[0]["Preço"]);
+                    Carteira.AdicionarSaldo(idUtilizador, precoCentimos);
+
+                    // Notificar utilizador
+                    Notificacoes.Criar(idUtilizador, (int?)idLivro,
+                        $"Devolução da compra \"{titulo}\" aprovada. Reembolso de {(precoCentimos / 100m):C2} creditado na carteira.");
+                }
+            }
+
+            public static void RejeitarDevolucaoCompra(int idHistorico)
+            {
+                DAL dal = new DAL();
+
+                // Reverter para Ativa
+                dal.executarNonQuery(
+                    "UPDATE Historico_Compra SET Estado_Compra='Ativa', Data_Devolução=NULL WHERE Id=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+            }
+
+            public static DataTable CarregarDevolucoesEmpPendentes()
+            {
+                DAL dal = new DAL();
+                return dal.executarReader(
+                    "SELECT h.Id, h.Id_Utilizador, h.Id_Livro, h.Data_Levantamento, h.Data_Prevista, h.Data_Entrega, h.Valor_Multa, l.Titulo, l.Autor, u.Nome " +
+                    "FROM HistoricoEmp h " +
+                    "INNER JOIN Livro l ON h.Id_Livro = l.Id_Livro " +
+                    "INNER JOIN utilizador u ON h.Id_Utilizador = u.Id_Utilizador " +
+                    "WHERE h.Estado_Emprestimo = 'Enviado' " +
+                    "ORDER BY h.Data_Entrega DESC", null);
+            }
+
+            public static void AprovarDevolucaoEmp(int idHistorico, int idUtilizador, int idLivro, string titulo)
+            {
+                DAL dal = new DAL();
+                DateTime dataDevolucao = DateTime.Now;
+
+                // Atualizar estado para Devolvido
+                dal.executarNonQuery(
+                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Devolvido' WHERE Id=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+
+                // Registrar na tabela de devoluções
+                Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
+
+                // Incrementar stock
+                Livros.IncrementarStock(idLivro);
+
+                // Notificar reservas disponíveis
+                NotificarReservasDisponiveis(idLivro);
+
+                // Notificar utilizador
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"Devolução do empréstimo \"{titulo}\" aprovada. O livro foi recebido em bom estado.");
+            }
+
+            public static void RejeitarDevolucaoEmp(int idHistorico, int idUtilizador, int idLivro, string titulo, decimal valorMultaLivroEstragado)
+            {
+                DAL dal = new DAL();
+
+                // Atualizar estado para Rejeitado e definir multa por livro estragado
+                dal.executarNonQuery(
+                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Rejeitado', Multa_Livro_Estragado=@multa WHERE Id=@id",
+                    new SqlParameter[] {
+                        new SqlParameter("@multa", valorMultaLivroEstragado),
+                        new SqlParameter("@id", idHistorico)
+                    });
+
+                // Notificar utilizador sobre a rejeição e multa
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"Devolução do empréstimo \"{titulo}\" rejeitada. O livro foi recebido em mau estado. Multa de {(valorMultaLivroEstragado / 100m):C2} aplicada. Pague a multa para receber o livro de volta.");
+            }
+
+            public static void PagarMultaLivroEstragado(int idHistorico, int idUtilizador, int idLivro, string titulo)
+            {
+                DAL dal = new DAL();
+
+                // Obter valor da multa
+                DataTable dt = dal.executarReader(
+                    "SELECT Multa_Livro_Estragado FROM HistoricoEmp WHERE Id=@id AND Id_Utilizador=@user",
+                    new SqlParameter[] {
+                        new SqlParameter("@id", idHistorico),
+                        new SqlParameter("@user", idUtilizador)
+                    });
+
+                if (dt.Rows.Count == 0)
+                    throw new InvalidOperationException("Empréstimo não encontrado.");
+
+                decimal multaCentimos = Convert.ToDecimal(dt.Rows[0]["Multa_Livro_Estragado"]);
+
+                // Verificar saldo
+                decimal saldoAtual = Carteira.ObterSaldo(idUtilizador);
+                if (saldoAtual < multaCentimos)
+                    throw new InvalidOperationException($"Saldo insuficiente. Necessário: {(multaCentimos / 100m):C2}, Disponível: {(saldoAtual / 100m):C2}");
+
+                // Deduzir multa da carteira
+                Carteira.AdicionarSaldo(idUtilizador, -multaCentimos);
+
+                // Atualizar estado para Devolvido e limpar multa
+                dal.executarNonQuery(
+                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Devolvido', Multa_Livro_Estragado=0 WHERE Id=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idHistorico) });
+
+                // Registrar devolução
+                DateTime dataDevolucao = DateTime.Now;
+                Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
+
+                // Incrementar stock
+                Livros.IncrementarStock(idLivro);
+
+                // Notificar utilizador
+                Notificacoes.Criar(idUtilizador, idLivro,
+                    $"Multa de {(multaCentimos / 100m):C2} paga com sucesso. O livro \"{titulo}\" foi devolvido.");
             }
 
             public static void RegistrarEmprestimo(int idUtilizador, int idLivro, int diasDevolucao = 14)
@@ -904,23 +1056,25 @@ namespace BusinessLogicLayer
                 DateTime dataDevolucao = DateTime.Now;
                 int multa = CalcularMultaCentimos(dataPrevista, dataDevolucao);
 
+                // Mudar para estado 'Enviado' em vez de 'Devolvido'
                 dal.executarNonQuery(
-                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Devolvido', Data_Entrega=@entrega, Valor_Multa=@multa WHERE Id=@id",
+                    "UPDATE HistoricoEmp SET Estado_Emprestimo='Enviado', Data_Entrega=@entrega, Valor_Multa=@multa WHERE Id=@id",
                     new SqlParameter[] {
                         new SqlParameter("@entrega", dataDevolucao),
                         new SqlParameter("@multa", multa),
                         new SqlParameter("@id", idHistorico)
                     });
 
-                Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
-                Livros.IncrementarStock(idLivro);
-                NotificarReservasDisponiveis(idLivro);
+                // Não incrementar stock nem registar devolução ainda - espera aprovação do admin
+                // Devolução.insertDevoluçãoEmp(idUtilizador, idLivro, dataDevolucao);
+                // Livros.IncrementarStock(idLivro);
+                // NotificarReservasDisponiveis(idLivro);
 
                 string msgMulta = multa > 0
                     ? $" Multa de {(multa / 100m):C2} aplicada por atraso."
                     : "";
                 Notificacoes.Criar(idUtilizador, idLivro,
-                    $"Devolução de \"{resumo.Titulo}\" registada com sucesso.{msgMulta}");
+                    $"Devolução de \"{resumo.Titulo}\" enviada para aprovação do administrador.{msgMulta}");
 
                 resumo.MultaCentimos = multa;
                 resumo.DataDevolucao = dataDevolucao;
