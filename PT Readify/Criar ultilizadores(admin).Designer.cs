@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Criar_ultilizadores_admin_));
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button4 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
@@ -68,15 +67,6 @@
             this.checkBox1.Text = "Admin";
             this.checkBox1.UseVisualStyleBackColor = false;
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(1847, 678);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(33, 36);
-            this.button4.TabIndex = 77;
-            this.button4.Text = "button4";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.Tan;
@@ -100,6 +90,7 @@
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox5.TabIndex = 72;
             this.pictureBox5.TabStop = false;
+            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
             // 
             // pictureBox4
             // 
@@ -281,7 +272,6 @@
             this.ClientSize = new System.Drawing.Size(1924, 1061);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.pictureBox5);
             this.Controls.Add(this.pictureBox4);
@@ -315,7 +305,6 @@
 
         #endregion
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.PictureBox pictureBox4;
