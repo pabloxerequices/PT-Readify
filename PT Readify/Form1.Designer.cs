@@ -68,7 +68,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(46, 342);
+            this.textBox2.Location = new System.Drawing.Point(46, 327);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(374, 20);
             this.textBox2.TabIndex = 2;
@@ -97,7 +97,7 @@
             this.label2.Font = new System.Drawing.Font("Palatino Linotype", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Image = ((System.Drawing.Image)(resources.GetObject("label2.Image")));
             this.label2.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.label2.Location = new System.Drawing.Point(41, 311);
+            this.label2.Location = new System.Drawing.Point(41, 294);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(150, 30);
             this.label2.TabIndex = 4;
@@ -175,7 +175,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(121, 481);
+            this.button3.Location = new System.Drawing.Point(663, 473);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(213, 32);
             this.button3.TabIndex = 13;
@@ -186,7 +186,7 @@
             // pictureBox5
             // 
             this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(391, 342);
+            this.pictureBox5.Location = new System.Drawing.Point(391, 327);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(29, 20);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -201,7 +201,7 @@
             this.linkRecuperarPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkRecuperarPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(102)))), ((int)(((byte)(204)))));
             this.linkRecuperarPassword.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkRecuperarPassword.Location = new System.Drawing.Point(353, 489);
+            this.linkRecuperarPassword.Location = new System.Drawing.Point(162, 350);
             this.linkRecuperarPassword.Name = "linkRecuperarPassword";
             this.linkRecuperarPassword.Size = new System.Drawing.Size(135, 15);
             this.linkRecuperarPassword.TabIndex = 14;

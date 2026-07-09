@@ -47,13 +47,13 @@ namespace PT_Readify
         private void button4_Click(object sender, EventArgs e)
         {
             new Listar_utilizadores().Show();
-            this.Hide();
+            
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             new Criar_ultilizadores_admin_().Show();
-            this.Hide();
+            
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -92,6 +92,11 @@ namespace PT_Readify
             CarteiraService.Limpar();
             new Form1().Show();
             this.Close();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            FormLaunchHelper.Show(new Configuracoes(), this);
         }
     }
 }
