@@ -54,7 +54,14 @@ namespace PT_Readify
             CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
             ConfigurarBotaoAdicionarFundos();
             AtualizarSaldo();
-            SolicitarPasswordUtilizador();
+            
+            // Load password from database if it exists
+            passwordUtilizador = BLL.Carteira.ObterPasswordCarteira(globais.id_utilizador);
+            
+            if (!BLL.Carteira.TemPasswordDefinida(globais.id_utilizador))
+            {
+                SolicitarPasswordUtilizador();
+            }
         }
 
         private void ConfigurarBotaoAdicionarFundos()
@@ -85,7 +92,7 @@ namespace PT_Readify
             {
                 promptForm.Text = "Adicionar Fundos";
                 promptForm.Width = 420;
-                promptForm.Height = 220;
+                promptForm.Height = 280;
                 promptForm.StartPosition = FormStartPosition.CenterParent;
                 promptForm.FormBorderStyle = FormBorderStyle.FixedDialog;
                 promptForm.MaximizeBox = false;
@@ -103,22 +110,47 @@ namespace PT_Readify
                 };
                 promptForm.Controls.Add(lblInstrucao);
 
+                Label lblSaldoAtual = new Label
+                {
+                    Text = $"Saldo atual: {CarteiraService.Saldo:F2}€",
+                    Left = 20,
+                    Top = 45,
+                    Width = 360,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 9F),
+                    ForeColor = Color.Gray
+                };
+                promptForm.Controls.Add(lblSaldoAtual);
+
                 TextBox txtValor = new TextBox
                 {
                     Left = 20,
-                    Top = 55,
+                    Top = 75,
                     Width = 360,
                     Height = 35,
                     Font = new Font("Segoe UI", 12F),
-                    BorderStyle = BorderStyle.FixedSingle
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Text = "0.00"
                 };
                 promptForm.Controls.Add(txtValor);
+
+                Label lblInfo = new Label
+                {
+                    Text = "Valor mínimo: 1.00€ | Valor máximo: 1000.00€",
+                    Left = 20,
+                    Top = 115,
+                    Width = 360,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 8F),
+                    ForeColor = Color.DarkGray
+                };
+                promptForm.Controls.Add(lblInfo);
 
                 Button btnConfirmar = new Button
                 {
                     Text = "CONFIRMAR",
                     Left = 90,
-                    Top = 115,
+                    Top = 150,
                     Width = 110,
                     Height = 35,
                     BackColor = Color.FromArgb(46, 204, 113),
@@ -132,7 +164,7 @@ namespace PT_Readify
                 {
                     Text = "CANCELAR",
                     Left = 220,
-                    Top = 115,
+                    Top = 150,
                     Width = 110,
                     Height = 35,
                     BackColor = Color.Gray,
@@ -144,6 +176,8 @@ namespace PT_Readify
 
                 promptForm.AcceptButton = btnConfirmar;
                 promptForm.CancelButton = btnCancelar;
+                txtValor.SelectAll();
+                txtValor.Focus();
 
                 if (promptForm.ShowDialog(this) != DialogResult.OK)
                     return;
@@ -159,6 +193,36 @@ namespace PT_Readify
                         MessageBoxIcon.Warning);
                     return;
                 }
+
+                if (valor < 1.00m)
+                {
+                    MessageBox.Show(
+                        "O valor mínimo é de 1.00€.",
+                        "Valor inválido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (valor > 1000.00m)
+                {
+                    MessageBox.Show(
+                        "O valor máximo é de 1000.00€.",
+                        "Valor inválido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                decimal novoSaldo = CarteiraService.Saldo + valor;
+                DialogResult confirmacao = MessageBox.Show(
+                    $"Confirma o carregamento de {valor:F2}€?\n\nSaldo atual: {CarteiraService.Saldo:F2}€\nNovo saldo: {novoSaldo:F2}€",
+                    "Confirmar Carregamento",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacao != DialogResult.Yes)
+                    return;
 
                 try
                 {
@@ -277,6 +341,7 @@ namespace PT_Readify
                         if (ValidarPasswordDefinicao(txtPassword.Text))
                         {
                             passwordUtilizador = BLL.utilizador.HashPassword(txtPassword.Text);
+                            BLL.Carteira.DefinirPasswordCarteira(globais.id_utilizador, passwordUtilizador);
                             MessageBox.Show(
                                 "Password definida com sucesso!",
                                 "Sucesso",
@@ -431,6 +496,7 @@ namespace PT_Readify
                     if (ValidarPasswordDefinicao(txtPasswordNova.Text))
                     {
                         passwordUtilizador = BLL.utilizador.HashPassword(txtPasswordNova.Text);
+                        BLL.Carteira.DefinirPasswordCarteira(globais.id_utilizador, passwordUtilizador);
                         MessageBox.Show(
                             "Password alterada com sucesso!",
                             "Sucesso",

@@ -42,6 +42,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.linkRecuperarPassword = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -193,12 +194,28 @@
             this.pictureBox5.TabStop = false;
             this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
             // 
+            // linkRecuperarPassword
+            // 
+            this.linkRecuperarPassword.AutoSize = true;
+            this.linkRecuperarPassword.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.linkRecuperarPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkRecuperarPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(102)))), ((int)(((byte)(204)))));
+            this.linkRecuperarPassword.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkRecuperarPassword.Location = new System.Drawing.Point(353, 489);
+            this.linkRecuperarPassword.Name = "linkRecuperarPassword";
+            this.linkRecuperarPassword.Size = new System.Drawing.Size(135, 15);
+            this.linkRecuperarPassword.TabIndex = 14;
+            this.linkRecuperarPassword.TabStop = true;
+            this.linkRecuperarPassword.Text = "Esqueceu a password?";
+            this.linkRecuperarPassword.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkRecuperarPassword_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(901, 535);
+            this.Controls.Add(this.linkRecuperarPassword);
             this.Controls.Add(this.pictureBox5);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -240,6 +257,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.LinkLabel linkRecuperarPassword;
     }
 }
 

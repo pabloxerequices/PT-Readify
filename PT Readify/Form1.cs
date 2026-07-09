@@ -37,6 +37,12 @@ namespace PT_Readify
             new Chat_Bot().Show();
         }
 
+        private void linkRecuperarPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Recuperar_Palavra_passe recuperar_Palavra_Passe = new Recuperar_Palavra_passe();
+            recuperar_Palavra_Passe.Show();
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             if (textBox1.Text != "" && textBox2.Text != "")
