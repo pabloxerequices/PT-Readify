@@ -364,17 +364,8 @@ namespace PT_Readify
         {
             try
             {
-                LivroSelecionado = idLivro;
-                quantidadeCarrinho++;
-                
-                // Atualizar label do carrinho se existir
-                if (LabelCarrinho != null)
-                {
-                    LabelCarrinho.Text = "🛒 (" + quantidadeCarrinho + ")";
-                }
-
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                CarrinhoService.AdicionarLivro(idLivro);
+                MessageBox.Show("Livro adicionado ao carrinho!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

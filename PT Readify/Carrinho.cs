@@ -76,6 +76,15 @@ namespace PT_Readify
 
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
+                Name = "colEditora",
+                HeaderText = "Editora",
+                DataPropertyName = "Editora",
+                Width = 120,
+                ReadOnly = true
+            });
+
+            dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 Name = "colPreco",
                 HeaderText = "Preço",
                 DataPropertyName = "Preco",
@@ -221,7 +230,9 @@ namespace PT_Readify
             itensHtml += $@"
             <tr style=""border-bottom: 1px solid #eee;"">
                 <td style=""padding: 10px;"">{row["Titulo"]}</td>
+                <td style=""padding: 10px;"">{row["Autor"]}</td>
                 <td style=""padding: 10px;"">{row["Editora"]}</td>
+                <td style=""padding: 10px; text-align: center;"">{row["Quantidade"]}</td>
                 <td style=""padding: 10px; text-align: right;"">{Convert.ToDecimal(row["Preco"]):C2}</td>
             </tr>";
         }
@@ -256,6 +267,7 @@ namespace PT_Readify
                             .logo {{ text-align: center; margin-bottom: 20px; }}
                             .logo img {{ width: 120px; height: auto; }}
                             .header h2 {{ color: #2c3e50; margin-top: 0; font-size: 24px; text-align: center; }}
+                            .purchase-id {{ text-align: center; background: #e8f8f5; padding: 12px; border-radius: 6px; color: #27ae60; font-size: 16px; font-weight: bold; margin-bottom: 20px; }}
                             table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
                             th {{ background-color: #f8f9fa; color: #2c3e50; padding: 10px; text-align: left; border-bottom: 2px solid #eee; }}
                             .total {{ font-weight: bold; font-size: 18px; color: #2c3e50; text-align: right; padding-top: 10px; border-top: 2px solid #2ecc71; }}
@@ -267,10 +279,11 @@ namespace PT_Readify
                         <div class=""container"">
                             <div class=""logo""><img src=""https://i.ibb.co/WWgWxxtx/image.png"" alt=""Logo Readify""></div>
                             <div class=""header""><h2>Pedido Confirmado na Readify!</h2></div>
+                            <div class=""purchase-id"">ID da Compra: #{resultadoRecibo.IdCompra}</div>
                             <div class=""timestamp""><strong>Data da compra:</strong> {dataHoraCompra:dd/MM/yyyy HH:mm:ss}</div>
                             
                             <table>
-                                <thead><tr><th>Livro</th><th>Editora</th><th>Preço</th></tr></thead>
+                                <thead><tr><th>Livro</th><th>Autor</th><th>Editora</th><th>Qtd</th><th>Preço</th></tr></thead>
                                 <tbody>{itensHtml}</tbody>
                             </table>
                             
@@ -278,7 +291,8 @@ namespace PT_Readify
                             
                             <div class=""warning"">
                                 Obrigado por comprar na nossa Livraria Readify.<br>
-                                Dispõe de 30 dias úteis para trocas ou devoluções.
+                                Dispõe de 30 dias úteis para trocas ou devoluções.<br><br>
+                                <strong>ID da Compra: #{resultadoRecibo.IdCompra}</strong>
                             </div>
                         </div>
                     </body>

@@ -281,6 +281,59 @@ namespace BusinessLogicLayer
 
                 AtualizarSaldo(idUtilizador, ObterSaldo(idUtilizador) + valor);
             }
+
+            public static string ObterPasswordCarteira(int idUtilizador)
+            {
+                if (idUtilizador <= 0)
+                    return null;
+
+                var dal = new DAL();
+                dal.GarantirEsquema();
+                GarantirRegisto(idUtilizador, dal);
+
+                object resultado = dal.executarScalar(
+                    "SELECT Password_Carteira FROM Carteira WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+
+                if (resultado == null || resultado == DBNull.Value)
+                    return null;
+
+                return resultado.ToString();
+            }
+
+            public static void DefinirPasswordCarteira(int idUtilizador, string passwordHash)
+            {
+                if (idUtilizador <= 0)
+                    throw new InvalidOperationException("Utilizador inválido.");
+
+                var dal = new DAL();
+                dal.GarantirEsquema();
+                GarantirRegisto(idUtilizador, dal);
+
+                dal.executarNonQuery(
+                    "UPDATE Carteira SET Password_Carteira=@password WHERE Id_Utilizador=@id",
+                    new SqlParameter[]
+                    {
+                        new SqlParameter("@id", idUtilizador),
+                        new SqlParameter("@password", passwordHash ?? (object)DBNull.Value)
+                    });
+            }
+
+            public static bool TemPasswordDefinida(int idUtilizador)
+            {
+                if (idUtilizador <= 0)
+                    return false;
+
+                var dal = new DAL();
+                dal.GarantirEsquema();
+                GarantirRegisto(idUtilizador, dal);
+
+                object resultado = dal.executarScalar(
+                    "SELECT Password_Carteira FROM Carteira WHERE Id_Utilizador=@id",
+                    new SqlParameter[] { new SqlParameter("@id", idUtilizador) });
+
+                return resultado != null && resultado != DBNull.Value && !string.IsNullOrWhiteSpace(resultado.ToString());
+            }
         }
 
         //---------------------------------------------------------------
@@ -761,13 +814,13 @@ namespace BusinessLogicLayer
                     sqlParamsBase);
             }
 
-            public static void RegistrarCompra(int idUtilizador, int idLivro, int quantidade)
+            public static int RegistrarCompra(int idUtilizador, int idLivro, int quantidade)
             {
                 if (idUtilizador <= 0)
                     throw new InvalidOperationException("É necessário iniciar sessão para comprar.");
 
                 if (quantidade <= 0)
-                    return;
+                    return 0;
 
                 DataTable dtLivro = Livros.ObterLivroPorId(idLivro);
                 if (dtLivro == null || dtLivro.Rows.Count == 0)
@@ -788,14 +841,18 @@ namespace BusinessLogicLayer
 
                 DateTime dataCompra = DateTime.Now;
                 DAL dal = new DAL();
+                int primeiroIdCompra = 0;
                 for (int i = 0; i < quantidade; i++)
                 {
                     int idCompra = ObterProximoId(dal, "Compra");
                     int idHistorico = ObterProximoId(dal, "Historico_Compra");
+                    if (i == 0)
+                        primeiroIdCompra = idCompra;
                     Compra.insertCompra(idCompra, idUtilizador, dataCompra, titulo, autor, preco, estado, idLivro);
                     insertHistorico_de_compras(idHistorico, dataCompra, titulo, autor, preco, estado, idLivro, idUtilizador);
                     Livros.DecrementarStock(idLivro);
                 }
+                return primeiroIdCompra;
             }
 
             public static DataTable CarregarDevolucoesPendentes()

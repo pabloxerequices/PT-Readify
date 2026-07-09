@@ -127,6 +127,12 @@
     <Compile Include="NotificacoesUtilizador.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Recuperar_Palavra-passe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Recuperar_Palavra-passe.Designer.cs">
+      <DependentUpon>Recuperar_Palavra-passe.cs</DependentUpon>
+    </Compile>
     <Compile Include="RelatorioMultasAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -351,6 +357,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Recuperar_Palavra-passe.resx">
+      <DependentUpon>Recuperar_Palavra-passe.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="registar_ultilizador.resx">
       <DependentUpon>registar_ultilizador.cs</DependentUpon>
     </EmbeddedResource>

@@ -289,8 +289,17 @@ namespace DataAccessLayer
                 BEGIN
                     CREATE TABLE Carteira (
                         Id_Utilizador int NOT NULL PRIMARY KEY,
-                        Saldo decimal(18, 2) NOT NULL CONSTRAINT DF_Carteira_Saldo DEFAULT 0
+                        Saldo decimal(18, 2) NOT NULL CONSTRAINT DF_Carteira_Saldo DEFAULT 0,
+                        Password_Carteira nvarchar(255) NULL
                     );
+                END");
+
+            ExecutarMigracao(@"
+                IF NOT EXISTS (
+                    SELECT * FROM sys.columns 
+                    WHERE object_id = OBJECT_ID('Carteira') AND name = 'Password_Carteira')
+                BEGIN
+                    ALTER TABLE Carteira ADD Password_Carteira nvarchar(255) NULL;
                 END");
         }
 

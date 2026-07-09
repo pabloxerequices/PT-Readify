@@ -60,6 +60,7 @@ namespace PT_Readify
             _itens.Columns.Add("Id_Livro", typeof(int));
             _itens.Columns.Add("Titulo", typeof(string));
             _itens.Columns.Add("Autor", typeof(string));
+            _itens.Columns.Add("Editora", typeof(string));
             _itens.Columns.Add("Preco", typeof(decimal));
             _itens.Columns.Add("Quantidade", typeof(int));
             _itens.Columns.Add("Subtotal", typeof(decimal));
@@ -89,12 +90,13 @@ namespace PT_Readify
             DataRow livro = dtLivro.Rows[0];
             string titulo = livro["Titulo"]?.ToString() ?? "";
             string autor = livro["Autor"]?.ToString() ?? "";
+            string editora = livro["Editora"]?.ToString() ?? "";
             decimal preco = Convert.ToDecimal(livro["Preço"]) / 100m;
 
-            AdicionarLivro(idLivro, titulo, autor, preco);
+            AdicionarLivro(idLivro, titulo, autor, editora, preco);
         }
 
-        public static void AdicionarLivro(int idLivro, string titulo, string autor, decimal precoEuros)
+        public static void AdicionarLivro(int idLivro, string titulo, string autor, string editora, decimal precoEuros)
         {
             GarantirInicializado();
 
@@ -114,6 +116,7 @@ namespace PT_Readify
                 novaLinha["Id_Livro"] = idLivro;
                 novaLinha["Titulo"] = titulo;
                 novaLinha["Autor"] = autor;
+                novaLinha["Editora"] = editora;
                 novaLinha["Preco"] = precoEuros;
                 novaLinha["Quantidade"] = 1;
                 novaLinha["Acao"] = "Comprar";
@@ -183,6 +186,7 @@ namespace PT_Readify
 
             var itensRecibo = new List<ItemReciboCompra>();
             DateTime dataCompra = DateTime.Now;
+            int idCompra = 0;
 
             foreach (DataRow row in _itens.Rows)
             {
@@ -207,14 +211,18 @@ namespace PT_Readify
                 int quantidade = Convert.ToInt32(row["Quantidade"]);
                 string titulo = row["Titulo"]?.ToString() ?? "";
                 string autor = row["Autor"]?.ToString() ?? "";
+                string editora = row["Editora"]?.ToString() ?? "";
                 decimal preco = Convert.ToDecimal(row["Preco"]);
 
-                BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
+                int novoIdCompra = BLL.Historicos.RegistrarCompra(globais.id_utilizador, idLivro, quantidade);
+                if (idCompra == 0)
+                    idCompra = novoIdCompra;
 
                 itensRecibo.Add(new ItemReciboCompra
                 {
                     Titulo = titulo,
                     Autor = autor,
+                    Editora = editora,
                     PrecoUnitario = preco,
                     Quantidade = quantidade
                 });
@@ -230,7 +238,8 @@ namespace PT_Readify
             return new ResultadoEnvioRecibo
             {
                 Sucesso = true,
-                Mensagem = "Os detalhes da sua compra seguem abaixo."
+                Mensagem = "Os detalhes da sua compra seguem abaixo.",
+                IdCompra = idCompra
             };
         }
     }

@@ -14,6 +14,7 @@ namespace PT_Readify
     {
         public string Titulo { get; set; }
         public string Autor { get; set; }
+        public string Editora { get; set; }
         public decimal PrecoUnitario { get; set; }
         public int Quantidade { get; set; }
         public decimal Subtotal => PrecoUnitario * Quantidade;
@@ -23,6 +24,7 @@ namespace PT_Readify
     {
         public bool Sucesso { get; set; }
         public string Mensagem { get; set; }
+        public int IdCompra { get; set; }
     }
 
     public static class ReciboCompraEmailService

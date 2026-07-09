@@ -264,6 +264,7 @@ namespace PT_Readify
             int idLivro = Convert.ToInt32(livro["Id_Livro"]);
             string titulo = livro["Titulo"]?.ToString() ?? "Sem título";
             string autor = livro["Autor"]?.ToString() ?? "Autor desconhecido";
+            string editora = livro["Editora"]?.ToString() ?? "Editora desconhecida"; // <-- Adicionado aqui
             decimal preco = Convert.ToDecimal(livro["Preço"] ?? 0) / 100m;
             int stock = livro.Table.Columns.Contains("Stock") ? Convert.ToInt32(livro["Stock"] ?? 0) : BLL.Livros.ObterStock(idLivro);
             object capaObj = livro["Capa"];
@@ -364,7 +365,7 @@ namespace PT_Readify
                     Cursor = Cursors.Hand,
                     Tag = idLivro
                 };
-                btnAdicionar.Click += (s, e) => AdicionarAoCarrinho(idLivro, titulo, autor, preco);
+                btnAdicionar.Click += (s, e) => AdicionarAoCarrinho(idLivro, titulo, autor, editora, preco);
                 card.Controls.Add(btnAdicionar);
 
                 Button btnEmprestimo = new Button
@@ -417,7 +418,7 @@ namespace PT_Readify
             FormLaunchHelper.ShowDialog(detalhes, this);
         }
 
-        private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, decimal preco)
+        private void AdicionarAoCarrinho(int idLivro, string titulo, string autor, string editora, decimal preco)
         {
             if (globais.id_utilizador <= 0)
             {
@@ -427,7 +428,7 @@ namespace PT_Readify
 
             try
             {
-                CarrinhoService.AdicionarLivro(idLivro, titulo, autor, preco);
+                CarrinhoService.AdicionarLivro(idLivro, titulo, autor, editora, preco);
                 AtualizarContadorCarrinho();
                 NotificarMenuPrincipal();
 
