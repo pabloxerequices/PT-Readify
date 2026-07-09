@@ -39,6 +39,7 @@
             this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button3 = new Guna.UI2.WinForms.Guna2Button();
+            this.btnPagarMulta = new Guna.UI2.WinForms.Guna2Button();
             this.panelContent = new System.Windows.Forms.Panel();
             this.dataGridViewHistorico_Emprestimos = new Guna.UI2.WinForms.Guna2DataGridView();
             this.panelTop.SuspendLayout();

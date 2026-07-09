@@ -122,17 +122,31 @@ namespace PT_Readify
             try
             {
                 int total = BLL.Notificacoes.ContarNaoLidas(globais.id_utilizador);
-                if (total > 0)
-                {
-                    var resultado = MessageBox.Show(
-                        $"Tem {total} notificação(ões) nova(s) (ex.: livros reservados disponíveis).\n\nDeseja ver agora?",
-                        "Notificações",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information);
+                AtualizarContadorNotificacoes(total);
+            }
+            catch { }
+        }
 
-                    if (resultado == DialogResult.Yes)
-                        FormLaunchHelper.Show(new NotificacoesUtilizador(), this);
-                }
+        private void AtualizarContadorNotificacoes(int total)
+        {
+            btnNotificacoes.Text = total > 0 ? $"🔔 ({total})" : "🔔";
+        }
+
+        private void btnNotificacoes_Click(object sender, EventArgs e)
+        {
+            if (globais.id_utilizador <= 0)
+            {
+                MessageBox.Show("Inicie sessão para ver notificações.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            using (var notificacoesForm = new NotificacoesUtilizador())
+            {
+                FormLaunchHelper.ShowDialog(notificacoesForm, this);
+            }
+            try
+            {
+                int total = BLL.Notificacoes.ContarNaoLidas(globais.id_utilizador);
+                AtualizarContadorNotificacoes(total);
             }
             catch { }
         }

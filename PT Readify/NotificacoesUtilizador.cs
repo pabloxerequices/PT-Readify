@@ -34,6 +34,7 @@ namespace PT_Readify
                 BackgroundColor = Color.White,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+            gridNotificacoes.CellClick += GridNotificacoes_CellClick;
 
             var btnMarcarLida = new Button
             {
@@ -119,6 +120,26 @@ namespace PT_Readify
             catch (Exception ex)
             {
                 MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void GridNotificacoes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            try
+            {
+                var row = gridNotificacoes.Rows[e.RowIndex];
+                string mensagem = row.Cells["Mensagem"]?.Value?.ToString() ?? "Sem detalhes";
+                string data = row.Cells["Data_Criacao"]?.Value?.ToString() ?? "";
+
+                string detalhes = $"{mensagem}\n\nData: {data}";
+                MessageBox.Show(detalhes, "Detalhes da Notificação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao mostrar detalhes: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

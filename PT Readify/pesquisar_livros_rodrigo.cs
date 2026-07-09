@@ -371,7 +371,7 @@ namespace PT_Readify
                 {
                     Location = new Point(10, 375),
                     Size = new Size(180, 28),
-                    Text = "Emprestar",
+                    Text = "Requesitar",
                     Font = new Font("Segoe UI", 8, FontStyle.Regular),
                     BackColor = Color.FromArgb(155, 89, 182),
                     ForeColor = Color.White,
