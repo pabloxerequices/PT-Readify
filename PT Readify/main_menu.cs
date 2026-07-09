@@ -91,6 +91,15 @@ namespace PT_Readify
         {
             globais.id_utilizador = 0;
             CarteiraService.Limpar();
+            
+            // Reset fullscreen setting on logout to prevent it from persisting to next user
+            var cfg = ConfigManager.Current;
+            if (cfg != null)
+            {
+                cfg.FullscreenReading = false;
+                ConfigManager.Save(cfg);
+            }
+            
             new Form1().Show();
             this.Close();
         }

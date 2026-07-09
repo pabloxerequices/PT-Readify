@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main_menu));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnNotificacoes = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.buttonConfig = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
@@ -43,8 +45,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button10 = new System.Windows.Forms.Button();
-            this.btnNotificacoes = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -83,6 +83,28 @@
             this.panel1.Size = new System.Drawing.Size(275, 1073);
             this.panel1.TabIndex = 15;
             // 
+            // btnNotificacoes
+            // 
+            this.btnNotificacoes.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.btnNotificacoes.Location = new System.Drawing.Point(111, 243);
+            this.btnNotificacoes.Name = "btnNotificacoes";
+            this.btnNotificacoes.Size = new System.Drawing.Size(48, 41);
+            this.btnNotificacoes.TabIndex = 24;
+            this.btnNotificacoes.Text = "🔔";
+            this.btnNotificacoes.UseVisualStyleBackColor = true;
+            this.btnNotificacoes.Click += new System.EventHandler(this.btnNotificacoes_Click);
+            // 
+            // button10
+            // 
+            this.button10.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.Location = new System.Drawing.Point(26, 764);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(216, 54);
+            this.button10.TabIndex = 22;
+            this.button10.Text = "Carteira\r\n";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // button9
             // 
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.System;
@@ -98,7 +120,7 @@
             // 
             // buttonConfig
             // 
-            this.buttonConfig.Font = new System.Drawing.Font("Times New Roman", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonConfig.Font = new System.Drawing.Font("Times New Roman", 15F);
             this.buttonConfig.Location = new System.Drawing.Point(26, 843);
             this.buttonConfig.Name = "buttonConfig";
             this.buttonConfig.Size = new System.Drawing.Size(216, 55);
@@ -114,7 +136,7 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(216, 54);
             this.button8.TabIndex = 21;
-            this.button8.Text = "Histórico de Empréstimos";
+            this.button8.Text = "Devolução/Histórico de Requisições";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -136,7 +158,7 @@
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(216, 54);
             this.button7.TabIndex = 20;
-            this.button7.Text = "Histórico de Compras";
+            this.button7.Text = "Devolução/Histórico de Compras";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click_1);
             // 
@@ -158,7 +180,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(216, 54);
             this.button4.TabIndex = 19;
-            this.button4.Text = "Requisições/Empréstimos";
+            this.button4.Text = "Requisições";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -213,28 +235,6 @@
             this.panel2.Size = new System.Drawing.Size(1646, 1056);
             this.panel2.TabIndex = 22;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint_1);
-            // 
-            // button10
-            // 
-            this.button10.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button10.Location = new System.Drawing.Point(26, 764);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(216, 54);
-            this.button10.TabIndex = 22;
-            this.button10.Text = "Carteira\r\n";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // btnNotificacoes
-            // 
-            this.btnNotificacoes.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnNotificacoes.Location = new System.Drawing.Point(209, 38);
-            this.btnNotificacoes.Name = "btnNotificacoes";
-            this.btnNotificacoes.Size = new System.Drawing.Size(51, 40);
-            this.btnNotificacoes.TabIndex = 24;
-            this.btnNotificacoes.Text = "🔔";
-            this.btnNotificacoes.UseVisualStyleBackColor = true;
-            this.btnNotificacoes.Click += new System.EventHandler(this.btnNotificacoes_Click);
             // 
             // main_menu
             // 

@@ -834,7 +834,7 @@ namespace BusinessLogicLayer
                 int stock = Livros.ObterStock(idLivro);
 
                 if (stock <= 0)
-                    throw new InvalidOperationException($"\"{titulo}\" está esgotado. Para reservar ou emprestar, use Requisições/Empréstimos.");
+                    throw new InvalidOperationException($"\"{titulo}\" está esgotado. Para reservar ou requesitar, use Requisições/Empréstimos.");
 
                 if (quantidade > stock)
                     throw new InvalidOperationException($"Stock insuficiente para \"{titulo}\". Disponível: {stock}.");

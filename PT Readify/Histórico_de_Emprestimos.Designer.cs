@@ -82,7 +82,7 @@
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 476);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(1068, 80);
+            this.panelBottom.Size = new System.Drawing.Size(1068, 120);
             this.panelBottom.TabIndex = 8;
             // 
             // guna2Button5
@@ -91,7 +91,7 @@
             this.guna2Button5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.guna2Button5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button5.ForeColor = System.Drawing.Color.White;
-            this.guna2Button5.Location = new System.Drawing.Point(530, 20);
+            this.guna2Button5.Location = new System.Drawing.Point(250, 10);
             this.guna2Button5.Name = "guna2Button5";
             this.guna2Button5.Size = new System.Drawing.Size(213, 40);
             this.guna2Button5.TabIndex = 4;
@@ -103,7 +103,7 @@
             this.labelTotal.AutoSize = true;
             this.labelTotal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.labelTotal.ForeColor = System.Drawing.Color.White;
-            this.labelTotal.Location = new System.Drawing.Point(20, 25);
+            this.labelTotal.Location = new System.Drawing.Point(20, 15);
             this.labelTotal.Name = "labelTotal";
             this.labelTotal.Size = new System.Drawing.Size(0, 25);
             this.labelTotal.TabIndex = 0;
@@ -114,7 +114,7 @@
             this.guna2Button4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.guna2Button4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Location = new System.Drawing.Point(289, 20);
+            this.guna2Button4.Location = new System.Drawing.Point(20, 10);
             this.guna2Button4.Name = "guna2Button4";
             this.guna2Button4.Size = new System.Drawing.Size(213, 40);
             this.guna2Button4.TabIndex = 3;
@@ -127,7 +127,7 @@
             this.guna2Button2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.guna2Button2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button2.ForeColor = System.Drawing.Color.White;
-            this.guna2Button2.Location = new System.Drawing.Point(26, 20);
+            this.guna2Button2.Location = new System.Drawing.Point(20, 50);
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(213, 40);
             this.guna2Button2.TabIndex = 2;
@@ -140,7 +140,7 @@
             this.guna2Button3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.guna2Button3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button3.ForeColor = System.Drawing.Color.White;
-            this.guna2Button3.Location = new System.Drawing.Point(789, 20);
+            this.guna2Button3.Location = new System.Drawing.Point(250, 50);
             this.guna2Button3.Name = "guna2Button3";
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
@@ -153,7 +153,7 @@
             this.btnPagarMulta.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
             this.btnPagarMulta.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnPagarMulta.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(70)))), ((int)(((byte)(50)))));
-            this.btnPagarMulta.Location = new System.Drawing.Point(539, 20);
+            this.btnPagarMulta.Location = new System.Drawing.Point(490, 50);
             this.btnPagarMulta.Name = "btnPagarMulta";
             this.btnPagarMulta.Size = new System.Drawing.Size(220, 40);
             this.btnPagarMulta.TabIndex = 4;

@@ -66,9 +66,9 @@ namespace PT_Readify
             this.panelEmail.Controls.Add(this.btnEnviarCodigo);
             this.panelEmail.Controls.Add(this.txtEmail);
             this.panelEmail.Controls.Add(this.lblEmail);
-            this.panelEmail.Location = new System.Drawing.Point(30, 110);
+            this.panelEmail.Location = new System.Drawing.Point(30, 120);
             this.panelEmail.Name = "panelEmail";
-            this.panelEmail.Size = new System.Drawing.Size(340, 130);
+            this.panelEmail.Size = new System.Drawing.Size(340, 150);
             this.panelEmail.TabIndex = 0;
             // 
             // btnEnviarCodigo
@@ -77,7 +77,7 @@ namespace PT_Readify
             this.btnEnviarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEnviarCodigo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEnviarCodigo.ForeColor = System.Drawing.Color.White;
-            this.btnEnviarCodigo.Location = new System.Drawing.Point(20, 90);
+            this.btnEnviarCodigo.Location = new System.Drawing.Point(20, 100);
             this.btnEnviarCodigo.Name = "btnEnviarCodigo";
             this.btnEnviarCodigo.Size = new System.Drawing.Size(300, 40);
             this.btnEnviarCodigo.TabIndex = 2;
@@ -89,7 +89,7 @@ namespace PT_Readify
             // 
             this.txtEmail.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.Location = new System.Drawing.Point(20, 55);
+            this.txtEmail.Location = new System.Drawing.Point(20, 60);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(300, 27);
             this.txtEmail.TabIndex = 1;
@@ -99,7 +99,7 @@ namespace PT_Readify
             this.lblEmail.AutoSize = true;
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblEmail.Location = new System.Drawing.Point(20, 25);
+            this.lblEmail.Location = new System.Drawing.Point(20, 20);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(197, 19);
             this.lblEmail.TabIndex = 0;
@@ -112,9 +112,9 @@ namespace PT_Readify
             this.panelCodigo.Controls.Add(this.btnVerificarCodigo);
             this.panelCodigo.Controls.Add(this.txtCodigo);
             this.panelCodigo.Controls.Add(this.lblCodigo);
-            this.panelCodigo.Location = new System.Drawing.Point(30, 110);
+            this.panelCodigo.Location = new System.Drawing.Point(30, 120);
             this.panelCodigo.Name = "panelCodigo";
-            this.panelCodigo.Size = new System.Drawing.Size(340, 130);
+            this.panelCodigo.Size = new System.Drawing.Size(340, 160);
             this.panelCodigo.TabIndex = 1;
             this.panelCodigo.Visible = false;
             // 
@@ -124,7 +124,7 @@ namespace PT_Readify
             this.btnVerificarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVerificarCodigo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVerificarCodigo.ForeColor = System.Drawing.Color.White;
-            this.btnVerificarCodigo.Location = new System.Drawing.Point(20, 80);
+            this.btnVerificarCodigo.Location = new System.Drawing.Point(20, 90);
             this.btnVerificarCodigo.Name = "btnVerificarCodigo";
             this.btnVerificarCodigo.Size = new System.Drawing.Size(300, 40);
             this.btnVerificarCodigo.TabIndex = 2;
@@ -136,7 +136,7 @@ namespace PT_Readify
             // 
             this.txtCodigo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtCodigo.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCodigo.Location = new System.Drawing.Point(20, 45);
+            this.txtCodigo.Location = new System.Drawing.Point(20, 50);
             this.txtCodigo.Name = "txtCodigo";
             this.txtCodigo.Size = new System.Drawing.Size(300, 27);
             this.txtCodigo.TabIndex = 1;
@@ -158,7 +158,7 @@ namespace PT_Readify
             this.btnReenviarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReenviarCodigo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReenviarCodigo.ForeColor = System.Drawing.Color.White;
-            this.btnReenviarCodigo.Location = new System.Drawing.Point(20, 125);
+            this.btnReenviarCodigo.Location = new System.Drawing.Point(20, 135);
             this.btnReenviarCodigo.Name = "btnReenviarCodigo";
             this.btnReenviarCodigo.Size = new System.Drawing.Size(300, 30);
             this.btnReenviarCodigo.TabIndex = 3;
@@ -174,9 +174,9 @@ namespace PT_Readify
             this.panelNovaPassword.Controls.Add(this.txtNovaPassword);
             this.panelNovaPassword.Controls.Add(this.lblConfirmarPassword);
             this.panelNovaPassword.Controls.Add(this.lblNovaPassword);
-            this.panelNovaPassword.Location = new System.Drawing.Point(30, 110);
+            this.panelNovaPassword.Location = new System.Drawing.Point(30, 120);
             this.panelNovaPassword.Name = "panelNovaPassword";
-            this.panelNovaPassword.Size = new System.Drawing.Size(340, 180);
+            this.panelNovaPassword.Size = new System.Drawing.Size(340, 210);
             this.panelNovaPassword.TabIndex = 2;
             this.panelNovaPassword.Visible = false;
             // 
@@ -186,7 +186,7 @@ namespace PT_Readify
             this.btnAlterarPassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAlterarPassword.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAlterarPassword.ForeColor = System.Drawing.Color.White;
-            this.btnAlterarPassword.Location = new System.Drawing.Point(20, 140);
+            this.btnAlterarPassword.Location = new System.Drawing.Point(20, 160);
             this.btnAlterarPassword.Name = "btnAlterarPassword";
             this.btnAlterarPassword.Size = new System.Drawing.Size(300, 40);
             this.btnAlterarPassword.TabIndex = 4;
@@ -198,7 +198,7 @@ namespace PT_Readify
             // 
             this.txtConfirmarPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtConfirmarPassword.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtConfirmarPassword.Location = new System.Drawing.Point(20, 105);
+            this.txtConfirmarPassword.Location = new System.Drawing.Point(20, 120);
             this.txtConfirmarPassword.Name = "txtConfirmarPassword";
             this.txtConfirmarPassword.PasswordChar = '*';
             this.txtConfirmarPassword.Size = new System.Drawing.Size(300, 27);
@@ -208,7 +208,7 @@ namespace PT_Readify
             // 
             this.txtNovaPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtNovaPassword.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNovaPassword.Location = new System.Drawing.Point(20, 65);
+            this.txtNovaPassword.Location = new System.Drawing.Point(20, 70);
             this.txtNovaPassword.Name = "txtNovaPassword";
             this.txtNovaPassword.PasswordChar = '*';
             this.txtNovaPassword.Size = new System.Drawing.Size(300, 27);
@@ -219,7 +219,7 @@ namespace PT_Readify
             this.lblConfirmarPassword.AutoSize = true;
             this.lblConfirmarPassword.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConfirmarPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblConfirmarPassword.Location = new System.Drawing.Point(20, 85);
+            this.lblConfirmarPassword.Location = new System.Drawing.Point(20, 95);
             this.lblConfirmarPassword.Name = "lblConfirmarPassword";
             this.lblConfirmarPassword.Size = new System.Drawing.Size(197, 19);
             this.lblConfirmarPassword.TabIndex = 1;
@@ -242,7 +242,7 @@ namespace PT_Readify
             this.btnCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelar.ForeColor = System.Drawing.Color.White;
-            this.btnCancelar.Location = new System.Drawing.Point(220, 310);
+            this.btnCancelar.Location = new System.Drawing.Point(220, 350);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(150, 40);
             this.btnCancelar.TabIndex = 5;
@@ -256,7 +256,7 @@ namespace PT_Readify
             this.btnVoltarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVoltarCodigo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltarCodigo.ForeColor = System.Drawing.Color.White;
-            this.btnVoltarCodigo.Location = new System.Drawing.Point(30, 310);
+            this.btnVoltarCodigo.Location = new System.Drawing.Point(30, 350);
             this.btnVoltarCodigo.Name = "btnVoltarCodigo";
             this.btnVoltarCodigo.Size = new System.Drawing.Size(100, 40);
             this.btnVoltarCodigo.TabIndex = 4;
@@ -270,7 +270,7 @@ namespace PT_Readify
             this.btnVoltarEmail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVoltarEmail.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltarEmail.ForeColor = System.Drawing.Color.White;
-            this.btnVoltarEmail.Location = new System.Drawing.Point(30, 310);
+            this.btnVoltarEmail.Location = new System.Drawing.Point(30, 350);
             this.btnVoltarEmail.Name = "btnVoltarEmail";
             this.btnVoltarEmail.Size = new System.Drawing.Size(100, 40);
             this.btnVoltarEmail.TabIndex = 3;
@@ -292,7 +292,7 @@ namespace PT_Readify
             this.panelMain.Controls.Add(this.panelEmail);
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(400, 360);
+            this.panelMain.Size = new System.Drawing.Size(400, 400);
             this.panelMain.TabIndex = 6;
             // 
             // lblTitulo
@@ -322,7 +322,7 @@ namespace PT_Readify
             this.lblPassoAtual.AutoSize = true;
             this.lblPassoAtual.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPassoAtual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(73)))), ((int)(((byte)(94)))));
-            this.lblPassoAtual.Location = new System.Drawing.Point(30, 70);
+            this.lblPassoAtual.Location = new System.Drawing.Point(30, 75);
             this.lblPassoAtual.Name = "lblPassoAtual";
             this.lblPassoAtual.Size = new System.Drawing.Size(89, 19);
             this.lblPassoAtual.TabIndex = 2;
@@ -333,7 +333,7 @@ namespace PT_Readify
             this.lblPasso1.AutoSize = true;
             this.lblPasso1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPasso1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
-            this.lblPasso1.Location = new System.Drawing.Point(30, 90);
+            this.lblPasso1.Location = new System.Drawing.Point(30, 95);
             this.lblPasso1.Name = "lblPasso1";
             this.lblPasso1.Size = new System.Drawing.Size(80, 15);
             this.lblPasso1.TabIndex = 3;
@@ -344,7 +344,7 @@ namespace PT_Readify
             this.lblPasso2.AutoSize = true;
             this.lblPasso2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPasso2.ForeColor = System.Drawing.Color.Gray;
-            this.lblPasso2.Location = new System.Drawing.Point(130, 90);
+            this.lblPasso2.Location = new System.Drawing.Point(130, 95);
             this.lblPasso2.Name = "lblPasso2";
             this.lblPasso2.Size = new System.Drawing.Size(95, 15);
             this.lblPasso2.TabIndex = 4;
@@ -355,7 +355,7 @@ namespace PT_Readify
             this.lblPasso3.AutoSize = true;
             this.lblPasso3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPasso3.ForeColor = System.Drawing.Color.Gray;
-            this.lblPasso3.Location = new System.Drawing.Point(240, 90);
+            this.lblPasso3.Location = new System.Drawing.Point(240, 95);
             this.lblPasso3.Name = "lblPasso3";
             this.lblPasso3.Size = new System.Drawing.Size(105, 15);
             this.lblPasso3.TabIndex = 5;
@@ -366,7 +366,7 @@ namespace PT_Readify
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(242)))), ((int)(((byte)(245)))));
-            this.ClientSize = new System.Drawing.Size(400, 360);
+            this.ClientSize = new System.Drawing.Size(400, 400);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnVoltarCodigo);
