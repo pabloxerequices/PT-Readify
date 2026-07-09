@@ -41,7 +41,15 @@ namespace PT_Readify
             { "AutoLogoutTitle", "Sessão expirada" },
             { "AutoLogoutMessage", "A sua sessão foi terminada por inatividade." },
             { "Close", "Fechar" },
-            { "BooksInCart", "Livros ({0} no carrinho)" }
+            { "BooksInCart", "Livros ({0} no carrinho)" },
+            { "Email:", "Email:" },
+            { "Password:", "Palavra-passe:" },
+            { "Login", "Login" },
+            { "Welcome", "Bem-vindo" },
+            { "Enter", "Entrar" },
+            { "Register", "Registre-se" },
+            { "ForgotPassword", "Esqueceu a password?" },
+            { "NoAccount", "Ainda não tem uma conta?" }
         };
 
         private static readonly Dictionary<string, string> En = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -79,7 +87,15 @@ namespace PT_Readify
             { "AutoLogoutTitle", "Session expired" },
             { "AutoLogoutMessage", "Your session was ended due to inactivity." },
             { "Close", "Close" },
-            { "BooksInCart", "Books ({0} in cart)" }
+            { "BooksInCart", "Books ({0} in cart)" },
+            { "Email:", "Email:" },
+            { "Password:", "Password:" },
+            { "Login", "Login" },
+            { "Welcome", "Welcome" },
+            { "Enter", "Enter" },
+            { "Register", "Register" },
+            { "ForgotPassword", "Forgot password?" },
+            { "NoAccount", "Don't have an account?" }
         };
 
         public static bool IsEnglish(Config cfg)

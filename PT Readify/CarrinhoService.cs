@@ -74,7 +74,7 @@ namespace PT_Readify
             int stock = BLL.Livros.ObterStock(idLivro);
             if (stock <= 0)
                 throw new InvalidOperationException(
-                    $"\"{titulo}\" está esgotado. Para reservar ou emprestar, vá a Requisições/Empréstimos.");
+                    $"\"{titulo}\" está esgotado. Para reservar ou requesitar, vá a Requisições/Empréstimos.");
 
             if (quantidadeDesejada > stock)
                 throw new InvalidOperationException(

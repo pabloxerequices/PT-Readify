@@ -60,7 +60,7 @@ namespace PT_Readify
                 cfgComboFont.Items.AddRange(new object[] { "Segoe UI", "Arial", "Times New Roman", "Calibri" });
                 cfgComboFont.SelectedItem = string.IsNullOrWhiteSpace(_config.FontName) ? "Segoe UI" : _config.FontName;
 
-                cfgNumFontSize.Value = Math.Max(15, Math.Min(100, _config.FontSize));
+                cfgNumFontSize.Value = Math.Max(10, Math.Min(24, _config.FontSize));
 
                 cfgComboAutoLogout.Items.Clear();
                 foreach (var minutes in AutoLogoutManager.AllowedMinutes)
@@ -171,6 +171,9 @@ namespace PT_Readify
             {
                 var cfg = ConfigManager.Current;
                 if (cfg == null) return;
+
+                // Apply theme to all open forms
+                ConfigApplier.ApplyThemeToAllForms(cfg);
 
                 foreach (Form open in Application.OpenForms)
                 {

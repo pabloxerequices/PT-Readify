@@ -138,8 +138,8 @@ namespace PT_Readify
             if (string.IsNullOrWhiteSpace(cfg.FontName))
                 cfg.FontName = Config.Default().FontName;
 
-            if (cfg.FontSize < 15) cfg.FontSize = 15;
-            if (cfg.FontSize > 100) cfg.FontSize = 100;
+            if (cfg.FontSize < 10) cfg.FontSize = 10;
+            if (cfg.FontSize > 24) cfg.FontSize = 24;
 
             cfg.AutoLogoutMinutes = AutoLogoutManager.NormalizeMinutes(cfg.AutoLogoutMinutes);
 

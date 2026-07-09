@@ -489,7 +489,7 @@ namespace PT_Readify
                    "1. Vá ao menu **Livros** e escolha os livros que quer comprar\n" +
                    "2. Adicione-os ao carrinho (o botão **Livros** mostra quantos itens tem)\n" +
                    "3. Abra o carrinho, confirme os itens e conclua a compra\n\n" +
-                   "Para **emprestar** ou **reservar**, use **Requisições/Empréstimos** — o carrinho não serve para isso.\n\n" +
+                   "Para **requesitar** ou **reservar**, use **Requisições/Empréstimos** — o carrinho não serve para isso.\n\n" +
                    "Tem mais alguma dúvida?";
         }
 

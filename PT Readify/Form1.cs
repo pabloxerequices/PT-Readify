@@ -30,6 +30,23 @@ namespace PT_Readify
             globais.id_utilizador = 0;
             CarteiraService.Limpar();
             textBox2.UseSystemPasswordChar = true;
+            
+            // Apply language only (no theme for login form)
+            var cfg = ConfigManager.Current;
+            ApplyLanguage(cfg);
+        }
+        
+        private void ApplyLanguage(Config cfg)
+        {
+            this.Text = "Login";
+            label1.Text = LanguageHelper.T("Email:", cfg).Replace(":", "") + ":";
+            label2.Text = LanguageHelper.T("Password:", cfg).Replace(":", "") + ":";
+            label3.Text = LanguageHelper.T("Login", cfg);
+            label5.Text = LanguageHelper.T("Welcome", cfg);
+            button2.Text = LanguageHelper.T("Enter", cfg);
+            button1.Text = LanguageHelper.T("Register", cfg);
+            linkRecuperarPassword.Text = LanguageHelper.T("ForgotPassword", cfg);
+            label6.Text = LanguageHelper.T("NoAccount", cfg);
         }
 
         private void button3_Click(object sender, EventArgs e)

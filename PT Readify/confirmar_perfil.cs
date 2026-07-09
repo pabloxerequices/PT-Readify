@@ -20,7 +20,7 @@ namespace PT_Readify
 
         private void confirmar_perfil_Load(object sender, EventArgs e)
         {
-
+            textBox2.UseSystemPasswordChar = true;
         }
 
         private void button2_Click(object sender, EventArgs e)

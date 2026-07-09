@@ -126,8 +126,8 @@
 
             this.cfgNumFontSize.Location = new System.Drawing.Point(220, 160);
             this.cfgNumFontSize.Size = new System.Drawing.Size(120, 36);
-            this.cfgNumFontSize.Minimum = 15;
-            this.cfgNumFontSize.Maximum = 100;
+            this.cfgNumFontSize.Minimum = 10;
+            this.cfgNumFontSize.Maximum = 24;
             this.cfgNumFontSize.Value = 15;
 
             // AutoLogout
