@@ -141,7 +141,7 @@
             this.btnEmprestar.Name = "btnEmprestar";
             this.btnEmprestar.Size = new System.Drawing.Size(110, 40);
             this.btnEmprestar.TabIndex = 3;
-            this.btnEmprestar.Text = "Emprestar";
+            this.btnEmprestar.Text = "Requisições";
             this.btnEmprestar.Click += new System.EventHandler(this.btnEmprestar_Click);
             // 
             // btnFinalizarCompra

@@ -25,13 +25,13 @@ namespace PT_Readify
         private void ConfigurarBotoes()
         {
             btnReservar.Visible = false;
-            btnEmprestar.Text = "Empréstimos";
+            btnEmprestar.Text = "Requisições";
             btnEmprestar.FillColor = Color.FromArgb(155, 89, 182);
             btnComprar.Visible = false;
 
             var lblInfo = new Label
             {
-                Text = "O carrinho é apenas para compras. Para emprestar ou reservar, use Empréstimos.",
+                Text = "O carrinho é apenas para compras. Para requisitar ou reservar, use Requisições.",
                 ForeColor = Color.FromArgb(200, 200, 200),
                 AutoSize = false,
                 Size = new Size(340, 40),
