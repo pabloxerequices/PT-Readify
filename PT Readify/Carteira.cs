@@ -81,15 +81,15 @@ namespace PT_Readify
                 FillColor = Color.FromArgb(46, 204, 113),
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(60, 200),
+                Location = new Point(20, 120),
                 Name = "btnAdicionarFundos",
-                Size = new Size(380, 45),
+                Size = new Size(310, 35),
                 TabIndex = 3,
                 Text = LanguageHelper.T("AddFunds", _config)
             };
             btnAdicionarFundos.Click += BtnAdicionarFundos_Click;
             panelCarteira.Controls.Add(btnAdicionarFundos);
-            btnAlterarPagamento.Location = new Point(60, 260);
+            btnAlterarPagamento.Location = new Point(20, 170);
         }
 
         private void BtnAdicionarFundos_Click(object sender, EventArgs e)
