@@ -12,26 +12,30 @@ namespace PT_Readify
     public partial class Carrinho : Form
     {
         private DataTable carrinhoTable;
+        private Config _config;
 
         public Carrinho()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             carrinhoTable = CarrinhoService.Itens;
             ConfigurarDataGrid();
             ConfigurarBotoes();
+            ApplyConfig(_config);
+            ApplyLanguage();
             AtualizarTotalGeral();
         }
 
         private void ConfigurarBotoes()
         {
             btnReservar.Visible = false;
-            btnEmprestar.Text = "Requisições";
+            btnEmprestar.Text = LanguageHelper.T("Requests", _config);
             btnEmprestar.FillColor = Color.FromArgb(155, 89, 182);
             btnComprar.Visible = false;
 
             var lblInfo = new Label
             {
-                Text = "O carrinho é apenas para compras. Para requisitar ou reservar, use Requisições.",
+                Text = LanguageHelper.T("CartInfo", _config),
                 ForeColor = Color.FromArgb(200, 200, 200),
                 AutoSize = false,
                 Size = new Size(340, 40),
@@ -50,7 +54,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colId",
-                HeaderText = "ID",
+                HeaderText = LanguageHelper.T("ID", _config),
                 DataPropertyName = "Id_Livro",
                 Width = 50,
                 ReadOnly = true
@@ -59,7 +63,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colTitulo",
-                HeaderText = "Título",
+                HeaderText = LanguageHelper.T("Title", _config),
                 DataPropertyName = "Titulo",
                 Width = 220,
                 ReadOnly = true
@@ -68,7 +72,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colAutor",
-                HeaderText = "Autor",
+                HeaderText = LanguageHelper.T("Author", _config),
                 DataPropertyName = "Autor",
                 Width = 120,
                 ReadOnly = true
@@ -77,7 +81,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colEditora",
-                HeaderText = "Editora",
+                HeaderText = LanguageHelper.T("Publisher", _config),
                 DataPropertyName = "Editora",
                 Width = 120,
                 ReadOnly = true
@@ -86,7 +90,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colPreco",
-                HeaderText = "Preço",
+                HeaderText = LanguageHelper.T("Price", _config),
                 DataPropertyName = "Preco",
                 Width = 70,
                 ReadOnly = true,
@@ -96,7 +100,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colQuantidade",
-                HeaderText = "Qtd",
+                HeaderText = LanguageHelper.T("Qty", _config),
                 DataPropertyName = "Quantidade",
                 Width = 50,
                 ReadOnly = false
@@ -105,7 +109,7 @@ namespace PT_Readify
             dataGridViewCarrinho.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colSubtotal",
-                HeaderText = "Subtotal",
+                HeaderText = LanguageHelper.T("Subtotal", _config),
                 DataPropertyName = "Subtotal",
                 Width = 80,
                 ReadOnly = true,
@@ -116,7 +120,7 @@ namespace PT_Readify
             {
                 Name = "colRemover",
                 HeaderText = "",
-                Text = "Remover",
+                Text = LanguageHelper.T("Remove", _config),
                 UseColumnTextForButtonValue = true,
                 Width = 80
             });
@@ -140,7 +144,13 @@ namespace PT_Readify
 
         private void AtualizarTotalGeral()
         {
-            labelTotal.Text = $"Total: {CarrinhoService.TotalPreco:C2} ({CarrinhoService.TotalItens} itens)";
+            labelTotal.Text = string.Format(LanguageHelper.T("Total", _config), CarrinhoService.TotalPreco, CarrinhoService.TotalItens);
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("CartTitle", _config);
         }
 
         private void DataGridViewCarrinho_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -151,8 +161,8 @@ namespace PT_Readify
             if (e.ColumnIndex == dataGridViewCarrinho.Columns["colRemover"].Index)
             {
                 DialogResult resultado = MessageBox.Show(
-                    "Deseja remover este livro do carrinho?",
-                    "Confirmação",
+                    LanguageHelper.T("RemoveConfirm", _config),
+                    LanguageHelper.T("Confirmation", _config),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -177,7 +187,7 @@ namespace PT_Readify
 
                     if (novaQtd <= 0)
                     {
-                        MessageBox.Show("A quantidade deve ser maior que 0.");
+                        MessageBox.Show(LanguageHelper.T("QtyGreaterThanZero", _config));
                         dataGridViewCarrinho[e.ColumnIndex, e.RowIndex].Value = 1;
                         return;
                     }
@@ -188,7 +198,7 @@ namespace PT_Readify
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(ex.Message, LanguageHelper.T("InsufficientStock", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     dataGridViewCarrinho.Refresh();
                     AtualizarTotalGeral();
                 }
@@ -202,20 +212,20 @@ namespace PT_Readify
 {
     if (carrinhoTable.Rows.Count == 0)
     {
-        MessageBox.Show("O carrinho está vazio!", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show(LanguageHelper.T("CartEmpty", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
     }
 
     if (globais.id_utilizador <= 0)
     {
-        MessageBox.Show("Inicie sessão para finalizar a compra.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show(LanguageHelper.T("LoginToPurchase", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
     }
 
     decimal totalCompra = CarrinhoService.TotalPreco;
     if (!CarteiraService.TemSaldoSuficiente(totalCompra))
     {
-        MessageBox.Show($"Saldo insuficiente na carteira. Total: {totalCompra:C2}", "Saldo insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show(string.Format(LanguageHelper.T("InsufficientBalanceCart", _config), totalCompra), LanguageHelper.T("InsufficientBalance", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
     }
 
@@ -303,18 +313,18 @@ namespace PT_Readify
                 }
             }
 
-            MessageBox.Show("Compra efetuada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageHelper.T("PurchaseSuccessful", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
             AtualizarTotalGeral();
         }
         else
         {
-            MessageBox.Show("Erro ao enviar recibo: " + resultadoRecibo.Mensagem, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(string.Format(LanguageHelper.T("ReceiptError", _config), resultadoRecibo.Mensagem), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
     catch (Exception ex)
     {
         this.Cursor = Cursors.Default;
-        MessageBox.Show("Erro ao finalizar compra: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(string.Format(LanguageHelper.T("PurchaseError", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }
 
@@ -339,8 +349,8 @@ namespace PT_Readify
         private void btnLimparCarrinho_Click(object sender, EventArgs e)
         {
             DialogResult resultado = MessageBox.Show(
-                "Deseja limpar todo o carrinho?",
-                "Confirmação",
+                LanguageHelper.T("ClearCartConfirm", _config),
+                LanguageHelper.T("Confirmation", _config),
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -355,6 +365,12 @@ namespace PT_Readify
         {
             ConfigurarDataGrid();
             AtualizarTotalGeral();
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
 
         private void dataGridViewCarrinho_CellContentClick(object sender, DataGridViewCellEventArgs e)

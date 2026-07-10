@@ -73,6 +73,7 @@ namespace PT_Readify
             button7.Text = LanguageHelper.T("PurchaseHistory", cfg);
             button8.Text = LanguageHelper.T("LoanHistory", cfg);
             button9.Text = LanguageHelper.T("Help", cfg);
+            button10.Text = LanguageHelper.T("Wallet", cfg);
             buttonConfig.Text = LanguageHelper.T("SettingsTitle", cfg);
         }
 
@@ -145,7 +146,8 @@ namespace PT_Readify
         {
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para ver notificações.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                var cfg = ConfigManager.Current;
+                MessageBox.Show(LanguageHelper.T("LoginToViewNotifications", cfg), LanguageHelper.T("Info", cfg), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             using (var notificacoesForm = new NotificacoesUtilizador())
@@ -219,7 +221,8 @@ namespace PT_Readify
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Não foi possível abrir o navegador: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var cfg = ConfigManager.Current;
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorOpeningBrowser", cfg), ex.Message), LanguageHelper.T("Error", cfg), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -264,7 +267,8 @@ namespace PT_Readify
         {
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para aceder à Carteira Digital.", "Aviso",
+                var cfg = ConfigManager.Current;
+                MessageBox.Show(LanguageHelper.T("LoginToAccessWallet", cfg), LanguageHelper.T("Info", cfg),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }

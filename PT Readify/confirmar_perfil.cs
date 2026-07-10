@@ -20,6 +20,8 @@ namespace PT_Readify
 
         private void confirmar_perfil_Load(object sender, EventArgs e)
         {
+            var cfg = ConfigManager.Current;
+            ApplyConfig(cfg);
             textBox2.UseSystemPasswordChar = true;
         }
 
@@ -81,6 +83,12 @@ namespace PT_Readify
             {
                 textBox2.UseSystemPasswordChar = false;
             }
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

@@ -14,9 +14,13 @@ namespace PT_Readify
 {
     public partial class registar_ultilizador : Form
     {
+        private Config _config;
+
         public registar_ultilizador()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -36,7 +40,7 @@ namespace PT_Readify
                     //verificar se a password tem mais de 6 caracteres
                     if (textBox3.Text.Length < 6)
                     {
-                        MessageBox.Show("A password deve ter mais de 6 caracteres");
+                        MessageBox.Show(LanguageHelper.T("PasswordMinCharsRegister", _config));
                         return;
                     }
                     else
@@ -44,7 +48,7 @@ namespace PT_Readify
                         //verificar se o email é válido
                         if (!textBox2.Text.Contains("@") || !textBox2.Text.Contains("."))
                         {
-                            MessageBox.Show("Email inválido");
+                            MessageBox.Show(LanguageHelper.T("InvalidEmailRegister", _config));
                             return;
                         }
                         else
@@ -52,7 +56,7 @@ namespace PT_Readify
                             //verificar a palavrapasse tem pelo menos um número e uma letra mauscula e uma letra minuscula e um caracter especial
                             if (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch)))
                             {
-                                MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
+                                MessageBox.Show(LanguageHelper.T("PasswordComplexityRegister", _config));
                                 return;
                             }
                             else
@@ -60,7 +64,7 @@ namespace PT_Readify
                                 //numero de telefone com 9 digitos
                                 if (textBox4.Text.Length != 9 || !textBox4.Text.All(char.IsDigit))
                                 {
-                                    MessageBox.Show("Número de telefone tem de ter 9 dígitos");
+                                    MessageBox.Show(LanguageHelper.T("Phone9Digits", _config));
                                     return;
                                 }
                                 else
@@ -68,7 +72,7 @@ namespace PT_Readify
                                     //verificar se o numero de telefone já existe
                                     if (BLL.utilizador.Load().Select("prefixo_telefone = " + comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "") + " AND numero_telefone = " + textBox4.Text).Length > 0)
                                     {
-                                        MessageBox.Show("Número de telefone já existe");
+                                        MessageBox.Show(LanguageHelper.T("PhoneExists", _config));
                                         return;
                                     }
                                     else
@@ -85,7 +89,7 @@ namespace PT_Readify
                                                 int.Parse(comboBox1.SelectedItem.ToString().Split(' ')[0].Replace("+", "")),
                                                 int.Parse(textBox4.Text)
                                             );
-                                            MessageBox.Show("Utilizador (" + textBox1.Text + ") registado com sucesso!");
+                                            MessageBox.Show(string.Format(LanguageHelper.T("UserRegistered", _config), textBox1.Text));
                                             this.Close();
                                         
                                     }
@@ -100,17 +104,20 @@ namespace PT_Readify
                 }
                 else
                 {
-                    MessageBox.Show("Email já existe");
+                    MessageBox.Show(LanguageHelper.T("EmailExists", _config));
                 }
             }
             else
             {
-                MessageBox.Show("Preencha todos os campos");
+                MessageBox.Show(LanguageHelper.T("FillAllFields", _config));
             }
         }
 
         private void registar_ultilizador_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyLanguage();
+
             //-------------------NUMEROS DE TELEFONE---------------------
 
             // Limpa itens antigos 
@@ -153,6 +160,18 @@ namespace PT_Readify
             {
                 textBox3.UseSystemPasswordChar = false;
             }
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("RegisterTitle", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

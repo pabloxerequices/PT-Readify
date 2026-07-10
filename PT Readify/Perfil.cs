@@ -20,12 +20,22 @@ namespace PT_Readify
         byte[] fotoOriginal = null; // Variável para armazenar a foto original em bytes
         bool modoEdicao = false;
         byte[] fotoBytes = null;
+        private Config _config;
+        private Button button4;
 
 
 
         public Perfil()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
+            // Inicialize o botão se não estiver sendo criado pelo designer
+            if (button4 == null)
+            {
+                button4 = new Button();
+                button4.Click += button4_Click;
+                Controls.Add(button4);
+            }
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
@@ -47,6 +57,10 @@ namespace PT_Readify
 
         private void Perfil_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             // Adiciona a lista ao ComboBox
             comboBox1.Items.AddRange(globais.prefixosEuropa);
 
@@ -81,7 +95,7 @@ namespace PT_Readify
             
             if (globais.confirmacao == false)
             {
-                MessageBox.Show("É necessário confirmar a sua identidade para ativar o modo de edição.", "Confirmação Necessária", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("ConfirmIdentity", _config), LanguageHelper.T("ConfirmationRequired", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 new confirmar_perfil().ShowDialog(); // Mostrar a janela de confirmação novamente
                 // Resetar a confirmação para evitar que o modo de edição seja ativado sem querer
             }
@@ -120,7 +134,7 @@ namespace PT_Readify
                 comboBox1.BackColor = Color.White;
 
 
-                MessageBox.Show("Modo de edição ativado. Agora pode alterar os seus dados e clicar na foto de perfil.");
+                MessageBox.Show(LanguageHelper.T("EditModeActivated", _config));
                 globais.confirmacao = false; // Resetar a confirmação para evitar que o modo de edição seja ativado sem querer no futuro
             }
         }
@@ -144,7 +158,7 @@ namespace PT_Readify
             }
             else
             {
-                MessageBox.Show("Clique em 'Editar' para poder alterar a foto de perfil.");
+                MessageBox.Show(LanguageHelper.T("ClickEditToChangePhoto", _config));
             }
         }
 
@@ -181,14 +195,24 @@ namespace PT_Readify
             }
             else
             {
-                MessageBox.Show("Para visualizar ou alterar a palavra-passe, clique primeiro em 'Editar'.",
-                                "Acesso Restrito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("ViewPasswordFirst", _config),
+                                LanguageHelper.T("RestrictedAccess", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void btnHistoricoLivros_Click(object sender, EventArgs e)
         {
             new HistoricoLivrosUtilizador().Show();
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("ProfileTitle", _config);
+            button1.Text = LanguageHelper.T("EditProfile", _config);
+            button3.Text = LanguageHelper.T("SaveProfile", _config);
+            button4.Text = LanguageHelper.T("EditPassword", _config);
+            btnHistoricoLivros.Text = LanguageHelper.T("BookHistory", _config);
         }
 
         private void SalvarDadosNaBaseDeDados()
@@ -223,8 +247,8 @@ namespace PT_Readify
             else
             {
                 // Mensagem caso o utilizador tente ver a pass sem estar a editar
-                MessageBox.Show("Para visualizar ou alterar a palavra-passe, clique primeiro em 'Editar'.",
-                                "Acesso Restrito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("ViewPasswordFirst", _config),
+                                LanguageHelper.T("RestrictedAccess", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -245,41 +269,41 @@ namespace PT_Readify
                 //verificar se o numero de telefone é válido (apenas dígitos) e se tem 9 dígitos
                 if (!textBox4.Text.All(char.IsDigit))
                 {
-                    MessageBox.Show("Número de telefone inválido. Apenas dígitos são permitidos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageHelper.T("InvalidPhoneDigits", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (textBox4.Text.Length != 9)
                 {
-                    MessageBox.Show("Número de telefone inválido. Deve conter exatamente 9 dígitos.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageHelper.T("InvalidPhoneLength", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
              
                 else
                      if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
                 {
-                    MessageBox.Show("Os campos Nome e Email não podem estar vazios.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageHelper.T("NameEmailRequired", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else
                      if (!textBox2.Text.Contains("@") || !textBox2.Text.Contains("."))
                 {
-                    MessageBox.Show("Endereço de email inválido. Certifique-se de que contém '@' e '.'.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageHelper.T("InvalidEmail", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else
                      if (passwordAlterada && textBox3.Text.Length < 6)
                 {
-                    MessageBox.Show("A palavra-passe deve conter pelo menos 6 caracteres.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageHelper.T("PasswordMinLength", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (passwordAlterada && (!textBox3.Text.Any(char.IsUpper) || !textBox3.Text.Any(char.IsLower) || !textBox3.Text.Any(char.IsDigit) || !textBox3.Text.Any(ch => !char.IsLetterOrDigit(ch))))
                 {
-                    MessageBox.Show("A password deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial");
+                    MessageBox.Show(LanguageHelper.T("PasswordComplexity", _config));
                     return;
                 }
                 else if (passwordAlterada && textBox3.Text.Contains(" "))
                 {
-                    MessageBox.Show("A password não pode conter espaços em branco");
+                    MessageBox.Show(LanguageHelper.T("PasswordNoSpaces", _config));
                     return;
                 }
                 else
@@ -295,7 +319,7 @@ namespace PT_Readify
                                                     int.Parse(comboBox1.Text.ToString().Split(' ')[0].Replace("+", "")),
                                                     int.Parse(textBox4.Text)
                                                 );
-                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageHelper.T("DataUpdated", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 
 
@@ -303,7 +327,7 @@ namespace PT_Readify
             else
             {
                 // Se nada mudou, apenas informamos o utilizador
-                MessageBox.Show("Nenhuma alteração foi detetada.", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("NoChanges", _config), LanguageHelper.T("Information", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // --- SAIR DO MODO DE EDIÇÃO (Executa sempre, quer mude ou não) ---
@@ -324,6 +348,12 @@ namespace PT_Readify
             // 5. Inverter a visibilidade dos botões
             button3.Visible = false;
             button1.Visible = true;
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

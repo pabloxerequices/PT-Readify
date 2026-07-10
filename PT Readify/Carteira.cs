@@ -11,6 +11,7 @@ namespace PT_Readify
     {
         // --- VARIÁVEIS DE CONTROLO DE ESTADO ---
         private string passwordUtilizador = string.Empty;
+        private Config _config;
 
         // Variáveis para limite de tentativas
         private int tentativasFalhadas = 0;
@@ -25,6 +26,7 @@ namespace PT_Readify
             InitializeComponent();
             CarteiraService.SaldoAlterado += OnSaldoAlterado;
             FormClosed += (s, e) => CarteiraService.SaldoAlterado -= OnSaldoAlterado;
+            _config = ConfigManager.Current;
         }
 
         private void OnSaldoAlterado()
@@ -40,11 +42,15 @@ namespace PT_Readify
 
         private void Carteira_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             if (globais.id_utilizador <= 0)
             {
                 MessageBox.Show(
-                    "Inicie sessão para aceder à Carteira Digital.",
-                    "Aviso",
+                    LanguageHelper.T("WalletAccess", _config) + " - " + LanguageHelper.T("PleaseEnterPassword", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 Close();
@@ -79,7 +85,7 @@ namespace PT_Readify
                 Name = "btnAdicionarFundos",
                 Size = new Size(380, 45),
                 TabIndex = 3,
-                Text = "Adicionar Fundos"
+                Text = LanguageHelper.T("AddFunds", _config)
             };
             btnAdicionarFundos.Click += BtnAdicionarFundos_Click;
             panelCarteira.Controls.Add(btnAdicionarFundos);
@@ -90,7 +96,7 @@ namespace PT_Readify
         {
             using (Form promptForm = new Form())
             {
-                promptForm.Text = "Adicionar Fundos";
+                promptForm.Text = LanguageHelper.T("AddFunds", _config);
                 promptForm.Width = 420;
                 promptForm.Height = 280;
                 promptForm.StartPosition = FormStartPosition.CenterParent;
@@ -101,7 +107,7 @@ namespace PT_Readify
 
                 Label lblInstrucao = new Label
                 {
-                    Text = "Introduza o valor a carregar na carteira (€):",
+                    Text = LanguageHelper.T("EnterAmount", _config),
                     Left = 20,
                     Top = 20,
                     Width = 360,
@@ -112,7 +118,7 @@ namespace PT_Readify
 
                 Label lblSaldoAtual = new Label
                 {
-                    Text = $"Saldo atual: {CarteiraService.Saldo:F2}€",
+                    Text = string.Format(LanguageHelper.T("CurrentBalanceLabel", _config), CarteiraService.Saldo),
                     Left = 20,
                     Top = 45,
                     Width = 360,
@@ -136,7 +142,7 @@ namespace PT_Readify
 
                 Label lblInfo = new Label
                 {
-                    Text = "Valor mínimo: 1.00€ | Valor máximo: 1000.00€",
+                    Text = LanguageHelper.T("MinValue", _config),
                     Left = 20,
                     Top = 115,
                     Width = 360,
@@ -148,7 +154,7 @@ namespace PT_Readify
 
                 Button btnConfirmar = new Button
                 {
-                    Text = "CONFIRMAR",
+                    Text = LanguageHelper.T("Confirm", _config),
                     Left = 90,
                     Top = 150,
                     Width = 110,
@@ -162,7 +168,7 @@ namespace PT_Readify
 
                 Button btnCancelar = new Button
                 {
-                    Text = "CANCELAR",
+                    Text = LanguageHelper.T("Cancel", _config),
                     Left = 220,
                     Top = 150,
                     Width = 110,
@@ -187,8 +193,8 @@ namespace PT_Readify
                     || valor <= 0)
                 {
                     MessageBox.Show(
-                        "Introduza um valor válido maior que zero.",
-                        "Valor inválido",
+                        LanguageHelper.T("EnterValidValue", _config),
+                        LanguageHelper.T("InvalidValue", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -197,8 +203,8 @@ namespace PT_Readify
                 if (valor < 1.00m)
                 {
                     MessageBox.Show(
-                        "O valor mínimo é de 1.00€.",
-                        "Valor inválido",
+                        LanguageHelper.T("MinValueError", _config),
+                        LanguageHelper.T("InvalidValue", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -207,8 +213,8 @@ namespace PT_Readify
                 if (valor > 1000.00m)
                 {
                     MessageBox.Show(
-                        "O valor máximo é de 1000.00€.",
-                        "Valor inválido",
+                        LanguageHelper.T("MaxValueError", _config),
+                        LanguageHelper.T("InvalidValue", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -216,8 +222,8 @@ namespace PT_Readify
 
                 decimal novoSaldo = CarteiraService.Saldo + valor;
                 DialogResult confirmacao = MessageBox.Show(
-                    $"Confirma o carregamento de {valor:F2}€?\n\nSaldo atual: {CarteiraService.Saldo:F2}€\nNovo saldo: {novoSaldo:F2}€",
-                    "Confirmar Carregamento",
+                    string.Format(LanguageHelper.T("ConfirmLoadingMsg", _config), valor, CarteiraService.Saldo, novoSaldo),
+                    LanguageHelper.T("ConfirmLoading", _config),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -240,7 +246,47 @@ namespace PT_Readify
         /// </summary>
         private void AtualizarSaldo()
         {
-            lblSaldo.Text = $"Saldo Atual: {CarteiraService.Saldo:F2}€";
+            lblSaldo.Text = string.Format(LanguageHelper.T("CurrentBalance", _config), CarteiraService.Saldo);
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+
+            // Header
+            lblTitulo.Text = LanguageHelper.T("WalletTitle", _config);
+            btnFechar.Text = LanguageHelper.T("Close", _config);
+
+            // Autenticação
+            lblTituloAuth.Text = LanguageHelper.T("WalletAccess", _config);
+            lblPasswordLabel.Text = LanguageHelper.T("EnterPassword", _config);
+            btnEntrar.Text = LanguageHelper.T("Enter", _config);
+
+            // Carteira
+            lblTituloCarteira.Text = LanguageHelper.T("MyWallet", _config);
+            btnAlterarPagamento.Text = LanguageHelper.T("ChangePaymentMethod", _config);
+
+            // Edição
+            lblTituloEdicao.Text = LanguageHelper.T("ConfigurePayment", _config);
+            lblSelecione.Text = LanguageHelper.T("SelectMethod", _config);
+            lblEmailPayPal.Text = LanguageHelper.T("PayPalEmail", _config);
+            lblTelemovelMBWay.Text = LanguageHelper.T("PhoneNumber", _config);
+            lblIbanTransferencia.Text = LanguageHelper.T("AccountIBAN", _config);
+            lblAppleID.Text = LanguageHelper.T("AppleID", _config);
+            btnSalvar.Text = LanguageHelper.T("SaveChanges", _config);
+            btnVoltar.Text = LanguageHelper.T("Back", _config);
+
+            if (btnAdicionarFundos != null)
+                btnAdicionarFundos.Text = LanguageHelper.T("AddFunds", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
+            ConfigApplier.ApplyFont(panelAutenticacao, cfg);
+            ConfigApplier.ApplyFont(panelCarteira, cfg);
+            ConfigApplier.ApplyFont(panelEdicao, cfg);
         }
 
         /// <summary>
@@ -253,7 +299,7 @@ namespace PT_Readify
             {
                 using (Form promptForm = new Form())
                 {
-                    promptForm.Text = "Definir Password";
+                    promptForm.Text = LanguageHelper.T("DefinePassword", _config);
                     promptForm.Width = 400;
                     promptForm.Height = 200;
                     promptForm.StartPosition = FormStartPosition.CenterParent;
@@ -265,7 +311,7 @@ namespace PT_Readify
                     // ===== LABEL INSTRUÇÃO =====
                     Label lblInstrucao = new Label()
                     {
-                        Text = "Defina a sua password de acesso à Carteira Digital:",
+                        Text = LanguageHelper.T("DefinePasswordMsg", _config),
                         Left = 20,
                         Top = 20,
                         Width = 400,
@@ -290,7 +336,7 @@ namespace PT_Readify
                     // ===== LABEL REQUISITOS =====
                     Label lblRequisitos = new Label()
                     {
-                        Text = "• Mínimo 4 caracteres\n• Máximo 20 caracteres\n• Pode conter letras, números e símbolos",
+                        Text = LanguageHelper.T("PasswordRequirements", _config),
                         Left = 20,
                         Top = 105,
                         Width = 400,
@@ -303,7 +349,7 @@ namespace PT_Readify
                     // ===== BOTÃO OK =====
                     Button btnOK = new Button()
                     {
-                        Text = "CONFIRMAR",
+                        Text = LanguageHelper.T("Confirm", _config),
                         Left = 170,
                         Top = 185,
                         Width = 110,
@@ -319,7 +365,7 @@ namespace PT_Readify
                     // ===== BOTÃO SAIR =====
                     Button btnSair = new Button()
                     {
-                        Text = "SAIR",
+                        Text = LanguageHelper.T("Exit", _config),
                         Left = 290,
                         Top = 185,
                         Width = 130,
@@ -343,8 +389,8 @@ namespace PT_Readify
                             passwordUtilizador = BLL.utilizador.HashPassword(txtPassword.Text);
                             BLL.Carteira.DefinirPasswordCarteira(globais.id_utilizador, passwordUtilizador);
                             MessageBox.Show(
-                                "Password definida com sucesso!",
-                                "Sucesso",
+                                LanguageHelper.T("PasswordDefined", _config),
+                                LanguageHelper.T("Success", _config),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information
                             );
@@ -369,8 +415,8 @@ namespace PT_Readify
             if (string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show(
-                    "A password não pode estar vazia. Tente novamente.",
-                    "Aviso",
+                    LanguageHelper.T("PasswordCannotBeEmpty", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -380,8 +426,8 @@ namespace PT_Readify
             if (password.Length < 4)
             {
                 MessageBox.Show(
-                    "A password deve ter um mínimo de 4 caracteres.",
-                    "Aviso",
+                    LanguageHelper.T("PasswordMinChars", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -391,8 +437,8 @@ namespace PT_Readify
             if (password.Length > 20)
             {
                 MessageBox.Show(
-                    "A password deve ter um máximo de 20 caracteres.",
-                    "Aviso",
+                    LanguageHelper.T("PasswordMaxChars", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -410,7 +456,7 @@ namespace PT_Readify
         {
             using (Form promptForm = new Form())
             {
-                promptForm.Text = "Alterar Password";
+                promptForm.Text = LanguageHelper.T("ChangePassword", _config);
                 promptForm.Width = 450;
                 promptForm.Height = 280;
                 promptForm.StartPosition = FormStartPosition.CenterScreen;
@@ -422,7 +468,7 @@ namespace PT_Readify
                 // ===== LABEL PASSWORD ANTIGA =====
                 Label lblPasswordAntiga = new Label()
                 {
-                    Text = "Password Atual:",
+                    Text = LanguageHelper.T("CurrentPassword", _config),
                     Left = 20,
                     Top = 20,
                     AutoSize = true,
@@ -446,7 +492,7 @@ namespace PT_Readify
                 // ===== LABEL PASSWORD NOVA =====
                 Label lblPasswordNova = new Label()
                 {
-                    Text = "Nova Password:",
+                    Text = LanguageHelper.T("NewPassword", _config),
                     Left = 20,
                     Top = 90,
                     AutoSize = true,
@@ -470,7 +516,7 @@ namespace PT_Readify
                 // ===== BOTÃO ALTERAR =====
                 Button btnAlterar = new Button()
                 {
-                    Text = "ALTERAR",
+                    Text = LanguageHelper.T("Change", _config),
                     Left = 170,
                     Top = 165,
                     Width = 110,
@@ -485,8 +531,8 @@ namespace PT_Readify
                     if (!BLL.utilizador.VerificarPassword(passwordUtilizador, txtPasswordAntiga.Text))
                     {
                         MessageBox.Show(
-                            "Password atual incorreta!",
-                            "Erro",
+                            LanguageHelper.T("CurrentPasswordIncorrect", _config),
+                            LanguageHelper.T("InvalidValue", _config),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error
                         );
@@ -498,8 +544,8 @@ namespace PT_Readify
                         passwordUtilizador = BLL.utilizador.HashPassword(txtPasswordNova.Text);
                         BLL.Carteira.DefinirPasswordCarteira(globais.id_utilizador, passwordUtilizador);
                         MessageBox.Show(
-                            "Password alterada com sucesso!",
-                            "Sucesso",
+                            LanguageHelper.T("PasswordChanged", _config),
+                            LanguageHelper.T("Success", _config),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
                         );
@@ -511,7 +557,7 @@ namespace PT_Readify
                 // ===== BOTÃO CANCELAR =====
                 Button btnCancelar = new Button()
                 {
-                    Text = "CANCELAR",
+                    Text = LanguageHelper.T("Cancel", _config),
                     Left = 290,
                     Top = 165,
                     Width = 130,
@@ -542,8 +588,8 @@ namespace PT_Readify
             if (string.IsNullOrEmpty(txtPassword.Text))
             {
                 MessageBox.Show(
-                    "Por favor, introduza a password.",
-                    "Aviso",
+                    LanguageHelper.T("PleaseEnterPassword", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -559,8 +605,8 @@ namespace PT_Readify
                 panelCarteira.Visible = true;
                 txtPassword.Clear();
                 MessageBox.Show(
-                    "Bem-vindo à sua Carteira Digital!",
-                    "Autenticação Bem-Sucedida",
+                    LanguageHelper.T("WelcomeToWallet", _config),
+                    LanguageHelper.T("AuthenticationSuccessful", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
@@ -575,8 +621,8 @@ namespace PT_Readify
                 {
                     // Bloqueado por excesso de tentativas
                     MessageBox.Show(
-                        "Tentativas de acesso excedidas!\nA aplicação será fechada.",
-                        "Acesso Bloqueado",
+                        LanguageHelper.T("AttemptsExceeded", _config),
+                        LanguageHelper.T("AccessBlocked", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Stop
                     );
@@ -586,8 +632,8 @@ namespace PT_Readify
                 {
                     // Avisar do número de tentativas restantes
                     MessageBox.Show(
-                        $"Password incorreta!\n\nTentativas restantes: {tentativasRestantes}",
-                        "Erro de Autenticação",
+                        string.Format(LanguageHelper.T("PasswordIncorrect", _config), tentativasRestantes),
+                        LanguageHelper.T("AuthenticationError", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
@@ -624,8 +670,8 @@ namespace PT_Readify
         private void BtnAlterarPassword_Click(object sender, EventArgs e)
         {
             DialogResult resultado = MessageBox.Show(
-                "Tem a certeza que deseja alterar a sua password?",
-                "Confirmar Alteração",
+                LanguageHelper.T("AreYouSureChangePassword", _config),
+                LanguageHelper.T("ConfirmChange", _config),
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             );
@@ -683,8 +729,8 @@ namespace PT_Readify
             if (string.IsNullOrEmpty(metodoSelecionado))
             {
                 MessageBox.Show(
-                    "Por favor, selecione um método de pagamento.",
-                    "Aviso de Validação",
+                    LanguageHelper.T("SelectPaymentMethod", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -714,8 +760,8 @@ namespace PT_Readify
             if (validado)
             {
                 MessageBox.Show(
-                    $"Método [{metodoSelecionado}] configurado com sucesso!\nDados guardados: {valorIntroduzido}",
-                    "Sucesso",
+                    string.Format(LanguageHelper.T("MethodConfigured", _config), metodoSelecionado, valorIntroduzido),
+                    LanguageHelper.T("Success", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
@@ -726,8 +772,8 @@ namespace PT_Readify
             else
             {
                 MessageBox.Show(
-                    "Por favor, preencha o campo de dados do método de pagamento selecionado.",
-                    "Aviso de Validação",
+                    LanguageHelper.T("FillPaymentField", _config),
+                    LanguageHelper.T("ValidationWarning", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -759,14 +805,14 @@ namespace PT_Readify
         {
             if (!CarteiraService.TemSaldoSuficiente(preco))
             {
-                MessageBox.Show("Saldo insuficiente para completar a compra.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageHelper.T("InsufficientBalance", _config), LanguageHelper.T("InvalidValue", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             try
             {
                 CarteiraService.Debitar(preco);
-                MessageBox.Show($"Compra bem-sucedida: {titulo}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(LanguageHelper.T("PurchaseSuccessful", _config), titulo), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return true;
             }
             catch (InvalidOperationException ex)
@@ -783,14 +829,14 @@ namespace PT_Readify
                 CarteiraService.AdicionarSaldo(valor);
                 AtualizarSaldo();
                 MessageBox.Show(
-                    $"Fundos adicionados e guardados com sucesso: +{valor:F2}€\n\nSaldo atual: {CarteiraService.Saldo:F2}€",
-                    "Sucesso",
+                    string.Format(LanguageHelper.T("FundsAdded", _config), valor, CarteiraService.Saldo),
+                    LanguageHelper.T("Success", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (ArgumentOutOfRangeException)
             {
-                MessageBox.Show("O valor a adicionar deve ser positivo.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageHelper.T("ValueMustBePositive", _config), LanguageHelper.T("InvalidValue", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (InvalidOperationException ex)
             {

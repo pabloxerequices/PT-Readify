@@ -12,24 +12,29 @@ namespace PT_Readify
         private TextBox txtPesquisa;
         private NumericUpDown numDias;
         private DataTable todosLivros;
+        private Config _config;
 
         public Requesitar_livros()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             BuildUi();
             Load += Requesitar_livros_Load;
         }
 
         private void BuildUi()
         {
-            Text = "Requisições / Empréstimos";
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+            Text = LanguageHelper.T("RequestBooksTitle", _config);
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(950, 580);
 
             var lblTitulo = new Label
             {
-                Text = "Requisitar livros",
+                Text = LanguageHelper.T("RequestBooks", _config),
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 Location = new Point(20, 15),
                 AutoSize = true
@@ -37,7 +42,7 @@ namespace PT_Readify
 
             var lblDias = new Label
             {
-                Text = "Dias para devolver (0-21):",
+                Text = LanguageHelper.T("DaysToReturn", _config),
                 Location = new Point(20, 55),
                 AutoSize = true
             };
@@ -53,7 +58,7 @@ namespace PT_Readify
 
             var lblAviso = new Label
             {
-                Text = "Multa de 2€ por semana após o prazo. Apenas 1 empréstimo ativo por utilizador.",
+                Text = LanguageHelper.T("FineWarning", _config),
                 Location = new Point(280, 55),
                 Size = new Size(550, 20),
                 ForeColor = Color.DimGray
@@ -89,9 +94,12 @@ namespace PT_Readify
 
         private void Requesitar_livros_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyLanguage();
+
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para requisitar livros.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("LoginToRequest", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Close();
                 return;
             }
@@ -99,8 +107,8 @@ namespace PT_Readify
             if (BLL.Historicos.TemEmprestimoAtivo(globais.id_utilizador))
             {
                 MessageBox.Show(
-                    "Já tem um empréstimo ativo. Devolva o livro no histórico de empréstimos antes de requisitar outro.",
-                    "Empréstimo ativo",
+                    LanguageHelper.T("ActiveLoanWarning", _config),
+                    LanguageHelper.T("ActiveLoan", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
@@ -113,7 +121,7 @@ namespace PT_Readify
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar livros: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorLoadingBooks", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -125,51 +133,51 @@ namespace PT_Readify
             gridLivros.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colId",
-                HeaderText = "ID",
+                HeaderText = LanguageHelper.T("ID", _config),
                 DataPropertyName = "Id_Livro",
                 FillWeight = 8
             });
             gridLivros.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colTitulo",
-                HeaderText = "Título",
+                HeaderText = LanguageHelper.T("Title", _config),
                 DataPropertyName = "Titulo",
                 FillWeight = 30
             });
             gridLivros.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colAutor",
-                HeaderText = "Autor",
+                HeaderText = LanguageHelper.T("Author", _config),
                 DataPropertyName = "Autor",
                 FillWeight = 22
             });
             gridLivros.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colStock",
-                HeaderText = "Stock",
+                HeaderText = LanguageHelper.T("Stock", _config),
                 DataPropertyName = "Stock",
                 FillWeight = 10
             });
             gridLivros.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colEstado",
-                HeaderText = "Estado",
+                HeaderText = LanguageHelper.T("Status", _config),
                 DataPropertyName = "Estado_Livro",
                 FillWeight = 12
             });
             gridLivros.Columns.Add(new DataGridViewButtonColumn
             {
                 Name = "colRequisitar",
-                HeaderText = "Empréstimo",
-                Text = "Requisitar",
+                HeaderText = LanguageHelper.T("Loan", _config),
+                Text = LanguageHelper.T("Request", _config),
                 UseColumnTextForButtonValue = true,
                 FillWeight = 12
             });
             gridLivros.Columns.Add(new DataGridViewButtonColumn
             {
                 Name = "colReservar",
-                HeaderText = "Reserva",
-                Text = "Reservar",
+                HeaderText = LanguageHelper.T("Reservation", _config),
+                Text = LanguageHelper.T("Reserve", _config),
                 UseColumnTextForButtonValue = true,
                 FillWeight = 12
             });
@@ -214,14 +222,14 @@ namespace PT_Readify
                 {
                     if (stock <= 0)
                     {
-                        MessageBox.Show("Este livro está esgotado. Use a opção Reservar.", "Sem stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(LanguageHelper.T("BookOutOfStock", _config), LanguageHelper.T("NoStock", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
                     int dias = (int)numDias.Value;
                     DialogResult confirmar = MessageBox.Show(
-                        $"Deseja requisitar \"{titulo}\"?\n\nPrazo de devolução: {dias} dias.\nMulta de 2€ por semana após o prazo.",
-                        "Confirmar requisição",
+                        string.Format(LanguageHelper.T("RequestConfirm", _config), titulo, dias),
+                        LanguageHelper.T("ConfirmRequest", _config),
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
@@ -231,8 +239,8 @@ namespace PT_Readify
                     BLL.Historicos.RegistrarEmprestimo(globais.id_utilizador, idLivro, dias);
 
                     MessageBox.Show(
-                        $"Livro requisitado com sucesso!\nDevolução prevista em {dias} dias.\n\nConsulte o histórico em \"Histórico de Empréstimos\".",
-                        "Sucesso",
+                        string.Format(LanguageHelper.T("RequestSuccess", _config), dias),
+                        LanguageHelper.T("Success", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 }
@@ -240,13 +248,13 @@ namespace PT_Readify
                 {
                     if (stock > 0)
                     {
-                        MessageBox.Show("Este livro está disponível. Use Requisitar em vez de Reservar.", "Stock disponível", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageHelper.T("BookAvailable", _config), LanguageHelper.T("StockAvailable", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
                     DialogResult confirmar = MessageBox.Show(
-                        $"Deseja reservar \"{titulo}\"?\n\nSerá notificado quando o livro estiver disponível.",
-                        "Confirmar reserva",
+                        string.Format(LanguageHelper.T("ReserveConfirm", _config), titulo),
+                        LanguageHelper.T("ConfirmReservation", _config),
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
@@ -256,8 +264,8 @@ namespace PT_Readify
                     BLL.Historicos.RegistrarReserva(globais.id_utilizador, idLivro);
 
                     MessageBox.Show(
-                        "Reserva efetuada com sucesso!\nSerá notificado quando o livro estiver em stock.",
-                        "Sucesso",
+                        LanguageHelper.T("ReservationSuccess", _config),
+                        LanguageHelper.T("Success", _config),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 }
@@ -267,8 +275,20 @@ namespace PT_Readify
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorRequesting", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("RequestBooksTitle", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

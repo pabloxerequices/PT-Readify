@@ -11,10 +11,12 @@ namespace PT_Readify
         private DataTable dadosComprasOriginais;
         private HistoricoSortHelper _sortHelper;
         private ToolTip _toolTipDevolucao;
+        private Config _config;
 
         public Hstórico_de_compras()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             DevolucaoUiHelper.ConfigurarGrid(guna2DataGridView1Historico_Compras);
             guna2DataGridView1Historico_Compras.CellFormatting += Grid_CellFormatting;
             guna2DataGridView1Historico_Compras.RowPrePaint += Grid_RowPrePaint;
@@ -39,9 +41,13 @@ namespace PT_Readify
 
         private void Hstórico_de_compras_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para ver o histórico de compras.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("LoginToViewHistory", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Close();
                 return;
             }
@@ -77,8 +83,8 @@ namespace PT_Readify
             }
 
             labelTotal.Text = total == 0
-                ? "Sem compras registadas"
-                : $"{total} compra(s)" + (devolvidas > 0 ? $" — {devolvidas} devolvida(s)" : "");
+                ? LanguageHelper.T("NoPurchases", _config)
+                : string.Format(LanguageHelper.T("PurchasesCount", _config), total) + (devolvidas > 0 ? " — " + string.Format(LanguageHelper.T("ReturnedCount", _config), devolvidas) : "");
         }
 
         private void CarregarHistorico()
@@ -96,7 +102,7 @@ namespace PT_Readify
             if (dadosComprasOriginais == null || dadosComprasOriginais.Columns.Count == 0 || !dadosComprasOriginais.Columns.Contains("Data_Compra"))
             {
                 guna2DataGridView1Historico_Compras.DataSource = null;
-                MessageBox.Show("Não foi possível ordenar: dados inválidos ou coluna não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("SortError", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 guna2Button2.Visible = true;
                 guna2Button4.Visible = false;
                 guna2Button5.Visible = false;
@@ -131,7 +137,7 @@ namespace PT_Readify
         {
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para devolver compras.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("LoginToReturn", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -145,10 +151,19 @@ namespace PT_Readify
         }
 
         private void guna2Button2_Click(object sender, EventArgs e) => _sortHelper.MostrarOpcoesOrdenacao();
-        
-        //private void guna2Button4_Click(object sender, EventArgs e) => _sortHelper.OrdenarDecrescente();
-        
-       // private void guna2Button5_Click(object sender, EventArgs e) => _sortHelper.OrdenarCrescente();
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("PurchaseHistoryTitle", _config);
+            guna2Button3.Text = LanguageHelper.T("ReturnPurchase", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
+        }
 
         private void guna2DataGridView1Historico_Compras_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

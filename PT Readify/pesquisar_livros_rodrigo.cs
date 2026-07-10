@@ -25,6 +25,8 @@ namespace PT_Readify
 
         private void pesquisar_livros_rodrigo_Load(object sender, EventArgs e)
         {
+            var cfg = ConfigManager.Current;
+            ApplyConfig(cfg);
             CarregarTodosLivros();
             ConfigurarEventos();
             CarrinhoService.CarrinhoAlterado += OnCarrinhoAlterado;
@@ -529,6 +531,12 @@ namespace PT_Readify
         {
             CarrinhoService.CarrinhoAlterado -= OnCarrinhoAlterado;
             base.OnFormClosed(e);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

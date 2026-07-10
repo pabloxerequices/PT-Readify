@@ -9,10 +9,12 @@ namespace PT_Readify
     public partial class Devolução_da_Compra : Form
     {
         private HistoricoSortHelper _sortHelper;
+        private Config _config;
 
         public Devolução_da_Compra()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             DevolucaoUiHelper.ConfigurarGrid(guna2DataGridView1);
             guna2DataGridView1.CellFormatting += Grid_CellFormatting;
 
@@ -31,9 +33,13 @@ namespace PT_Readify
 
         private void Devolução_da_Compra_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para ver o histórico de compras.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("LoginToViewHistory", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Close();
                 return;
             }
@@ -48,9 +54,9 @@ namespace PT_Readify
             guna2Button4.Parent = panelBottom;
             guna2Button5.Parent = panelBottom;
 
-            guna2Button2.Location = new System.Drawing.Point(250, 20);
-            guna2Button4.Location = new System.Drawing.Point(480, 20);
-            guna2Button5.Location = new System.Drawing.Point(710, 20);
+            guna2Button2.Location = new System.Drawing.Point(20, 50);
+            guna2Button4.Location = new System.Drawing.Point(250, 50);
+            guna2Button5.Location = new System.Drawing.Point(480, 50);
 
             panelBottom.Controls.Add(guna2Button2);
             panelBottom.Controls.Add(guna2Button4);
@@ -59,7 +65,7 @@ namespace PT_Readify
             guna2Button4.BringToFront();
             guna2Button5.BringToFront();
 
-            guna2Button3.Text = "Devolver compra";
+            guna2Button3.Text = LanguageHelper.T("ReturnPurchase", _config);
             guna2DataGridView1.DataError += (s, ev) => ev.ThrowException = false;
 
             label2.Text = DevolucaoUiHelper.TextoPoliticaDevolucaoCompra();
@@ -83,12 +89,12 @@ namespace PT_Readify
 
             if (total == 0)
             {
-                labelTotal.Text = $"Sem compras elegíveis nos primeiros {BLL.Historicos.MaxDiasDevolucaoCompra} dias";
+                labelTotal.Text = string.Format(LanguageHelper.T("NoEligiblePurchases", _config), BLL.Historicos.MaxDiasDevolucaoCompra);
                 labelTotal.ForeColor = Color.FromArgb(241, 196, 15);
             }
             else
             {
-                labelTotal.Text = $"{total} compra(s) elegível(eis) (prazo: {BLL.Historicos.MaxDiasDevolucaoCompra} dias após a compra)";
+                labelTotal.Text = string.Format(LanguageHelper.T("EligiblePurchases", _config), total, BLL.Historicos.MaxDiasDevolucaoCompra);
                 labelTotal.ForeColor = Color.White;
             }
         }
@@ -107,7 +113,7 @@ namespace PT_Readify
         {
             if (guna2DataGridView1.CurrentRow == null)
             {
-                MessageBox.Show("Selecione uma compra para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("SelectPurchaseToReturn", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -118,7 +124,7 @@ namespace PT_Readify
 
                 DialogResult confirmar = MessageBox.Show(
                     DevolucaoUiHelper.ConstruirConfirmacaoCompra(resumo),
-                    "Devolução da Compra",
+                    LanguageHelper.T("ReturnPurchaseTitle", _config),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -130,14 +136,27 @@ namespace PT_Readify
                 CarregarCompras();
                 MessageBox.Show(
                     DevolucaoUiHelper.ConstruirSucessoCompra(resultado),
-                    "Sucesso",
+                    LanguageHelper.T("Success", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao devolver: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorReturningPurchase", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("ReturnPurchaseTitle", _config);
+            guna2Button3.Text = LanguageHelper.T("ReturnPurchase", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

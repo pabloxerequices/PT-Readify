@@ -26,6 +26,8 @@ namespace PT_Readify
 
         private void Chat_Bot_Load(object sender, EventArgs e)
         {
+            var cfg = ConfigManager.Current;
+            ApplyConfig(cfg);
             Text = "Assistente PT Readify";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -124,6 +126,12 @@ namespace PT_Readify
         private void guna2Button2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

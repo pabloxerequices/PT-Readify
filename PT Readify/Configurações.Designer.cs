@@ -37,6 +37,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
 
             // instantiate
             this.pnlTop = new System.Windows.Forms.Panel();
@@ -127,7 +128,7 @@
             this.cfgNumFontSize.Location = new System.Drawing.Point(220, 160);
             this.cfgNumFontSize.Size = new System.Drawing.Size(120, 36);
             this.cfgNumFontSize.Minimum = 10;
-            this.cfgNumFontSize.Maximum = 24;
+            this.cfgNumFontSize.Maximum = 28;
             this.cfgNumFontSize.Value = 15;
 
             // AutoLogout
@@ -200,12 +201,17 @@
             this.pnlContent.Controls.Add(this.btnVoltarLingua);
 
             // Form
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(980, 520);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlTop);
+            this.MinimumSize = new System.Drawing.Size(800, 450);
             this.ShowIcon = false;
             this.Text = "Configurações";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
     }
 }

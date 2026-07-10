@@ -14,14 +14,20 @@ namespace PT_Readify
         private string emailUtilizador = string.Empty;
         private string codigoConfirmacao = string.Empty;
         private int idUtilizador = 0;
+        private Config _config;
 
         public RecuperarPassword()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
         }
 
         private void RecuperarPassword_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             panelEmail.Visible = true;
             panelCodigo.Visible = false;
             panelNovaPassword.Visible = false;
@@ -43,14 +49,14 @@ namespace PT_Readify
 
             if (string.IsNullOrWhiteSpace(emailUtilizador))
             {
-                MessageBox.Show("Por favor, introduza o seu email.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("EnterEmail", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             DataTable dt = BLL.utilizador.QueryutilizadorByemail(emailUtilizador);
             if (dt == null || dt.Rows.Count == 0)
             {
-                MessageBox.Show("Não existe nenhuma conta com este email.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageHelper.T("NoAccountWithEmail", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -61,7 +67,7 @@ namespace PT_Readify
                 codigoConfirmacao = GerarCodigoConfirmacao();
                 EnviarEmailConfirmacao(emailUtilizador, codigoConfirmacao);
 
-                MessageBox.Show("Código de confirmação enviado para o seu email!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("CodeSent", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 panelEmail.Visible = false;
                 panelCodigo.Visible = true;
@@ -70,7 +76,7 @@ namespace PT_Readify
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao enviar email: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorSendingEmail", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -80,13 +86,13 @@ namespace PT_Readify
 
             if (string.IsNullOrWhiteSpace(codigoInserido))
             {
-                MessageBox.Show("Por favor, introduza o código de confirmação.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("EnterCode", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (codigoInserido == codigoConfirmacao)
             {
-                MessageBox.Show("Código validado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("CodeValidated", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 panelEmail.Visible = false;
                 panelCodigo.Visible = false;
@@ -95,7 +101,7 @@ namespace PT_Readify
             }
             else
             {
-                MessageBox.Show("Código incorreto. Por favor, tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageHelper.T("IncorrectCode", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtCodigo.Clear();
                 txtCodigo.Focus();
             }
@@ -108,25 +114,25 @@ namespace PT_Readify
 
             if (string.IsNullOrWhiteSpace(novaPassword) || string.IsNullOrWhiteSpace(confirmarPassword))
             {
-                MessageBox.Show("Por favor, preencha ambos os campos de password.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("FillPasswordFields", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (novaPassword.Length < 4)
             {
-                MessageBox.Show("A password deve ter no mínimo 4 caracteres.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("PasswordMin4Chars", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (novaPassword.Length > 20)
             {
-                MessageBox.Show("A password deve ter no máximo 20 caracteres.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("PasswordMax20Chars", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (novaPassword != confirmarPassword)
             {
-                MessageBox.Show("As passwords não coincidem.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageHelper.T("PasswordsNotMatch", _config), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -135,13 +141,13 @@ namespace PT_Readify
                 string passwordHash = BLL.utilizador.HashPassword(novaPassword);
                 BLL.utilizador.AtualizarPasswordHash(idUtilizador, passwordHash);
 
-                MessageBox.Show("Password alterada com sucesso! Pode agora fazer login com a nova password.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("PasswordChanged", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao alterar password: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorChangingPassword", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -210,6 +216,18 @@ Equipa Readify";
                     smtp.Send(mail);
                 }
             }
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("RecoverPasswordTitle", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

@@ -13,18 +13,24 @@ namespace PT_Readify
 {
     public partial class main_menu__admin_ : Form
     {
+        private Config _config;
+
         public main_menu__admin_()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             Load += Main_menu__admin__Load;
         }
 
         private void Main_menu__admin__Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyLanguage();
+
             try
             {
-                lblEstatisticas.Text = $"Estatísticas: {BLL.Estatisticas.EmprestimosAtivos()} ativos, {BLL.Estatisticas.ReservasPendentes()} reservas";
-                lblFinanceiro.Text = $"Gestão Financeira: {(BLL.Estatisticas.MultasPendentesCentimos() / 100m):C2} em multas";
+                lblEstatisticas.Text = string.Format(LanguageHelper.T("Statistics", _config), BLL.Estatisticas.EmprestimosAtivos(), BLL.Estatisticas.ReservasPendentes());
+                lblFinanceiro.Text = string.Format(LanguageHelper.T("FinancialManagement", _config), BLL.Estatisticas.MultasPendentesCentimos() / 100m);
             }
             catch { }
         }
@@ -106,6 +112,12 @@ namespace PT_Readify
         private void button10_Click(object sender, EventArgs e)
         {
             FormLaunchHelper.Show(new Configuracoes(), this);
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("AdminMenuTitle", _config);
         }
     }
 }
