@@ -1456,7 +1456,7 @@ namespace BusinessLogicLayer
             static public DataTable Load()
             {
                 DAL dal = new DAL();
-                return dal.executarReader("select * from Livro", null);
+                return dal.executarReader("select * from Livro WHERE Titulo <> 'Educar'", null);
             }
             // Método para inserir um novo livro com gêneros e tipos associados
 
