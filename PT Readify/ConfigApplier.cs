@@ -83,6 +83,16 @@ namespace PT_Readify
         {
             foreach (Control control in controls)
             {
+                // Skip PictureBox controls to preserve images/photos in dark mode
+                if (control is PictureBox)
+                {
+                    if (control.HasChildren)
+                    {
+                        ApplyThemeToControls(control.Controls, isDark);
+                    }
+                    continue;
+                }
+
                 if (control is Panel panel)
                 {
                     panel.BackColor = isDark ? Color.FromArgb(45, 45, 48) : SystemColors.Control;
@@ -111,6 +121,19 @@ namespace PT_Readify
                 {
                     dataGridView.BackgroundColor = isDark ? Color.FromArgb(45, 45, 48) : SystemColors.Window;
                     dataGridView.BackColor = isDark ? Color.FromArgb(45, 45, 48) : SystemColors.Window;
+                }
+                else if (control is CheckBox checkBox)
+                {
+                    checkBox.ForeColor = isDark ? Color.WhiteSmoke : SystemColors.ControlText;
+                }
+                else if (control is RadioButton radioButton)
+                {
+                    radioButton.ForeColor = isDark ? Color.WhiteSmoke : SystemColors.ControlText;
+                }
+                else if (control is NumericUpDown numericUpDown)
+                {
+                    numericUpDown.BackColor = isDark ? Color.FromArgb(60, 60, 65) : Color.White;
+                    numericUpDown.ForeColor = isDark ? Color.White : SystemColors.WindowText;
                 }
                 
                 // Recursively apply to child controls

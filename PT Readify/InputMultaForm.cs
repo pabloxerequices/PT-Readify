@@ -21,6 +21,9 @@ namespace PT_Readify
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
+            var cfg = ConfigManager.Current;
+            ApplyConfig(cfg);
+
             lblPrompt = new Label
             {
                 Text = prompt,
@@ -87,6 +90,12 @@ namespace PT_Readify
                 }
                 return -1;
             }
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

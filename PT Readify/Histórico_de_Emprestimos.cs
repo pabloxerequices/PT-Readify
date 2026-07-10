@@ -10,10 +10,12 @@ namespace PT_Readify
     public partial class Historico_de_Emprestimos : Form
     {
         private HistoricoSortHelper _sortHelper;
+        private Config _config;
 
         public Historico_de_Emprestimos()
         {
             InitializeComponent();
+            _config = ConfigManager.Current;
             dataGridViewHistorico_Emprestimos.DataError += (s, e) => e.ThrowException = false;
             DevolucaoUiHelper.ConfigurarGrid(dataGridViewHistorico_Emprestimos);
             dataGridViewHistorico_Emprestimos.CellFormatting += Grid_CellFormatting;
@@ -45,15 +47,19 @@ namespace PT_Readify
 
         private void Historico_de_Emprestimos_Load(object sender, EventArgs e)
         {
+            _config = ConfigManager.Current;
+            ApplyConfig(_config);
+            ApplyLanguage();
+
             if (globais.id_utilizador <= 0)
             {
-                MessageBox.Show("Inicie sessão para ver o histórico de empréstimos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("LoginToViewLoans", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Close();
                 return;
             }
 
             CarregarHistorico();
-            guna2Button3.Text = "Devolver livro";
+            guna2Button3.Text = LanguageHelper.T("ReturnBook", _config);
         }
 
         private DataTable dadosEmprestimosOriginais;
@@ -90,17 +96,17 @@ namespace PT_Readify
 
             if (ativos == 0)
             {
-                labelTotal.Text = "Sem empréstimos ativos";
+                labelTotal.Text = LanguageHelper.T("NoActiveLoans", _config);
                 labelTotal.ForeColor = Color.FromArgb(241, 196, 15);
             }
             else if (emAtraso > 0)
             {
-                labelTotal.Text = $"{ativos} ativo(s) — {emAtraso} em atraso (multa: 2€/semana)";
+                labelTotal.Text = string.Format(LanguageHelper.T("ActiveAndOverdue", _config), ativos, emAtraso);
                 labelTotal.ForeColor = Color.FromArgb(231, 76, 60);
             }
             else
             {
-                labelTotal.Text = $"{ativos} empréstimo(s) ativo(s)";
+                labelTotal.Text = string.Format(LanguageHelper.T("ActiveLoans", _config), ativos);
                 labelTotal.ForeColor = Color.White;
             }
         }
@@ -129,7 +135,7 @@ namespace PT_Readify
         {
             if (dataGridViewHistorico_Emprestimos.CurrentRow == null)
             {
-                MessageBox.Show("Selecione um empréstimo para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("SelectLoanToReturn", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -138,7 +144,7 @@ namespace PT_Readify
                 string estado = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Estado_Emprestimo"]?.Value?.ToString();
                 if (estado != "Ativo")
                 {
-                    MessageBox.Show("Selecione um empréstimo ativo para devolver.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(LanguageHelper.T("SelectActiveLoan", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -147,7 +153,7 @@ namespace PT_Readify
 
                 DialogResult confirmar = MessageBox.Show(
                     DevolucaoUiHelper.ConstruirConfirmacaoEmprestimo(resumo),
-                    "Devolução de Empréstimo",
+                    LanguageHelper.T("LoanReturn", _config),
                     MessageBoxButtons.YesNo,
                     resumo.DiasAtraso > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Question);
 
@@ -158,13 +164,13 @@ namespace PT_Readify
                 CarregarHistorico();
                 MessageBox.Show(
                     DevolucaoUiHelper.ConstruirSucessoEmprestimo(resultado),
-                    "Sucesso",
+                    LanguageHelper.T("Success", _config),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao devolver: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorReturning", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -185,7 +191,7 @@ namespace PT_Readify
         {
             if (dataGridViewHistorico_Emprestimos.CurrentRow == null)
             {
-                MessageBox.Show("Selecione um empréstimo rejeitado para pagar a multa.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageHelper.T("SelectRejectedLoan", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -195,7 +201,7 @@ namespace PT_Readify
 
                 if (estado != "Rejeitado")
                 {
-                    MessageBox.Show("Apenas empréstimos rejeitados têm multa por livro estragado.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(LanguageHelper.T("OnlyRejectedHaveFine", _config), LanguageHelper.T("ValidationWarning", _config), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -204,9 +210,8 @@ namespace PT_Readify
                 string titulo = dataGridViewHistorico_Emprestimos.CurrentRow.Cells["Titulo"].Value.ToString();
 
                 DialogResult confirmar = MessageBox.Show(
-                    $"Pagar a multa por livro estragado de \"{titulo}\"?\n\n" +
-                    $"Após o pagamento, o livro será devolvido.",
-                    "Confirmar Pagamento",
+                    string.Format(LanguageHelper.T("PayFineConfirm", _config), titulo),
+                    LanguageHelper.T("ConfirmFinePayment", _config),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -215,12 +220,26 @@ namespace PT_Readify
 
                 BLL.Historicos.PagarMultaLivroEstragado(idHistorico, globais.id_utilizador, idLivro, titulo);
                 CarregarHistorico();
-                MessageBox.Show("Multa paga com sucesso! O livro foi devolvido.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageHelper.T("FinePaid", _config), LanguageHelper.T("Success", _config), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao pagar multa: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageHelper.T("ErrorPayingFine", _config), ex.Message), LanguageHelper.T("Error", _config), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ApplyLanguage()
+        {
+            if (_config == null) _config = ConfigManager.Current;
+            this.Text = LanguageHelper.T("LoanHistoryTitle", _config);
+            guna2Button3.Text = LanguageHelper.T("ReturnBook", _config);
+            btnPagarMulta.Text = LanguageHelper.T("ConfirmFinePayment", _config);
+        }
+
+        public void ApplyConfig(Config cfg)
+        {
+            if (cfg == null) return;
+            ConfigApplier.ApplyFont(this, cfg);
         }
     }
 }

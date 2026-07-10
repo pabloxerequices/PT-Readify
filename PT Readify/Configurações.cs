@@ -60,7 +60,7 @@ namespace PT_Readify
                 cfgComboFont.Items.AddRange(new object[] { "Segoe UI", "Arial", "Times New Roman", "Calibri" });
                 cfgComboFont.SelectedItem = string.IsNullOrWhiteSpace(_config.FontName) ? "Segoe UI" : _config.FontName;
 
-                cfgNumFontSize.Value = Math.Max(10, Math.Min(24, _config.FontSize));
+                cfgNumFontSize.Value = Math.Max(10, Math.Min(28, _config.FontSize));
 
                 cfgComboAutoLogout.Items.Clear();
                 foreach (var minutes in AutoLogoutManager.AllowedMinutes)
@@ -181,7 +181,11 @@ namespace PT_Readify
                         mn.ApplyConfig(cfg);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Log error silently to avoid disrupting user experience
+                System.Diagnostics.Debug.WriteLine($"Error applying runtime settings: {ex.Message}");
+            }
         }
 
         private void buttonCancelar_Click(object sender, EventArgs e)
@@ -211,8 +215,8 @@ namespace PT_Readify
             if (cfg == null || string.IsNullOrWhiteSpace(cfg.OriginalLanguage))
             {
                 MessageBox.Show(
-                    LanguageHelper.T("NoOriginalLanguage", _config),
-                    LanguageHelper.T("Info", _config),
+                    LanguageHelper.T("NoOriginalLanguage", _config ?? Config.Default()),
+                    LanguageHelper.T("Info", _config ?? Config.Default()),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;

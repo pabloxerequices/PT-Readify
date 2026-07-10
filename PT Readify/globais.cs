@@ -139,7 +139,7 @@ namespace PT_Readify
                 cfg.FontName = Config.Default().FontName;
 
             if (cfg.FontSize < 10) cfg.FontSize = 10;
-            if (cfg.FontSize > 24) cfg.FontSize = 24;
+            if (cfg.FontSize > 28) cfg.FontSize = 28;
 
             cfg.AutoLogoutMinutes = AutoLogoutManager.NormalizeMinutes(cfg.AutoLogoutMinutes);
 
@@ -148,6 +148,9 @@ namespace PT_Readify
 
             if (string.IsNullOrWhiteSpace(cfg.OriginalLanguage))
                 cfg.OriginalLanguage = cfg.Language;
+
+            // Reset fullscreen reading mode on app restart - don't persist
+            cfg.FullscreenReading = false;
         }
     }
 }

@@ -100,12 +100,16 @@ namespace PT_Readify
                 AutoSize = true
             };
 
-            btnOrdenarData = CriarBotao("Ordenar por Data", 15, 40, CorVerde);
-            btnDataDesc = CriarBotao("Data ▼", 230, 40, CorVerde);
-            btnDataAsc = CriarBotao("Data ▲", 350, 40, CorVerde);
-            btnOrdenarLivro = CriarBotao("Ordenar por ID Livro", 480, 40, CorAzul);
-            btnLivroDesc = CriarBotao("ID ▼", 700, 40, CorAzul);
-            btnLivroAsc = CriarBotao("ID ▲", 800, 40, CorAzul);
+            // --- Botões de ordenação: reaproveitam o mesmo "slot" horizontal
+            // do botão principal (já que nunca ficam visíveis ao mesmo tempo),
+            // evitando que fiquem uns em cima dos outros quando trocam de estado. ---
+            btnOrdenarData = CriarBotao("Ordenar por Data", 15, 40, CorVerde, 190);
+            btnDataDesc = CriarBotao("Data ▼", 15, 40, CorVerde, 90);
+            btnDataAsc = CriarBotao("Data ▲", 115, 40, CorVerde, 90);
+
+            btnOrdenarLivro = CriarBotao("Ordenar por ID Livro", 230, 40, CorAzul, 220);
+            btnLivroDesc = CriarBotao("ID ▼", 230, 40, CorAzul, 105);
+            btnLivroAsc = CriarBotao("ID ▲", 345, 40, CorAzul, 105);
 
             btnDataDesc.Visible = false;
             btnDataAsc.Visible = false;
@@ -160,13 +164,15 @@ namespace PT_Readify
             return grid;
         }
 
-        private static Guna2Button CriarBotao(string texto, int x, int y, Color cor)
+        // Adicionado o parâmetro opcional "width" para permitir botões mais
+        // estreitos (Data ▼/▲, ID ▼/▲) sem alterar as restantes chamadas.
+        private static Guna2Button CriarBotao(string texto, int x, int y, Color cor, int width = 200)
         {
             return new Guna2Button
             {
                 Text = texto,
                 Location = new Point(x, y),
-                Size = new Size(200, 40),
+                Size = new Size(width, 40),
                 BorderRadius = 6,
                 FillColor = cor,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),

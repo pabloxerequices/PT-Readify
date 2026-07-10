@@ -59,7 +59,7 @@
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 480);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(977, 80);
+            this.panelBottom.Size = new System.Drawing.Size(977, 100);
             this.panelBottom.TabIndex = 9;
             // 
             // labelTotal
@@ -67,7 +67,7 @@
             this.labelTotal.AutoSize = true;
             this.labelTotal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.labelTotal.ForeColor = System.Drawing.Color.White;
-            this.labelTotal.Location = new System.Drawing.Point(20, 25);
+            this.labelTotal.Location = new System.Drawing.Point(20, 10);
             this.labelTotal.Name = "labelTotal";
             this.labelTotal.Size = new System.Drawing.Size(0, 25);
             this.labelTotal.TabIndex = 0;
@@ -78,7 +78,7 @@
             this.guna2Button3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.guna2Button3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.guna2Button3.ForeColor = System.Drawing.Color.White;
-            this.guna2Button3.Location = new System.Drawing.Point(789, 20);
+            this.guna2Button3.Location = new System.Drawing.Point(740, 50);
             this.guna2Button3.Name = "guna2Button3";
             this.guna2Button3.Size = new System.Drawing.Size(220, 40);
             this.guna2Button3.TabIndex = 3;
@@ -232,7 +232,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(977, 560);
+            this.ClientSize = new System.Drawing.Size(977, 580);
             this.Controls.Add(this.guna2DataGridView1);
             this.Controls.Add(this.panelTop);
             this.Controls.Add(this.panelBottom);
