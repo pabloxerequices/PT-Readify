@@ -276,5 +276,10 @@ namespace PT_Readify
             CarteiraService.CarregarParaUtilizador(globais.id_utilizador);
             new Carteira().Show();
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

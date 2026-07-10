@@ -400,7 +400,7 @@ namespace PT_Readify
                 {
                     Location = new Point(10, 385),
                     Size = new Size(180, 28),
-                    Text = "Empréstimos / Reservar",
+                    Text = "Reservar",
                     Font = new Font("Segoe UI", 8, FontStyle.Regular),
                     BackColor = Color.FromArgb(155, 89, 182),
                     ForeColor = Color.White,
