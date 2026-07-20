@@ -80,7 +80,7 @@
             this.panelHeader.FillColor4 = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
             this.panelHeader.Location = new System.Drawing.Point(0, 0);
             this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(500, 64);
+            this.panelHeader.Size = new System.Drawing.Size(350, 55);
             this.panelHeader.TabIndex = 0;
             this.panelHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.panelHeader_Paint);
             // 
@@ -91,7 +91,7 @@
             this.btnFechar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.btnFechar.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
             this.btnFechar.ForeColor = System.Drawing.Color.White;
-            this.btnFechar.Location = new System.Drawing.Point(408, 16);
+            this.btnFechar.Location = new System.Drawing.Point(280, 10);
             this.btnFechar.Name = "btnFechar";
             this.btnFechar.Size = new System.Drawing.Size(80, 32);
             this.btnFechar.TabIndex = 0;
@@ -103,7 +103,7 @@
             this.lblTitulo.BackColor = System.Drawing.Color.Transparent;
             this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold);
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
-            this.lblTitulo.Location = new System.Drawing.Point(12, 12);
+            this.lblTitulo.Location = new System.Drawing.Point(12, 10);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(210, 42);
             this.lblTitulo.TabIndex = 1;
@@ -122,14 +122,14 @@
             this.panelAutenticacao.Controls.Add(this.btnEntrar);
             this.panelAutenticacao.Location = new System.Drawing.Point(0, 64);
             this.panelAutenticacao.Name = "panelAutenticacao";
-            this.panelAutenticacao.Size = new System.Drawing.Size(500, 409);
+            this.panelAutenticacao.Size = new System.Drawing.Size(350, 265);
             this.panelAutenticacao.TabIndex = 1;
             // 
             // lblTituloAuth
             // 
             this.lblTituloAuth.AutoSize = true;
             this.lblTituloAuth.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTituloAuth.Location = new System.Drawing.Point(60, 80);
+            this.lblTituloAuth.Location = new System.Drawing.Point(30, 50);
             this.lblTituloAuth.Name = "lblTituloAuth";
             this.lblTituloAuth.Size = new System.Drawing.Size(267, 30);
             this.lblTituloAuth.TabIndex = 0;
@@ -139,7 +139,7 @@
             // 
             this.lblPasswordLabel.AutoSize = true;
             this.lblPasswordLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.lblPasswordLabel.Location = new System.Drawing.Point(60, 150);
+            this.lblPasswordLabel.Location = new System.Drawing.Point(30, 95);
             this.lblPasswordLabel.Name = "lblPasswordLabel";
             this.lblPasswordLabel.Size = new System.Drawing.Size(178, 20);
             this.lblPasswordLabel.TabIndex = 1;
@@ -159,13 +159,13 @@
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.txtPassword.ForeColor = System.Drawing.Color.Black;
             this.txtPassword.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPassword.Location = new System.Drawing.Point(60, 175);
+            this.txtPassword.Location = new System.Drawing.Point(30, 120);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.PlaceholderText = "Digite aqui...";
             this.txtPassword.SelectedText = "";
-            this.txtPassword.Size = new System.Drawing.Size(380, 45);
+            this.txtPassword.Size = new System.Drawing.Size(290, 38);
             this.txtPassword.TabIndex = 2;
             // 
             // btnEntrar
@@ -173,9 +173,9 @@
             this.btnEntrar.BorderRadius = 8;
             this.btnEntrar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnEntrar.ForeColor = System.Drawing.Color.White;
-            this.btnEntrar.Location = new System.Drawing.Point(60, 250);
+            this.btnEntrar.Location = new System.Drawing.Point(30, 175);
             this.btnEntrar.Name = "btnEntrar";
-            this.btnEntrar.Size = new System.Drawing.Size(380, 45);
+            this.btnEntrar.Size = new System.Drawing.Size(290, 38);
             this.btnEntrar.TabIndex = 3;
             this.btnEntrar.Text = "Entrar";
             this.btnEntrar.Click += new System.EventHandler(this.BtnEntrar_Click);
@@ -191,7 +191,7 @@
             this.panelCarteira.Controls.Add(this.btnAlterarPagamento);
             this.panelCarteira.Location = new System.Drawing.Point(0, 64);
             this.panelCarteira.Name = "panelCarteira";
-            this.panelCarteira.Size = new System.Drawing.Size(500, 409);
+            this.panelCarteira.Size = new System.Drawing.Size(350, 265);
             this.panelCarteira.TabIndex = 2;
             this.panelCarteira.Visible = false;
             // 
@@ -200,7 +200,7 @@
             this.lblTituloCarteira.AutoSize = true;
             this.lblTituloCarteira.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblTituloCarteira.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
-            this.lblTituloCarteira.Location = new System.Drawing.Point(60, 60);
+            this.lblTituloCarteira.Location = new System.Drawing.Point(20, 10);
             this.lblTituloCarteira.Name = "lblTituloCarteira";
             this.lblTituloCarteira.Size = new System.Drawing.Size(208, 32);
             this.lblTituloCarteira.TabIndex = 0;
@@ -208,11 +208,11 @@
             // 
             // lblSaldo
             // 
-            this.lblSaldo.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
+            this.lblSaldo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblSaldo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
-            this.lblSaldo.Location = new System.Drawing.Point(60, 130);
+            this.lblSaldo.Location = new System.Drawing.Point(20, 40);
             this.lblSaldo.Name = "lblSaldo";
-            this.lblSaldo.Size = new System.Drawing.Size(380, 50);
+            this.lblSaldo.Size = new System.Drawing.Size(310, 25);
             this.lblSaldo.TabIndex = 1;
             this.lblSaldo.Text = "Saldo Atual: 0.00€";
             // 
@@ -222,9 +222,9 @@
             this.btnAlterarPagamento.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
             this.btnAlterarPagamento.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnAlterarPagamento.ForeColor = System.Drawing.Color.White;
-            this.btnAlterarPagamento.Location = new System.Drawing.Point(60, 240);
+            this.btnAlterarPagamento.Location = new System.Drawing.Point(20, 170);
             this.btnAlterarPagamento.Name = "btnAlterarPagamento";
-            this.btnAlterarPagamento.Size = new System.Drawing.Size(380, 45);
+            this.btnAlterarPagamento.Size = new System.Drawing.Size(310, 35);
             this.btnAlterarPagamento.TabIndex = 2;
             this.btnAlterarPagamento.Text = "Alterar Forma de Pagamento";
             this.btnAlterarPagamento.Click += new System.EventHandler(this.BtnAlterarPagamento_Click);
@@ -246,7 +246,7 @@
             this.panelEdicao.Controls.Add(this.btnVoltar);
             this.panelEdicao.Location = new System.Drawing.Point(0, 64);
             this.panelEdicao.Name = "panelEdicao";
-            this.panelEdicao.Size = new System.Drawing.Size(500, 409);
+            this.panelEdicao.Size = new System.Drawing.Size(350, 265);
             this.panelEdicao.TabIndex = 3;
             this.panelEdicao.Visible = false;
             // 
@@ -255,7 +255,7 @@
             this.lblTituloEdicao.AutoSize = true;
             this.lblTituloEdicao.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTituloEdicao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
-            this.lblTituloEdicao.Location = new System.Drawing.Point(60, 25);
+            this.lblTituloEdicao.Location = new System.Drawing.Point(30, 15);
             this.lblTituloEdicao.Name = "lblTituloEdicao";
             this.lblTituloEdicao.Size = new System.Drawing.Size(248, 30);
             this.lblTituloEdicao.TabIndex = 0;
@@ -265,7 +265,7 @@
             // 
             this.lblSelecione.AutoSize = true;
             this.lblSelecione.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblSelecione.Location = new System.Drawing.Point(60, 70);
+            this.lblSelecione.Location = new System.Drawing.Point(30, 45);
             this.lblSelecione.Name = "lblSelecione";
             this.lblSelecione.Size = new System.Drawing.Size(203, 19);
             this.lblSelecione.TabIndex = 1;
@@ -287,9 +287,9 @@
             "MBWay",
             "Transferência Bancária",
             "Apple Pay"});
-            this.cbMetodosPagamento.Location = new System.Drawing.Point(60, 95);
+            this.cbMetodosPagamento.Location = new System.Drawing.Point(30, 65);
             this.cbMetodosPagamento.Name = "cbMetodosPagamento";
-            this.cbMetodosPagamento.Size = new System.Drawing.Size(380, 36);
+            this.cbMetodosPagamento.Size = new System.Drawing.Size(290, 28);
             this.cbMetodosPagamento.TabIndex = 2;
             this.cbMetodosPagamento.SelectedIndexChanged += new System.EventHandler(this.CbMetodosPagamento_SelectedIndexChanged);
             // 
@@ -299,9 +299,9 @@
             this.panelPayPal.BorderRadius = 8;
             this.panelPayPal.Controls.Add(this.lblEmailPayPal);
             this.panelPayPal.Controls.Add(this.txtEmailPayPal);
-            this.panelPayPal.Location = new System.Drawing.Point(60, 150);
+            this.panelPayPal.Location = new System.Drawing.Point(30, 100);
             this.panelPayPal.Name = "panelPayPal";
-            this.panelPayPal.Size = new System.Drawing.Size(380, 100);
+            this.panelPayPal.Size = new System.Drawing.Size(290, 80);
             this.panelPayPal.TabIndex = 3;
             this.panelPayPal.Visible = false;
             // 
@@ -333,7 +333,7 @@
             this.txtEmailPayPal.Name = "txtEmailPayPal";
             this.txtEmailPayPal.PlaceholderText = "seu.email@paypal.com";
             this.txtEmailPayPal.SelectedText = "";
-            this.txtEmailPayPal.Size = new System.Drawing.Size(360, 35);
+            this.txtEmailPayPal.Size = new System.Drawing.Size(270, 35);
             this.txtEmailPayPal.TabIndex = 1;
             // 
             // panelMBWay
@@ -342,9 +342,9 @@
             this.panelMBWay.BorderRadius = 8;
             this.panelMBWay.Controls.Add(this.lblTelemovelMBWay);
             this.panelMBWay.Controls.Add(this.txtTelemovelMBWay);
-            this.panelMBWay.Location = new System.Drawing.Point(60, 150);
+            this.panelMBWay.Location = new System.Drawing.Point(30, 100);
             this.panelMBWay.Name = "panelMBWay";
-            this.panelMBWay.Size = new System.Drawing.Size(380, 100);
+            this.panelMBWay.Size = new System.Drawing.Size(290, 80);
             this.panelMBWay.TabIndex = 4;
             this.panelMBWay.Visible = false;
             // 
@@ -376,7 +376,7 @@
             this.txtTelemovelMBWay.Name = "txtTelemovelMBWay";
             this.txtTelemovelMBWay.PlaceholderText = "+351 912345678";
             this.txtTelemovelMBWay.SelectedText = "";
-            this.txtTelemovelMBWay.Size = new System.Drawing.Size(360, 35);
+            this.txtTelemovelMBWay.Size = new System.Drawing.Size(270, 35);
             this.txtTelemovelMBWay.TabIndex = 1;
             // 
             // panelTransferencia
@@ -385,9 +385,9 @@
             this.panelTransferencia.BorderRadius = 8;
             this.panelTransferencia.Controls.Add(this.lblIbanTransferencia);
             this.panelTransferencia.Controls.Add(this.txtIbanTransferencia);
-            this.panelTransferencia.Location = new System.Drawing.Point(60, 150);
+            this.panelTransferencia.Location = new System.Drawing.Point(30, 100);
             this.panelTransferencia.Name = "panelTransferencia";
-            this.panelTransferencia.Size = new System.Drawing.Size(380, 100);
+            this.panelTransferencia.Size = new System.Drawing.Size(290, 80);
             this.panelTransferencia.TabIndex = 5;
             this.panelTransferencia.Visible = false;
             // 
@@ -419,7 +419,7 @@
             this.txtIbanTransferencia.Name = "txtIbanTransferencia";
             this.txtIbanTransferencia.PlaceholderText = "PT50 0035 0000 0000 0000 0000 0";
             this.txtIbanTransferencia.SelectedText = "";
-            this.txtIbanTransferencia.Size = new System.Drawing.Size(360, 35);
+            this.txtIbanTransferencia.Size = new System.Drawing.Size(270, 35);
             this.txtIbanTransferencia.TabIndex = 1;
             // 
             // panelApplePay
@@ -428,9 +428,9 @@
             this.panelApplePay.BorderRadius = 8;
             this.panelApplePay.Controls.Add(this.lblAppleID);
             this.panelApplePay.Controls.Add(this.txtAppleID);
-            this.panelApplePay.Location = new System.Drawing.Point(60, 150);
+            this.panelApplePay.Location = new System.Drawing.Point(30, 100);
             this.panelApplePay.Name = "panelApplePay";
-            this.panelApplePay.Size = new System.Drawing.Size(380, 100);
+            this.panelApplePay.Size = new System.Drawing.Size(290, 80);
             this.panelApplePay.TabIndex = 6;
             this.panelApplePay.Visible = false;
             // 
@@ -462,7 +462,7 @@
             this.txtAppleID.Name = "txtAppleID";
             this.txtAppleID.PlaceholderText = "seu.email@icloud.com";
             this.txtAppleID.SelectedText = "";
-            this.txtAppleID.Size = new System.Drawing.Size(360, 35);
+            this.txtAppleID.Size = new System.Drawing.Size(270, 35);
             this.txtAppleID.TabIndex = 1;
             // 
             // btnSalvar
@@ -471,9 +471,9 @@
             this.btnSalvar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnSalvar.ForeColor = System.Drawing.Color.White;
-            this.btnSalvar.Location = new System.Drawing.Point(60, 290);
+            this.btnSalvar.Location = new System.Drawing.Point(30, 195);
             this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(175, 40);
+            this.btnSalvar.Size = new System.Drawing.Size(130, 32);
             this.btnSalvar.TabIndex = 7;
             this.btnSalvar.Text = "Salvar Alterações";
             this.btnSalvar.Click += new System.EventHandler(this.BtnSalvar_Click);
@@ -484,9 +484,9 @@
             this.btnVoltar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(149)))), ((int)(((byte)(165)))), ((int)(((byte)(166)))));
             this.btnVoltar.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnVoltar.ForeColor = System.Drawing.Color.White;
-            this.btnVoltar.Location = new System.Drawing.Point(265, 290);
+            this.btnVoltar.Location = new System.Drawing.Point(190, 195);
             this.btnVoltar.Name = "btnVoltar";
-            this.btnVoltar.Size = new System.Drawing.Size(175, 40);
+            this.btnVoltar.Size = new System.Drawing.Size(130, 32);
             this.btnVoltar.TabIndex = 8;
             this.btnVoltar.Text = "Voltar";
             this.btnVoltar.Click += new System.EventHandler(this.BtnVoltar_Click);
@@ -496,7 +496,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(500, 473);
+            this.ClientSize = new System.Drawing.Size(350, 320);
             this.Controls.Add(this.panelEdicao);
             this.Controls.Add(this.panelCarteira);
             this.Controls.Add(this.panelAutenticacao);
@@ -504,7 +504,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Carteira";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Carteira Digital";
             this.Load += new System.EventHandler(this.Carteira_Load);
             this.panelHeader.ResumeLayout(false);
